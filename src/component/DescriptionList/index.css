@@ -1,0 +1,13 @@
+.description-list  {
+  padding: 0 10px;
+}
+.description-list .description-content {
+  display: flex;
+}
+.description-list .description-content span {
+  width: 112px;
+}
+.description-list .description-content strong {
+  flex: 1;
+  font-weight: normal;
+}

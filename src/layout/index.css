@@ -1,0 +1,48 @@
+.main-layout .logo {
+  height: 32px;
+  margin: 16px;
+  color: #ffffff;
+  text-align: center;
+  line-height: 32px;
+  font-size: 18px;
+  font-weight: bold;
+}
+.main-layout .trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color .3s;
+}
+
+.main-layout .trigger:hover {
+  color: #1890ff;
+}
+
+.top-header {
+  background: #fff;
+  padding: 0;
+  box-shadow: 0 1px 4px rgba(13, 16, 19, .02);
+  -webkit-box-shadow: 0 1px 4px rgba(13, 16, 19, .02);
+  -moz-box-shadow: 0 1px 4px rgba(13, 16, 19, .02);
+  margin-bottom: 1px;
+}
+
+.menu {
+  width: 160px;
+}
+.user-drop {
+  float: right;
+  margin-right: 15px;
+  cursor: pointer;
+}
+.user-drop:hover {
+  background: #e6f7ff;
+}
+.user-drop .action {
+  padding: 0 10px;
+  display: block;
+}
+.user-drop .action .username {
+  margin-left: 10px;
+}

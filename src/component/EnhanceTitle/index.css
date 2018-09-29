@@ -1,0 +1,18 @@
+.enhance-title {
+  position: relative;
+  padding-left: 12px;
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+.enhance-title:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 5px;
+  height: 18px;
+  background: #1890ff;
+  top: 50%;
+  margin-top: -8px;
+}

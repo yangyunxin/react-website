@@ -1,0 +1,75 @@
+import React from 'react';
+import { Layout, Menu, Icon } from 'antd';
+import { Route } from 'react-router-dom';
+import './index.css';
+import ProductList from '../container/Product';
+import ProductAdd from '../container/Product/Add';
+
+const { Header, Content, Footer, Sider } = Layout;
+const SubMenu = Menu.SubMenu;
+
+export default class Main extends React.Component {
+  state = {
+    collapsed: false,
+  };
+
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
+
+  render() {
+    const { history } = this.props;
+    return (
+      <Layout className="main-layout" style={{ minHeight: '100vh' }}>
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={this.state.collapsed}
+        >
+          <div className="logo">
+          快易布业务管理
+          </div>
+          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+            <SubMenu
+              key="product"
+              title={<span><Icon type="file-ppt" /><span>产品管理</span></span>}
+            >
+              <Menu.Item key="product_list" onClick={() => history.push('/product/list')}>产品维护</Menu.Item>
+              <Menu.Item key="product_add" onClick={() => history.push('/product/add')}>添加产品</Menu.Item>
+            </SubMenu>
+            <SubMenu
+              key="sub2"
+              title={<span><Icon type="team" /><span>Team</span></span>}
+            >
+              <Menu.Item key="6">Team 1</Menu.Item>
+              <Menu.Item key="8">Team 2</Menu.Item>
+            </SubMenu>
+            <Menu.Item key="9">
+              <Icon type="file" />
+              <span>File</span>
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Layout>
+          <Header style={{ background: '#fff', padding: 0 }}>
+            <Icon
+              className="trigger"
+              type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+              onClick={this.toggle}
+            />
+          </Header>
+          <Content style={{ margin: '16px' }}>
+            <Route exact path="/" component={ProductList} />
+            <Route path="/product/list" component={ProductList} />
+            <Route path="/product/add" component={ProductAdd} />
+          </Content>
+          <Footer style={{ textAlign: 'center' }}>
+            Ant Design ©2018 Created by Ant UED
+          </Footer>
+        </Layout>
+      </Layout>
+    );
+  }
+}

@@ -1,0 +1,56 @@
+import React, { Fragment } from 'react';
+import { Route, Redirect } from 'react-router-dom';
+
+export default class AuthComponent extends React.PureComponent {
+  state = {
+    component: ''
+  }
+  componentDidMount() {
+    const auth = sessionStorage.getItem('Authorization');
+    if (auth) {
+      this.setState({ component: this.props.children })
+    } else {
+      this.setState({ component: this.props.noMatch })
+    }
+  }
+  render() {
+    return this.state.component ? (
+      <Fragment>{this.state.component}</Fragment>
+    ) : (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          margin: 'auto',
+          paddingTop: 50,
+          textAlign: 'center'
+        }}
+      >
+      loading...
+      </div>
+    );
+  }
+}
+export const PrivateRoute = ({ component: Component, redirectPath, show, ...rest }) => (
+  <AuthComponent
+    show
+    noMatch={
+      <Route
+        {...rest}
+        render={() => (
+          <Redirect
+            to={{
+              pathname: redirectPath,
+              state: { from: rest.location }
+            }}
+          />
+        )}
+      />
+    }
+  >
+    <Route
+      {...rest}
+      render={(props) => <Component {...props} />}
+    />
+  </AuthComponent>
+);

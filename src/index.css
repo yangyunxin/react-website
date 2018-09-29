@@ -1,0 +1,24 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+.form-container.ant-card {
+  margin-bottom: 20px;
+}
+.page-list .ant-card-wider-padding .ant-card-body {
+  padding: 20px;
+}
+.page-list .ant-form-item {
+  margin-bottom: 12px;
+}
+.page-detail .ant-card {
+  margin-bottom: 15px;
+
+}
+.page-detail .ant-card-wider-padding .ant-card-body {
+  padding: 20px;
+}
+.ant-table table {
+  font-size: 12px;
+}
