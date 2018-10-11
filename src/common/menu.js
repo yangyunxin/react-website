@@ -1,5 +1,20 @@
 const menuData = [
   {
+    name: 'React测试',
+    icon: 'file-ppt',
+    path: 'test',
+    children: [
+      {
+        name: '测试一',
+        path: 'list',
+      },
+      {
+        name: '测试二',
+        path: 'add',
+      },
+    ],
+  },
+  {
     name: '产品管理',
     icon: 'file-ppt',
     path: 'product',
@@ -72,7 +87,7 @@ const menuData = [
   },
   {
     name: '系统管理',
-    icon: 'system',
+    icon: 'setting',
     path: 'system',
     children: [
       {

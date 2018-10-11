@@ -29,25 +29,60 @@ const formItemLayout = {
 export default class UserList extends React.PureComponent {
   state = {
     selectedRowKeys: [],
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+    },
   };
 
   componentDidMount() {
     this.props.getUsertList();
   }
 
-  onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
-    this.setState({ selectedRowKeys });
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.props.getUsertList(values);
+      }
+    })
   }
+
+  rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      const { selectedRows: orderList } = this.state;
+      let newRows = [];
+      if (selectedRowKeys.length === selectedRows.length) {
+        newRows = [...selectedRows];
+      } else if (selectedRowKeys.length > selectedRows.length) {
+        const otherRowsKeys = selectedRowKeys.filter(item => selectedRows.every(row => row.id !== item));
+        const otherRows = orderList.filter(item => otherRowsKeys.indexOf(item.id) !== -1);
+        newRows = otherRows.concat(selectedRows);
+      }
+      this.setState({ selectedRows: newRows, selectedRowKeys });
+    }
+  }
+
+  handleTableChange = (pagination) => {
+    const pager = { ...this.state.pagination };
+    pager.current = pagination.current;
+    const params = this.props.form.getFieldsValue();
+    this.setState({ pagination: pager });
+    this.props.getUsertList({
+      ...params,
+      page: pagination.current,
+      limit: pagination.pageSize,
+    });
+  }
+
+  handleReset = () => {
+    this.props.form.resetFields();
+  };
 
   render() {
     const { form: { getFieldDecorator }, userList: { records = [] } } = this.props;
-    const { selectedRowKeys } = this.state;
-    console.log(records)
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    }
+    const { selectedRowKeys, pagination } = this.state;
+    const rowSelection = { selectedRowKeys, ...this.rowSelection };
     return (
       <div className="page-list product-list">
         <Card bordered={false} className="form-container">
@@ -55,14 +90,14 @@ export default class UserList extends React.PureComponent {
             <Row gutter={12}>
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="用户账号">
-                  {getFieldDecorator('account')(
+                  {getFieldDecorator('phoneNumber')(
                     <Input placeholder="请输入用户账号" />
                   )}
                 </FormItem>
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="姓名">
-                  {getFieldDecorator('username')(
+                  {getFieldDecorator('name')(
                     <Input placeholder="请输入姓名" />
                   )}
                 </FormItem>
@@ -111,7 +146,7 @@ export default class UserList extends React.PureComponent {
           </Form>
         </Card>
         <Card bordered={false}>
-          <Table rowKey="id" rowSelection={rowSelection} columns={listColumns} dataSource={records} />
+          <Table rowKey="id" rowSelection={rowSelection} columns={listColumns} dataSource={records} pagination={pagination} onChange={this.handleTableChange} />
         </Card>
       </div>
     )

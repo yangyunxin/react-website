@@ -5,6 +5,7 @@ export const USER_LOGIN = 'USER_LOGIN';
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const GET_USER_BYID = 'GET_USER_BYID';
 export const GET_USER_ADDRESS_BYID = 'GET_USER_ADDRESS_BYID';
+export const GET_USER_ORDER_BYID = 'GET_USER_ORDER_BYID';
 
 export function getUsertList(params) {
   return async (dispatch) => {
@@ -38,6 +39,18 @@ export function getUserAddressById(id) {
       dispatch({
         type: GET_USER_ADDRESS_BYID,
         data: result.data.data
+      })
+    }
+  }
+}
+
+export function getUserOrderById(params) {
+  return async (dispath) => {
+    const result = await get(API.getUserOrderById, params);
+    if (result && result.status === 200) {
+      dispath({
+        type: GET_USER_ORDER_BYID,
+        data: result.data
       })
     }
   }

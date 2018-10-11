@@ -16,11 +16,25 @@ import AgentList from '../container/Agent';
 import AgentDetail from '../container/Agent/Detail';
 import AgentEdit from '../container/Agent/Edit';
 import AgentAdd from '../container/Agent/Add';
+import Test from '../container/Test';
 
 const routerData = {
   '/': {
     name: '首页',
-    component: Home
+    component: Home,
+    exact: true,
+  },
+  '/test': {
+    name: '产品管理',
+    redirect: true,
+  },
+  '/test/list': {
+    name: '测试一',
+    component: Test,
+  },
+  '/test/add': {
+    name: '测试二',
+    component: ProductAdd
   },
   '/product': {
     name: '产品管理',

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Divider } from 'antd';
 import { formatDateMinute } from '../../../utils/utils';
-import { nullString } from '../../../utils/constant';
+import { nullString, USER_ACCOUNT_STATUS } from '../../../utils/constant';
 
 const columns = [
   {
@@ -28,6 +28,7 @@ const columns = [
     dataIndex: 'status',
     key: 'status',
     align: 'center',
+    render: (text) => USER_ACCOUNT_STATUS[text] || nullString
   },
   {
     title: '注册时间',

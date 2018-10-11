@@ -1,3 +1,7 @@
+import React from 'react';
+import { formatDateMinute } from '../../../utils/utils';
+import { nullString } from '../../../utils/constant';
+
 const columns = [
   {
     title: '订单编号',
@@ -7,9 +11,10 @@ const columns = [
   },
   {
     title: '提交时间',
-    dataIndex: 'createTime',
-    key: 'createTime',
+    dataIndex: 'createdTime',
+    key: 'createdTime',
     align: 'center',
+    render: (text) => text ? formatDateMinute(text) : nullString
   },
   {
     title: '用户账号',
@@ -31,7 +36,7 @@ const columns = [
   },
   {
     title: '返点金额（元）',
-    dataIndex: 'rebatetotal',
+    dataIndex: 'rebateTotal',
     key: 'rebateTotal',
     align: 'center',
   },
@@ -43,8 +48,8 @@ const columns = [
   },
   {
     title: '订单来源',
-    dataIndex: 'origin',
-    key: 'origin',
+    dataIndex: 'paymentChannel',
+    key: 'paymentChannel',
     align: 'center',
   },
   {
@@ -58,6 +63,7 @@ const columns = [
     dataIndex: 'operate',
     key: 'operate',
     align: 'center',
+    render: () => (<a href="javascript:;">删除</a>)
   },
 ];
 export default columns;

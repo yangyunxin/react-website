@@ -35,18 +35,34 @@ export default class ProductList extends React.PureComponent {
     this.props.getProductList();
   }
 
-  onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
-    this.setState({ selectedRowKeys });
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.props.getProductList(values);
+      }
+    })
+  }
+
+  rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      const { selectedRows: orderList } = this.state;
+      let newRows = [];
+      if (selectedRowKeys.length === selectedRows.length) {
+        newRows = [...selectedRows];
+      } else if (selectedRowKeys.length > selectedRows.length) {
+        const otherRowsKeys = selectedRowKeys.filter(item => selectedRows.every(row => row.id !== item));
+        const otherRows = orderList.filter(item => otherRowsKeys.indexOf(item.id) !== -1);
+        newRows = otherRows.concat(selectedRows);
+      }
+      this.setState({ selectedRows: newRows, selectedRowKeys });
+    }
   }
 
   render() {
     const { form: { getFieldDecorator }, productList = {} } = this.props;
     const { selectedRowKeys } = this.state;
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    }
+    const rowSelection = { selectedRowKeys, ...this.rowSelection };
     return (
       <div className="page-list product-list">
         <Card bordered={false} className="form-container">

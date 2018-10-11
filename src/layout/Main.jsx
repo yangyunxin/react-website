@@ -39,8 +39,10 @@ export default class Main extends React.PureComponent {
     openChangeKes: []
   };
 
-  componentDidMount() {
-    console.log('main')
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
   }
 
   onMenuClick = async ({ key }) => {
@@ -150,7 +152,7 @@ export default class Main extends React.PureComponent {
               {redirectData.includes(location.pathname) && <Redirect from={pathSnippet} to={childPath} />}
               {
                 Object.keys(routerData).map(item => (
-                  <Route key={item} exact path={item} component={routerData[item].component} />
+                  <Route key={item} exact={routerData[item].exact} path={item} component={routerData[item].component} />
                 ))
               }
             </div>
