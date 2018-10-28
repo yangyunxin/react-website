@@ -42,8 +42,9 @@ export default class UploadImage extends React.PureComponent {
   }
 
   handleChange = ({ fileList }) => {
+    console.log(fileList)
     const { onChange } = this.props;
-    const val = fileList.filter(item => item.response && item.response.code === 0).map(item => (item.response.data.fileKey));
+    const val = fileList.filter(item => item.response && item.response.code === 0).map(item => (item.response.data));
     this.setState({ fileList, val }, () => {
       if (onChange && this.state.val.length === fileList.length) {
         onChange(val);
@@ -68,8 +69,9 @@ export default class UploadImage extends React.PureComponent {
     return (
       <div className="clearfix">
         <Upload
+          headers={{ 'Authorization': localStorage.getItem('Authorization') || 'Basic cGlnOnBpZw==' }}
           name="file"
-          action="/api/payments/upload"
+          action="/api/goods/tProduct/upload"
           listType="picture-card"
           fileList={fileList}
           data={uploadParams}

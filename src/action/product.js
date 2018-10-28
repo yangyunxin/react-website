@@ -1,5 +1,5 @@
 import API from '../utils/api';
-import { get, post } from '../utils/request';
+import { get, post, put } from '../utils/request';
 import { authUserExpire } from './auth';
 
 export const GET_PRODUCT_LIST = 'GET_PRODUCT_LIST';
@@ -13,12 +13,11 @@ export function getProductList(params) {
         type: GET_PRODUCT_LIST,
         data: result.data
       })
-    } else if (result.status === 401) {
+    } else if (!result) {
       dispatch(authUserExpire);
     }
   }
 }
-
 
 export function getProductById(id) {
   return async (dispatch) => {
@@ -28,6 +27,8 @@ export function getProductById(id) {
         type: GET_PRODUCT_BYID,
         data: result.data.data
       })
+    } else if (!result) {
+      dispatch(authUserExpire);
     }
   }
 }
@@ -35,7 +36,20 @@ export function getProductById(id) {
 export async function addProduct(params) {
   const result = await post(API.addProduct, params);
   if (result && result.status === 200) {
-    console.log(result.data)
+    return result.data
+  }
+}
+
+export async function updateProduct(params) {
+  const result = await put(API.updateProduct, params);
+  if (result && result.status === 200) {
+    return result.data
+  }
+}
+
+export async function batchUpProduct(params) {
+  const result = await post(API.batchUpProduct, params);
+  if (result && result.status === 200) {
     return result.data
   }
 }

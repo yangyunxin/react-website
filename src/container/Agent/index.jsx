@@ -1,5 +1,7 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button } from 'antd';
+import { getAgentList } from '../../action/agent';
 import listColumns from './columns/list';
 import './index.css'
 
@@ -18,11 +20,20 @@ const formItemLayout = {
   }
 };
 
+@connect(({ agent }) => ({
+  agentList: agent.agentList
+}), {
+  getAgentList
+})
 @Form.create()
 export default class AgentList extends React.PureComponent {
   state = {
     selectedRowKeys: [],
   };
+
+  componentDidMount() {
+    this.props.getAgentList();
+  }
 
   onSelectChange = (selectedRowKeys) => {
     console.log('selectedRowKeys changed: ', selectedRowKeys);

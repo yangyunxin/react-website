@@ -12,7 +12,7 @@ export async function get(url, params = {}) {
   try {
     const result = await axios({
       method: 'GET',
-      headers: { 'Authorization': sessionStorage.getItem('Authorization') || 'Basic cGlnOnBpZw==' },
+      headers: { 'Authorization': localStorage.getItem('Authorization') || 'Basic cGlnOnBpZw==' },
       params,
       url
     });
@@ -33,15 +33,10 @@ export async function post(url, data = {}) {
   try {
     const result = await axios({
       method: 'POST',
-      headers: { 'Authorization': sessionStorage.getItem('Authorization') },
+      headers: { 'Authorization': localStorage.getItem('Authorization') },
       data: qs.stringify(data),
       url
     });
-    if (result.data) {
-      sessionStorage.setItem('Authorization', `${result.data.token_type} ${result.data.access_token}`);
-    } else if (result.code === 401) {
-      sessionStorage.setItem('Authorization', '');
-    }
     return result;
   } catch (error) {
     return undefined;
@@ -57,7 +52,7 @@ export async function requestLogin(url, data = {}) {
       url
     });
     if (result.data) {
-      sessionStorage.setItem('Authorization', `${result.data.token_type} ${result.data.access_token}`);
+      localStorage.setItem('Authorization', `${result.data.token_type} ${result.data.access_token}`);
     }
     return result;
   } catch (error) {
@@ -92,15 +87,16 @@ export function patch(url, data = {}) {
  * @returns {Promise}
  */
 
-export function put(url, data = {}) {
-  return new Promise((resolve, reject) => {
-    axios.put(url, data).then(
-      response => {
-        resolve(response.data);
-      },
-      err => {
-        reject(err);
-      },
-    );
-  });
+export async function put(url, data = {}) {
+  try {
+    const result = await axios({
+      method: 'PUT',
+      headers: { 'Authorization': localStorage.getItem('Authorization') },
+      data: qs.stringify(data),
+      url
+    });
+    return result;
+  } catch (error) {
+    return undefined;
+  }
 }

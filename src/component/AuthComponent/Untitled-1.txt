@@ -6,7 +6,7 @@ export default class AuthComponent extends React.PureComponent {
     component: ''
   }
   componentDidMount() {
-    const auth = sessionStorage.getItem('Authorization');
+    const auth = localStorage.getItem('Authorization');
     if (auth) {
       this.setState({ component: this.props.children })
     } else {

@@ -89,14 +89,24 @@ export default class ProductDetail extends React.PureComponent {
                 </Select>
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="产品图片">
-              {getFieldDecorator('detailPicture', {
-                initialValue: [productDetail.detailPicture],
+            <FormItem {...formItemLayout} label="产品主图">
+              {getFieldDecorator('mainPicture', {
+                initialValue: productDetail.mainPicture ? productDetail.mainPicture.split(',') : undefined,
                 rules: [{
-                  required: true, message: '请添加产品图片',
+                  required: true, message: '请添加产品主图',
                 }],
               })(
-                <Uploader noRemove placeholder="请输入产品名称" />
+                <Uploader max={1} noRemove/>
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout} label="产品详情图">
+              {getFieldDecorator('detailPicture', {
+                initialValue: productDetail.detailPicture ? productDetail.detailPicture.split(',') : undefined,
+                rules: [{
+                  required: true, message: '请添加产品详情图',
+                }],
+              })(
+                <Uploader max={5} noRemove />
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="产品货号">
@@ -145,10 +155,6 @@ export default class ProductDetail extends React.PureComponent {
               )}
             </FormItem>
           </Card>
-          <div>
-            <Button style={{ width: '120px', marginRight: '20px' }} type="primary" htmlType="submit">提交</Button>
-            <Button style={{ width: '120px' }}>清空</Button>
-          </div>
         </Form>
       </div>
     )

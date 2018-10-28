@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Layout, Menu, Icon, Breadcrumb, message, Dropdown, Avatar } from 'antd';
 import { Route, Link, Redirect } from 'react-router-dom';
-import { authUserLogin } from '../action/auth';
+import { authUserLogin, authUserLogout } from '../action/auth';
 import MenuData from '../common/menu';
 import routerData from '../common/router';
 import './index.css';
@@ -29,7 +29,8 @@ function getFirstChildPath(parentPath) {
 @connect(({ user }) => ({
   user: user
 }), {
-  authUserLogin
+  authUserLogin,
+  authUserLogout,
 })
 export default class Main extends React.PureComponent {
   state = {
@@ -49,7 +50,7 @@ export default class Main extends React.PureComponent {
     const { history } = this.props;
     if (key === 'logout') {
       try {
-        const resp = await this.props.logout();
+        const resp = this.props.authUserLogout();
         if (resp) {
           history.push('/login');
         }
@@ -93,7 +94,7 @@ export default class Main extends React.PureComponent {
     )].concat(extraBreadcrumbItems);
 
     const menu = (
-      <Menu className="menu" placement="bottomRight">
+      <Menu onClick={this.onMenuClick} className="menu" placement="bottomRight">
         <Menu.Item><Icon type="user" />个人中心</Menu.Item>
         <Menu.Item><Icon type="setting" />设置</Menu.Item>
         <Menu.Divider />

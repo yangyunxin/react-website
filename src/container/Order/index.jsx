@@ -93,7 +93,7 @@ export default class OrderList extends React.PureComponent {
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="提交起止时间">
-                  {getFieldDecorator('createTime')(
+                  {getFieldDecorator('createdTime')(
                     <RangePicker format={dateFormat} />
                   )}
                 </FormItem>
@@ -113,7 +113,13 @@ export default class OrderList extends React.PureComponent {
           </Form>
         </Card>
         <Card bordered={false}>
-          <Table rowKey="id" rowSelection={rowSelection} columns={listColumns} dataSource={orderList.records} />
+          <Table
+            rowKey="id"
+            scroll={{ x: 1100 }}
+            rowSelection={rowSelection}
+            columns={listColumns}
+            dataSource={orderList.records}
+          />
         </Card>
       </div>
     )

@@ -22,7 +22,6 @@ const columns = [
     dataIndex: 'mainPicture',
     key: 'mainPicture',
     align: 'center',
-    render: (text) => <img width="50" height="50" src={text} alt="产品图片" />
   },
   {
     title: '产品名称',
@@ -35,20 +34,12 @@ const columns = [
     dataIndex: 'productPrice',
     key: 'productPrice',
     align: 'center',
-    render: (text, record) => {
-      const product = record.priceList && record.priceList.length ? record.priceList[0] : {}
-      return product['price']
-    }
   },
   {
     title: '计价单位',
     dataIndex: 'unit',
     key: 'unit',
     align: 'center',
-    render: (text, record) => {
-      const product = record.priceList && record.priceList.length ? record.priceList[0] : {}
-      return product['unit']
-    }
   },
   {
     title: '颜色',
@@ -80,7 +71,7 @@ const columns = [
         <div>
           <Link to={`/product/detail/${record.id}`}>查看</Link>
           <Divider type="vertical" />
-          <Link to={`/product/edit/${record.id}`}>编辑</Link>
+          <a href="javascript:;">编辑</a>
           <Divider type="vertical" />
           <a href="javascript:;">{record.state === 1 ? '下架' : '上架'}</a>
         </div>

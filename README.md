@@ -39,3 +39,9 @@
 2. 如果使用继承PureComponent组件，就拥有浅比较，不会引起多余的子组件渲染
 
 ### PureComponent浅比较是什么
+
+
+### localStorage和localStorage
+localStorage在同一个域名不同标签下是可以共享的，但是不同域名是不可以共享的
+localStorage在不同标签下是不可以共享的，因此要解决localStorage共享问题
+https://blog.kazaff.me/2016/09/09/%E8%AF%91-%E5%9C%A8%E5%A4%9A%E4%B8%AA%E6%A0%87%E7%AD%BE%E9%A1%B5%E4%B9%8B%E9%97%B4%E5%85%B1%E4%BA%ABlocalStorage/

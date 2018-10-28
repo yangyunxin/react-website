@@ -1,20 +1,5 @@
 const menuData = [
   {
-    name: 'React测试',
-    icon: 'file-ppt',
-    path: 'test',
-    children: [
-      {
-        name: '测试一',
-        path: 'list',
-      },
-      {
-        name: '测试二',
-        path: 'add',
-      },
-    ],
-  },
-  {
     name: '产品管理',
     icon: 'file-ppt',
     path: 'product',
@@ -92,7 +77,7 @@ const menuData = [
     children: [
       {
         name: '操作日志',
-        path: 'operteLog',
+        path: 'operateLog',
       },
       {
         name: '数据字典',

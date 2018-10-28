@@ -3,6 +3,7 @@ import Home from '../container/Home';
 import ProductList from '../container/Product';
 import ProductAdd from '../container/Product/Add';
 import ProductDetail from '../container/Product/Detail';
+import ProductEdit from '../container/Product/Edit';
 import OrderList from '../container/Order';
 import OrderDetail from '../container/Order/Detail';
 import UserList from '../container/User';
@@ -16,25 +17,13 @@ import AgentList from '../container/Agent';
 import AgentDetail from '../container/Agent/Detail';
 import AgentEdit from '../container/Agent/Edit';
 import AgentAdd from '../container/Agent/Add';
-import Test from '../container/Test';
+import OperateLog from '../container/System/index';
 
 const routerData = {
   '/': {
     name: '首页',
     component: Home,
     exact: true,
-  },
-  '/test': {
-    name: '产品管理',
-    redirect: true,
-  },
-  '/test/list': {
-    name: '测试一',
-    component: Test,
-  },
-  '/test/add': {
-    name: '测试二',
-    component: ProductAdd
   },
   '/product': {
     name: '产品管理',
@@ -53,6 +42,12 @@ const routerData = {
   },
   '/product/detail/:id': {
     component: ProductDetail
+  },
+  '/product/edit': {
+    name: '产品详情',
+  },
+  '/product/edit/:id': {
+    component: ProductEdit
   },
   '/order': {
     name: '订单管理',
@@ -134,5 +129,13 @@ const routerData = {
     name: '代理商添加',
     component: AgentAdd,
   },
+  '/system': {
+    name: '系统管理',
+    redirect: true,
+  },
+  '/system/operateLog': {
+    name: '操作日志',
+    component: OperateLog
+  }
 }
 export default routerData;

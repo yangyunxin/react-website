@@ -21,7 +21,7 @@ export function authUserLogin(params) {
 // 获取当前登录状态
 export function authCheck() {
   return async (dispatch) => {
-    const Authorization = sessionStorage.getItem('Authorization');
+    const Authorization = localStorage.getItem('Authorization');
     if (Authorization) {
       dispatch({ type: AUTH_USER_LOGIN });
     } else {
@@ -32,18 +32,14 @@ export function authCheck() {
 
 // auth过期处理
 export function authUserExpire() {
-  return { type: AUTH_USER_LOGIN }
+  return { type: AUTH_USER_EXPIRE }
 }
 
 // 登出清除auth
 export function authUserLogout(params) {
-  return async (dispatch) => {
-    const result = await requestLogin(API.authLogin, params);
-    if (result) {
-      dispatch(authUserExpire);
-    } else {
-      //dispatch(authUserExpire);
-    }
-    return result;
+  return (dispatch) => {
+    localStorage.setItem('Authorization', '');
+    dispatch(authUserExpire);
+    return true;
   }
 }
