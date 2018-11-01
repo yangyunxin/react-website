@@ -1,7 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button } from 'antd';
-import { getOrderList } from '../../action/order';
+import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider } from 'antd';
+import { ORDER_OPERATE, formItemLayout, showTotal, ORDER_STATUS, REGIST_CHANNEL } from '../../utils/constant';
+import { getOrderList, updateOrder } from '../../action/order';
 import listColumns from './columns/list';
 import './index.css'
 
@@ -9,16 +11,7 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 }
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 }
-  }
-};
+
 
 @connect(({ order }) => ({
   orderList: order.orderList
@@ -27,22 +20,105 @@ const formItemLayout = {
 })
 @Form.create()
 export default class OrderList extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.columns = [
+      ...listColumns,
+      {
+        title: '操作',
+        dataIndex: 'operate',
+        key: 'operate',
+        align: 'center',
+        fixed: 'right',
+        render: (text, record) => {
+          return (
+            <div>
+              <Link to={`/order/detail/${record.id}`}>查看</Link>
+              {ORDER_OPERATE[record.status] ? (
+                <span>
+                  <Divider type="vertical" />
+                  <a onClick={() => this.updateStatus(record)} href="javascript:;">{ORDER_OPERATE[record.status]}</a>
+                </span>
+              ) : null}
+            </div>
+          )
+        }
+      },
+    ];
+  }
+
   state = {
     selectedRowKeys: [],
+    loading: false,
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+    },
   };
 
   componentDidMount() {
-    this.props.getOrderList();
+    this.getOrderList();
+  }
+
+  getOrderList = async (params) => {
+    this.setState({ loading: true });
+    this.props.form.validateFields(async(err, values) => {
+      if (!err) {
+        const { createdTime, ...params } = values;
+        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
+        await this.props.getOrderList({ ...params, beginTime, endTime});
+        this.setState({ loading: false });
+      } else {
+        this.setState({ loading: false });
+      }
+    });
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.getOrderList();
   }
 
   onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
+  }
+
+  handleReset = () => {
+    this.props.form.resetFields();
+  }
+
+  handleTableChange = (pagination) => {
+    const pager = { ...this.state.pagination };
+    pager.current = pagination.current;
+    this.setState({ pagination: pager });
+    this.getOrderList({
+      limit: pagination.pageSize,
+      page: pagination.current,
+    });
+  }
+
+  updateStatus = ({ id, accountId, status }) => {
+    let nextStatus = 0;
+    switch (status) {
+      case 0: nextStatus = 4;
+        break;
+      case 1: nextStatus = 2;
+        break;
+      case 2: nextStatus = 3
+        break;
+      default: nextStatus = 0;
+    }
+    updateOrder({
+      id,
+      accountId,
+      status: nextStatus,
+    });
   }
 
   render() {
     const { form: { getFieldDecorator }, orderList } = this.props;
-    const { selectedRowKeys } = this.state;
+    const { selectedRowKeys, loading } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -63,16 +139,20 @@ export default class OrderList extends React.PureComponent {
                 <FormItem {...formItemLayout} label="订单状态">
                   {getFieldDecorator('status')(
                     <Select allowClear placeholder="请选择订单状态">
-                      <Option value="1">类别1</Option>
+                    {Object.keys(ORDER_STATUS).map(item => (
+                      <Option key={item} value={item}>{ORDER_STATUS[item]}</Option>
+                    ))}
                     </Select>
                   )}
                 </FormItem>
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="订单来源">
-                  {getFieldDecorator('productSubcategory')(
+                  {getFieldDecorator('registChannel')(
                     <Select allowClear placeholder="请选择订单来源">
-                      <Option value="1">类别1</Option>
+                      {Object.keys(REGIST_CHANNEL).map(item => (
+                        <Option key={item} value={item}>{REGIST_CHANNEL[item]}</Option>
+                      ))}
                     </Select>
                   )}
                 </FormItem>
@@ -80,14 +160,14 @@ export default class OrderList extends React.PureComponent {
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="用户账户">
                   {getFieldDecorator('accountId')(
-                    <Input placeholder="请输入用户账户" />
+                    <Input placeholder="请输入用户账户ID" />
                   )}
                 </FormItem>
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="代理商">
                   {getFieldDecorator('agentId')(
-                    <Input placeholder="请输入代理商" />
+                    <Input placeholder="请输入代理商ID" />
                   )}
                 </FormItem>
               </Col>
@@ -117,8 +197,11 @@ export default class OrderList extends React.PureComponent {
             rowKey="id"
             scroll={{ x: 1100 }}
             rowSelection={rowSelection}
-            columns={listColumns}
+            columns={this.columns}
             dataSource={orderList.records}
+            onChange={this.handleTableChange}
+            pagination={{ showTotal: showTotal, total: orderList.total, ...this.state.pagination }}
+            loading={loading}
           />
         </Card>
       </div>

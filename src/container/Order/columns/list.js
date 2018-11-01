@@ -1,8 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Divider } from 'antd';
+
 import { formatDateMinute } from '../../../utils/utils';
-import { nullString, PAYMENT_METHOD, ORDER_STATUS } from '../../../utils/constant';
+import { nullString, PAYMENT_METHOD, ORDER_STATUS, REGIST_CHANNEL } from '../../../utils/constant';
 
 const columns = [
   {
@@ -57,10 +55,10 @@ const columns = [
   },
   {
     title: '订单来源',
-    dataIndex: 'paymentChannel',
-    key: 'paymentChannel',
+    dataIndex: 'registChannel',
+    key: 'registChannel',
     align: 'center',
-    render: (text) => text || nullString,
+    render: (text) => REGIST_CHANNEL[text] || nullString,
   },
   {
     title: '订单状态',
@@ -68,22 +66,6 @@ const columns = [
     key: 'status',
     align: 'center',
     render: (text) => ORDER_STATUS[text] || nullString,
-  },
-  {
-    title: '操作',
-    dataIndex: 'operate',
-    key: 'operate',
-    align: 'center',
-    fixed: 'right',
-    render: (text, record) => {
-      return (
-        <div>
-          <Link to={`/product/detail/${record.id}`}>查看</Link>
-          <Divider type="vertical" />
-          <a href="javascript:;">取消订单</a>
-        </div>
-      )
-    }
   },
 ];
 export default columns;

@@ -1,27 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider } from 'antd';
-import { getProductList, batchUpProduct } from '../../action/product';
+import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message, Modal } from 'antd';
+import PriceForm from './PriceForm';
+import { getProductList, addBatch, batchUpProduct, batchDownProduct } from '../../action/product';
 import listColumns from './columns/list';
+import { formItemLayout, showTotal } from '../../utils/constant';
 import './index.css'
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 }
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 }
-  }
-};
-function showTotal(total, range) {
-  return `共${total}条数据`;
-}
 
 @connect(({ product }) => ({
   productList: product.productList
@@ -36,26 +25,39 @@ export default class ProductList extends React.PureComponent {
       showQuickJumper: true,
     },
     selectedRowKeys: [],
+    selectedRows: [],
     loading: false,
+    visible: false,
+    confirmLoading: false,
   };
 
   componentDidMount() {
-    this.props.getProductList();
+    this.getProductList();
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        this.props.getProductList(values);
-      }
-    })
+  componentWillUnmount() {
+    this.setState = (state,callback) => { }
+    return;
   }
 
   getProductList = async (params) => {
     this.setState({ loading: true });
-    await this.props.getProductList(params);
-    this.setState({ loading: false });
+    this.props.form.validateFields(async(err, values) => {
+      if (!err) {
+        const { createdTime, ...params } = values;
+        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
+        await this.props.getProductList({ ...params, beginTime, endTime});
+        this.setState({ loading: false });
+      } else {
+        this.setState({ loading: false });
+      }
+    });
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.getProductList();
   }
 
   rowSelection = {
@@ -81,14 +83,34 @@ export default class ProductList extends React.PureComponent {
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
     this.setState({ pagination: pager });
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        this.getProductList({
-          limit: pagination.pageSize,
-          page: pagination.current,
-          ...values,
-        });
-      }
+    this.getProductList({
+      limit: pagination.pageSize,
+      page: pagination.current,
+    });
+  }
+
+  showModal = () => {
+    this.setState({
+      visible: true,
+    });
+  }
+
+  handleOk = () => {
+    this.setState({
+      ModalText: 'The modal will be closed after two seconds',
+      confirmLoading: true,
+    });
+    setTimeout(() => {
+      this.setState({
+        visible: false,
+        confirmLoading: false,
+      });
+    }, 2000);
+  }
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
     });
   }
 
@@ -96,24 +118,104 @@ export default class ProductList extends React.PureComponent {
     return (
       <div>
         <span>操作处理：</span>
-        <Button onClick={this.batchUpProduct} type="primary">批量定价</Button>
+        <Button onClick={this.showModal} type="primary">批量定价</Button>
         <Divider type="vertical" />
         <Button onClick={this.batchUpProduct} type="primary">批量上架</Button>
         <Divider type="vertical" />
-        <Button type="primary">批量下架</Button>
+        <Button onClick={this.batchDownProduct} type="primary">批量下架</Button>
       </div>
     )
   }
 
-  batchUpProduct = () => {
+  addBatch = async(params) => {
     const { selectedRowKeys } = this.state;
-    console.log(selectedRowKeys);
-    batchUpProduct({ idList: selectedRowKeys });
+    let values = [];
+    selectedRowKeys.forEach(item => {
+      values.push({
+        projectId: item,
+        interval: `${params.num1}-${params.num2}`,
+        price: params.price1,
+        unit: params.unit,
+      });
+      values.push({
+        projectId: item,
+        interval: `${params.num3}-${params.num4}`,
+        price: params.price2,
+        unit: params.unit,
+      });
+      values.push({
+        projectId: item,
+        interval: `${params.num5}-${params.num6}`,
+        price: params.price3,
+        unit: params.unit,
+      });
+    });
+    console.log('---------')
+    // for (let i = 0; i < selectedRowKeys.length; i + 1) {
+    //   values.push({
+    //     projectId: selectedRowKeys[i],
+    //     interval: `${params.num1}-${params.num2}`,
+    //     price: params.price1,
+    //     unit: params.unit,
+    //   });
+    //   values.push({
+    //     projectId: selectedRowKeys[i],
+    //     interval: `${params.num3}-${params.num4}`,
+    //     price: params.price2,
+    //     unit: params.unit,
+    //   });
+    //   values.push({
+    //     projectId: selectedRowKeys[i],
+    //     interval: `${params.num5}-${params.num6}`,
+    //     price: params.price3,
+    //     unit: params.unit,
+    //   });
+    // }
+    console.log(values);
+
+    // const values = selectedRowKeys.map(item => ({
+    //   projectId: item,
+    //   interval: '1-10',
+    //   price: 1,
+    //   unit: 'm',
+    // }));
+    const result = await addBatch(values);
+    if (result && result.code === 0) {
+      message.success(`产品ID为${selectedRowKeys}批量定价成功`);
+      this.getProductList();
+      this.setState({ selectedRowKeys: [], selectedRows: [] });
+    } else {
+      message.error('批量定价失败，请稍后重试');
+    }
+  }
+
+  batchUpProduct = async() => {
+    const { selectedRowKeys } = this.state;
+    const result = await batchUpProduct(selectedRowKeys);
+    if (result && result.code === 0) {
+      message.success(`产品ID为${selectedRowKeys}批量上架成功`);
+      this.getProductList();
+      this.setState({ selectedRowKeys: [], selectedRows: [] });
+    } else {
+      message.error('批量上架失败，请稍后重试');
+    }
+  }
+
+  batchDownProduct = async() => {
+    const { selectedRowKeys } = this.state;
+    const result = await batchDownProduct(selectedRowKeys);
+    if (result && result.code === 0) {
+      message.success(`产品ID为${selectedRowKeys}批量下架成功`);
+      this.getProductList();
+      this.setState({ selectedRowKeys: [], selectedRows: [] });
+    } else {
+      message.error('批量下架失败，请稍后重试');
+    }
   }
 
   render() {
     const { form: { getFieldDecorator }, productList = {} } = this.props;
-    const { selectedRowKeys, loading } = this.state;
+    const { selectedRowKeys, loading, visible, confirmLoading } = this.state;
     const rowSelection = { selectedRowKeys, ...this.rowSelection };
     return (
       <div className="page-list product-list">
@@ -172,7 +274,7 @@ export default class ProductList extends React.PureComponent {
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="创建起止时间">
-                  {getFieldDecorator('createTime')(
+                  {getFieldDecorator('createdTime')(
                     <RangePicker format={dateFormat} />
                   )}
                 </FormItem>
@@ -198,6 +300,15 @@ export default class ProductList extends React.PureComponent {
             loading={loading}
           />
         </Card>
+        <Modal title="产品批量定价"
+          visible={visible}
+          onOk={this.handleOk}
+          confirmLoading={confirmLoading}
+          onCancel={this.handleCancel}
+          footer={null}
+        >
+          <PriceForm handleCancel={this.handleCancel} addBatch={this.addBatch} />
+        </Modal>
       </div>
     )
   }

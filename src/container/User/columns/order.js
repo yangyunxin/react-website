@@ -1,4 +1,3 @@
-import React from 'react';
 import { formatDateMinute } from '../../../utils/utils';
 import { nullString } from '../../../utils/constant';
 
@@ -57,13 +56,6 @@ const columns = [
     dataIndex: 'status',
     key: 'status',
     align: 'center',
-  },
-  {
-    title: '操作',
-    dataIndex: 'operate',
-    key: 'operate',
-    align: 'center',
-    render: () => (<a href="javascript:;">删除</a>)
   },
 ];
 export default columns;

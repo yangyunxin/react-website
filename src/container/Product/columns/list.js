@@ -68,7 +68,7 @@ const columns = [
     dataIndex: 'status',
     key: 'status',
     align: 'center',
-    render: (text) => text ? PRODUCT_STATUS[text] : nullString
+    render: (text) => text ? PRODUCT_STATUS[text] : '待上架'
   },
   {
     title: '操作',

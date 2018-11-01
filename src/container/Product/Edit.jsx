@@ -35,12 +35,19 @@ export default class ProductDetail extends React.PureComponent {
   }
   handleSubmit= (e) => {
     e.preventDefault();
+    const { match } = this.props;
+    const { params: { id } } = match;
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
         const { mainPicture, detailPicture, ...params } = values;
         const pic = mainPicture[0];
         const detailPic = detailPicture.join(',');
-        const result = await updateProduct({ ...params, mainPicture: pic, detailPicture: detailPic });
+        const result = await updateProduct({
+          ...params,
+          mainPicture: pic,
+          detailPicture: detailPic,
+          id,
+        });
         if (result && result.code === 0) {
           message.success('编辑产品成功！')
         }
@@ -103,14 +110,24 @@ export default class ProductDetail extends React.PureComponent {
                 </Select>
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="产品图片">
+            <FormItem {...formItemLayout} label="产品主图">
+              {getFieldDecorator('mainPicture', {
+                initialValue: [productDetail.mainPicture],
+                rules: [{
+                  required: true, message: '请添加产品主图',
+                }],
+              })(
+                <Uploader max={1}/>
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout} label="产品详情图">
               {getFieldDecorator('detailPicture', {
                 initialValue: [productDetail.detailPicture],
                 rules: [{
-                  required: true, message: '请添加产品图片',
+                  required: true, message: '请添加产品详情图',
                 }],
               })(
-                <Uploader noRemove placeholder="请输入产品名称" />
+                <Uploader placeholder="请输入产品名称" max={5} />
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="产品货号">

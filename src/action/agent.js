@@ -22,7 +22,7 @@ export function getAgentList(params) {
 
 export function getAgentById(id) {
   return async (dispatch) => {
-    const result = await get(`${API.getAgentById}${id}`);
+    const result = await get(`${API.getAgentById}/${id}`);
     if (result && result.status === 200) {
       dispatch({
         type: GET_AGENT_BYID,

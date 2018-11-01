@@ -12,7 +12,7 @@ export function authUserLogin(params) {
     if (result) {
       dispatch({ type: AUTH_USER_LOGIN });
     } else {
-      dispatch(authUserExpire);
+      dispatch(authUserExpire());
     }
     return result;
   }
@@ -25,21 +25,21 @@ export function authCheck() {
     if (Authorization) {
       dispatch({ type: AUTH_USER_LOGIN });
     } else {
-      dispatch(authUserExpire);
+      dispatch(authUserExpire());
     }
   }
 }
 
 // auth过期处理
 export function authUserExpire() {
+  localStorage.setItem('Authorization', '');
   return { type: AUTH_USER_EXPIRE }
 }
 
 // 登出清除auth
 export function authUserLogout(params) {
   return (dispatch) => {
-    localStorage.setItem('Authorization', '');
-    dispatch(authUserExpire);
+    dispatch(authUserExpire());
     return true;
   }
 }

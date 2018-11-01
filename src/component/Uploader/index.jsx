@@ -5,6 +5,7 @@ export default class UploadImage extends React.PureComponent {
   static defaultProps = {
     max: 1,
     noRemove: false,
+    noAdd: false,
   }
 
   state = {
@@ -42,7 +43,6 @@ export default class UploadImage extends React.PureComponent {
   }
 
   handleChange = ({ fileList }) => {
-    console.log(fileList)
     const { onChange } = this.props;
     const val = fileList.filter(item => item.response && item.response.code === 0).map(item => (item.response.data));
     this.setState({ fileList, val }, () => {
@@ -59,7 +59,7 @@ export default class UploadImage extends React.PureComponent {
       fileList,
       uploadParams
     } = this.state;
-    const { noRemove } = this.props;
+    const { noRemove, noAdd } = this.props;
     const uploadButton = (
       <div>
         <Icon type="plus" />
@@ -84,7 +84,7 @@ export default class UploadImage extends React.PureComponent {
             })
           }}
         >
-          {fileList.length >= this.props.max ? null : uploadButton}
+          {fileList.length >= this.props.max || noAdd ? null : uploadButton}
         </Upload>
         <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel}>
           <img alt="example" style={{ width: '100%' }} src={previewImage} />

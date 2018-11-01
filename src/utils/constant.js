@@ -1,4 +1,17 @@
 export const nullString = '--';
+export const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 }
+  }
+};
+export function showTotal(total, range) {
+  return `共${total}条数据`;
+}
 export const PRODUCT_STATUS = {
   0: '待上架',
   1: '上架',
@@ -29,4 +42,9 @@ export const ORDER_STATUS = {
   2: '已发货',
   3: '已完成',
   4: '已取消',
+}
+export const ORDER_OPERATE = {
+  0: '取消订单',
+  1: '订单发货',
+  2: '确认收货',
 }

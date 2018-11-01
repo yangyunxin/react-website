@@ -7,6 +7,8 @@ import DescriptionList from '../../component/DescriptionList';
 import productColumns from './columns/product';
 import operatorColumns from './columns/operator';
 import './index.css';
+import { formatDateSecond } from '../../utils/utils';
+import { ORDER_STATUS } from '../../utils/constant';
 
 const { Step } = Steps;
 const { Description } = DescriptionList;
@@ -24,20 +26,23 @@ export default class OrderDetail extends React.PureComponent {
   }
   render() {
     const { orderDetail = {} } = this.props;
+    console.log(this.props)
     return (
       <div className="page-detail">
         <Card bordered={false}>
           <EnhanceTitle title="订单状态流" />
-          <Steps current={1}>
-            <Step title="提交订单" description="2018-07-19 14:48:38" />
-            <Step title="支付订单" description="未支付" />
+          <Steps current={Number(orderDetail.status)}>
+            <Step title="提交订单" description={formatDateSecond(orderDetail.createdTime)}/>
+            <Step title="支付订单" description={ORDER_STATUS[orderDetail.status] || '未支付'} />
             <Step title="平台发货" description="" />
             <Step title="确认收货" description="" />
             <Step title="完成订单" description="" />
           </Steps>
         </Card>
         <div className="order-status">
-          <div style={{ color: '#f5222d' }}><Icon type="exclamation-circle" theme="outlined" /> 当前订单状态：待付款</div>
+          <div style={{ color: '#f5222d' }}><Icon type="exclamation-circle" theme="outlined" />
+            当前订单状态：{ORDER_STATUS[orderDetail.status] || '未支付'}
+          </div>
           <div>
             <Button style={{ width: '80px', marginRight: '20px' }} type="primary">关闭订单</Button>
             <Button style={{ width: '80px', marginRight: '20px' }} >备注订单</Button>

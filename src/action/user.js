@@ -1,5 +1,5 @@
 import API from '../utils/api';
-import { get, post } from '../utils/request';
+import { get, put } from '../utils/request';
 
 export const USER_LOGIN = 'USER_LOGIN';
 export const GET_USER_LIST = 'GET_USER_LIST';
@@ -21,7 +21,7 @@ export function getUsertList(params) {
 
 export function getUserById(id) {
   return async (dispatch) => {
-    const result = await get(`${API.getUserById}${id}`);
+    const result = await get(`${API.getUserById}/${id}`);
     if (result && result.status === 200) {
       dispatch({
         type: GET_USER_BYID,
@@ -34,7 +34,7 @@ export function getUserById(id) {
 
 export function getUserAddressById(id) {
   return async (dispatch) => {
-    const result = await get(`${API.getUserAddressById}${id}`);
+    const result = await get(`${API.getUserAddressById}/${id}`);
     if (result && result.status === 200) {
       dispatch({
         type: GET_USER_ADDRESS_BYID,
@@ -53,5 +53,12 @@ export function getUserOrderById(params) {
         data: result.data
       })
     }
+  }
+}
+
+export async function updateUser(params) {
+  const result = await put(API.updateUser, params);
+  if (result && result.status === 200) {
+    return result.data;
   }
 }

@@ -3,18 +3,21 @@ const API = {
   productList: '/api/goods/tProduct/page',
   updateProduct: '/api/goods/tProduct/update', //put
   addProduct: '/api/goods/tProduct', //post
-  getProductById: '/api/goods/tProduct/',
+  getProductById: '/api/goods/tProduct',
   batchUpProduct: '/api/goods/tProduct/batchUpProduct', // post
   batchDownProduct: '/api/goods/tProduct/batchDownProduct', //post
+  addBatch: '/api/goods/tProduct/addBatch',
   orderList: '/api/goods/order/page',
-  UpdateOrder: '/api/goods/order/update', //put
-  getOrderById: '/api/goods/order/',
+  updateOrder: '/api/goods/order/update', //put
+  getOrderById: '/api/goods/order',
+  deleteOrderById: '/api/goods/order',  //delete
   userList: '/api/goods/tUserAccount/page',
-  getUserById: '/api/goods/tUserAccount/',
-  getUserAddressById: '/api/goods/tUserAccountReceiveAddress/',
+  updateUser: '/api/goods/tUserAccount/update',
+  getUserById: '/api/goods/tUserAccount',
+  getUserAddressById: '/api/goods/tUserAccountReceiveAddress',
   getUserOrderById: '/api/goods/order/page',
   agentList: '/api/goods/tAgent/page',
-  getAgentById: '/api/goods/tAgent/',
+  getAgentById: '/api/goods/tAgent',
   addAgent: '/api/goods/tAgent/add', // post
   putAgent: '/api/goods/tAgent/update',
 }

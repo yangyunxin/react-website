@@ -1,5 +1,8 @@
 import axios from 'axios';
+import { message } from 'antd';
 import qs from 'qs';
+import { store } from '../index';
+import { authUserExpire } from '../action/auth';
 
 /**
  * 封装get方法
@@ -18,7 +21,16 @@ export async function get(url, params = {}) {
     });
     return result;
   } catch (error) {
-    return;
+    if (error.response) {
+      if (error.response.status === 401) {
+        message.error('登录有效期失效，请重新登录');
+        store.dispatch(authUserExpire());
+      } else {
+        message.error(error.response.statusText);
+      }
+    } else {
+      message.error('Error', error);
+    }
   }
 }
 
@@ -33,13 +45,22 @@ export async function post(url, data = {}) {
   try {
     const result = await axios({
       method: 'POST',
-      headers: { 'Authorization': localStorage.getItem('Authorization') },
-      data: qs.stringify(data),
+      headers: { 'Authorization': localStorage.getItem('Authorization'), 'Content-Type': 'application/json;charset=UTF-8' },
+      data: data,
       url
     });
     return result;
   } catch (error) {
-    return undefined;
+    if (error.response) {
+      if (error.response.status === 401) {
+        message.error('登录有效期失效，请重新登录');
+        store.dispatch(authUserExpire());
+      } else {
+        message.error(error.response.statusText);
+      }
+    } else {
+      message.error('Error', error);
+    }
   }
 }
 
@@ -56,29 +77,49 @@ export async function requestLogin(url, data = {}) {
     }
     return result;
   } catch (error) {
-    return undefined;
+    if (error.response) {
+      if (error.response.status === 401) {
+        message.error('登录有效期失效，请重新登录');
+        store.dispatch(authUserExpire());
+      } else {
+        message.error(error.response.statusText);
+      }
+    } else {
+      message.error('Error', error);
+    }
   }
 }
 
 /**
- * 封装patch请求
+ * 封装deltet请求
  * @param url
  * @param data
  * @returns {Promise}
  */
 
-export function patch(url, data = {}) {
-  return new Promise((resolve, reject) => {
-    axios.patch(url, data).then(
-      response => {
-        resolve(response.data);
-      },
-      err => {
-        reject(err);
-      },
-    );
-  });
+export async function deleted(url, data = {}) {
+  try {
+    const result = await axios({
+      method: 'DELETE',
+      headers: { 'Authorization': localStorage.getItem('Authorization'), 'Content-Type': 'application/json;charset=UTF-8' },
+      data: data,
+      url
+    });
+    return result;
+  } catch (error) {
+    if (error.response) {
+      if (error.response.status === 401) {
+        message.error('登录有效期失效，请重新登录');
+        store.dispatch(authUserExpire());
+      } else {
+        message.error(error.response.statusText);
+      }
+    } else {
+      message.error('Error', error);
+    }
+  }
 }
+
 
 /**
  * 封装put请求
@@ -91,12 +132,21 @@ export async function put(url, data = {}) {
   try {
     const result = await axios({
       method: 'PUT',
-      headers: { 'Authorization': localStorage.getItem('Authorization') },
-      data: qs.stringify(data),
+      headers: { 'Authorization': localStorage.getItem('Authorization'), 'Content-Type': 'application/json;charset=UTF-8' },
+      data: data,
       url
     });
     return result;
   } catch (error) {
-    return undefined;
+    if (error.response) {
+      if (error.response.status === 401) {
+        message.error('登录有效期失效，请重新登录');
+        store.dispatch(authUserExpire());
+      } else {
+        message.error(error.response.statusText);
+      }
+    } else {
+      message.error('Error', error);
+    }
   }
 }

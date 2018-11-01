@@ -8,7 +8,8 @@ import  configureStore from './store/configureStore';
 import './index.css';
 import Routes from './Routes';
 
-const store = configureStore();
+export const store = configureStore();
+
 
 const render = Component => {
   ReactDOM.render(

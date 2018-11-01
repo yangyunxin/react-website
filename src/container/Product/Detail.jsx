@@ -35,7 +35,7 @@ export default class ProductDetail extends React.PureComponent {
     this.props.getProductById(id)
   }
   render() {
-    const { productDetail, form } = this.props;
+    const { productDetail = {}, form } = this.props;
     const { getFieldDecorator } = form;
     return (
       <div className="page-detail">
@@ -96,7 +96,7 @@ export default class ProductDetail extends React.PureComponent {
                   required: true, message: '请添加产品主图',
                 }],
               })(
-                <Uploader max={1} noRemove/>
+                <Uploader max={1} noRemove noAdd />
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="产品详情图">
@@ -106,7 +106,7 @@ export default class ProductDetail extends React.PureComponent {
                   required: true, message: '请添加产品详情图',
                 }],
               })(
-                <Uploader max={5} noRemove />
+                <Uploader max={5} noRemove noAdd />
               )}
             </FormItem>
             <FormItem {...formItemLayout} label="产品货号">

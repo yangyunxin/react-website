@@ -12,15 +12,14 @@ import { authCheck } from '../../action/auth';
 export default class AuthComponent extends React.PureComponent {
   state = {
     hasAuth: false,
-    auth: false,
   }
   async componentDidMount() {
     await this.props.authCheck();
     const { authStatus } = this.props;
     if (authStatus) {
-      this.setState({ hasAuth: true, auth: true });
+      this.setState({ hasAuth: true});
     } else {
-      this.setState({ hasAuth: true, auth: false });
+      this.setState({ hasAuth: true});
     }
   }
   render() {
@@ -28,7 +27,7 @@ export default class AuthComponent extends React.PureComponent {
     return this.state.hasAuth ? (
       <Fragment>
         {
-          this.state.auth ? (
+          this.props.authStatus ? (
             <Route
               {...rest}
               render={(props) => <this.props.component {...props} />}
