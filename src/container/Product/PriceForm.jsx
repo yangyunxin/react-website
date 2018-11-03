@@ -34,6 +34,7 @@ export default class PriceForm extends React.PureComponent {
       <Form onSubmit={this.handleSubmit}>
         <FormItem {...formItemLayout} label="计价单位">
           {getFieldDecorator('unit', {
+            initialValue: 'm',
             rules: [{
               required: true, message: '请选择计价单位',
             }],

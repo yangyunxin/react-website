@@ -25,3 +25,10 @@ body {
 .ant-table-title {
   padding: 0;
 }
+.my-editor {
+  border: 1px solid #d1d1d1;
+  border-radius: 5px;
+}
+.my-editor .bf-content {
+  height: 250px;
+}

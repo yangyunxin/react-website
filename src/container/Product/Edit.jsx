@@ -1,22 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Card, Form, Input, Select, Button, message } from 'antd';
+import { formItemLayout2 } from '../../utils/constant';
 import { getProductById, updateProduct } from '../../action/product';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
 
 const FormItem = Form.Item;
 const { Option } = Select;
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
-  },
-};
 
 @connect(({ product }) => ({
   productDetail: product.productDetail
@@ -28,11 +20,13 @@ export default class ProductDetail extends React.PureComponent {
   state = {
     visible: false,
   }
+
   componentDidMount() {
     const { match } = this.props;
     const { params: { id } } = match;
     this.props.getProductById(id)
   }
+
   handleSubmit= (e) => {
     e.preventDefault();
     const { match } = this.props;
@@ -63,7 +57,7 @@ export default class ProductDetail extends React.PureComponent {
         <Form onSubmit={this.handleSubmit}>
           <Card bordered={false}>
             <EnhanceTitle title="基本信息" />
-            <FormItem {...formItemLayout} label="产品大类">
+            <FormItem {...formItemLayout2} label="产品大类">
               {getFieldDecorator('productCategory', {
                 initialValue: productDetail.productCategory,
                 rules: [{
@@ -75,7 +69,7 @@ export default class ProductDetail extends React.PureComponent {
                 </Select>
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="产品子类">
+            <FormItem {...formItemLayout2} label="产品子类">
               {getFieldDecorator('productSubcategory', {
                 initialValue: productDetail.productSubcategory,
                 rules: [{
@@ -87,7 +81,7 @@ export default class ProductDetail extends React.PureComponent {
                 </Select>
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="产品名称">
+            <FormItem {...formItemLayout2} label="产品名称">
               {getFieldDecorator('name', {
                 initialValue: productDetail.name,
                 rules: [{
@@ -98,7 +92,7 @@ export default class ProductDetail extends React.PureComponent {
               )}
             </FormItem>
             <EnhanceTitle title="详情信息" />
-            <FormItem {...formItemLayout} label="颜色">
+            <FormItem {...formItemLayout2} label="颜色">
               {getFieldDecorator('colour', {
                 initialValue: productDetail.colour,
                 rules: [{
@@ -110,7 +104,7 @@ export default class ProductDetail extends React.PureComponent {
                 </Select>
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="产品主图">
+            <FormItem {...formItemLayout2} label="产品主图">
               {getFieldDecorator('mainPicture', {
                 initialValue: [productDetail.mainPicture],
                 rules: [{
@@ -120,7 +114,7 @@ export default class ProductDetail extends React.PureComponent {
                 <Uploader max={1}/>
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="产品详情图">
+            <FormItem {...formItemLayout2} label="产品详情图">
               {getFieldDecorator('detailPicture', {
                 initialValue: [productDetail.detailPicture],
                 rules: [{
@@ -130,7 +124,7 @@ export default class ProductDetail extends React.PureComponent {
                 <Uploader placeholder="请输入产品名称" max={5} />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="产品货号">
+            <FormItem {...formItemLayout2} label="产品货号">
               {getFieldDecorator('sameStyleNum', {
                 initialValue: productDetail.sameStyleNum,
                 rules: [{
@@ -140,45 +134,47 @@ export default class ProductDetail extends React.PureComponent {
                 <Input placeholder="请输入产品货号" />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="成分">
+            <FormItem {...formItemLayout2} label="成分">
               {getFieldDecorator('name')(
                 <Input placeholder="请输入产品成分" />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="产品克重">
+            <FormItem {...formItemLayout2} label="产品克重">
               {getFieldDecorator('name')(
                 <Input placeholder="请输入产品克重" />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="产品门幅">
+            <FormItem {...formItemLayout2} label="产品门幅">
               {getFieldDecorator('name')(
                 <Input placeholder="请输入产品门幅" />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="产品用途">
+            <FormItem {...formItemLayout2} label="产品用途">
               {getFieldDecorator('name')(
                 <Input placeholder="请输入产品用途" />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="加工工艺">
+            <FormItem {...formItemLayout2} label="加工工艺">
               {getFieldDecorator('name')(
                 <Input placeholder="请输入加工工艺" />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="供应状态">
+            <FormItem {...formItemLayout2} label="供应状态">
               {getFieldDecorator('name')(
                 <Input placeholder="请输入供应状态" />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="发货地点">
+            <FormItem {...formItemLayout2} label="发货地点">
               {getFieldDecorator('name')(
                 <Input placeholder="请输入发货地点" />
               )}
             </FormItem>
           </Card>
           <div>
-            <Button style={{ width: '120px', marginRight: '20px' }} type="primary" htmlType="submit">提交</Button>
-            <Button style={{ width: '120px' }}>清空</Button>
+            <Button style={{ width: '100px', marginRight: '20px' }} type="primary" htmlType="submit">提交</Button>
+            <Button style={{ width: '100px' }} type="primary">
+              <Link to="/agent/list">返回</Link>
+            </Button>
           </div>
         </Form>
       </div>

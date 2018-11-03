@@ -1,3 +1,6 @@
+import { formatDateMinute } from '../../../utils/utils';
+import { nullString, SKY_TYPE } from '../../../utils/constant';
+
 const columns = [
   {
     title: '天窗ID',
@@ -10,6 +13,7 @@ const columns = [
     dataIndex: 'skyType',
     key: 'skyType',
     align: 'center',
+    render: (text) => SKY_TYPE[text] || nullString
   },
   {
     title: '天窗标题',
@@ -22,6 +26,7 @@ const columns = [
     dataIndex: 'createTime',
     key: 'createTime',
     align: 'center',
+    render: (text) => text ? formatDateMinute(text) : nullString
   },
   {
     title: '创建人',

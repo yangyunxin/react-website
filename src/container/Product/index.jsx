@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message, Modal } from 'antd';
+import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message, Modal, Popconfirm } from 'antd';
 import PriceForm from './PriceForm';
 import { getProductList, addBatch, batchUpProduct, batchDownProduct, updateProduct } from '../../action/product';
 import listColumns from './columns/list';
@@ -36,7 +36,9 @@ export default class ProductList extends React.PureComponent {
               <Divider type="vertical" />
               <Link to={`/product/edit/${record.id}`}>编辑</Link>
               <Divider type="vertical" />
-              <a onClick={() => this.updateProductStatus(record)} href="javascript:;">{record.state === '1' ? '下架' : '上架'}</a>
+              <Popconfirm placement="topLeft" title={`请确定是否${record.status === '1' ? '下架' : '上架'}该产品？`} onConfirm={() => this.updateProductStatus(record)} okText="确定" cancelText="取消">
+                <a href="javascript:;">{record.status === '1' ? '下架' : '上架'}</a>
+              </Popconfirm>
             </div>
           )
         }
@@ -50,7 +52,6 @@ export default class ProductList extends React.PureComponent {
       showQuickJumper: true,
     },
     selectedRowKeys: [],
-    selectedRows: [],
     loading: false,
     visible: false,
     confirmLoading: false,
@@ -190,7 +191,7 @@ export default class ProductList extends React.PureComponent {
         limit: pager.pageSize,
         page: pager.current,
       });
-      this.setState({ selectedRowKeys: [], selectedRows: [] });
+      this.setState({ selectedRowKeys: [] });
     } else {
       message.error('批量定价失败，请稍后重试');
     }
@@ -206,7 +207,7 @@ export default class ProductList extends React.PureComponent {
         limit: pager.pageSize,
         page: pager.current,
       });
-      this.setState({ selectedRowKeys: [], selectedRows: [] });
+      this.setState({ selectedRowKeys: [] });
     } else {
       message.error('批量上架失败，请稍后重试');
     }
@@ -222,7 +223,7 @@ export default class ProductList extends React.PureComponent {
         limit: pager.pageSize,
         page: pager.current,
       });
-      this.setState({ selectedRowKeys: [], selectedRows: [] });
+      this.setState({ selectedRowKeys: [] });
     } else {
       message.error('批量下架失败，请稍后重试');
     }

@@ -7,6 +7,7 @@ import ProductEdit from '../container/Product/Edit';
 import OrderList from '../container/Order';
 import OrderDetail from '../container/Order/Detail';
 import UserList from '../container/User';
+import UserUpgrade from '../container/User/Upgrade';
 import UserDetail from '../container/User/Detail';
 import UserLogsList from '../container/User/Logs';
 import Skylight from '../container/Skylight';
@@ -17,6 +18,7 @@ import AgentList from '../container/Agent';
 import AgentDetail from '../container/Agent/Detail';
 import AgentEdit from '../container/Agent/Edit';
 import AgentAdd from '../container/Agent/Add';
+import AgentProduct from '../container/Agent/Product';
 import OperateLog from '../container/System/index';
 
 const routerData = {
@@ -70,6 +72,12 @@ const routerData = {
   '/user/list': {
     name: '用户维护',
     component: UserList,
+  },
+  '/user/upgrade': {
+    name: '代理商添加',
+  },
+  '/user/upgrade/:id': {
+    component: UserUpgrade,
   },
   '/user/detail': {
     name: '用户详情',
@@ -128,6 +136,12 @@ const routerData = {
   '/agent/add': {
     name: '代理商添加',
     component: AgentAdd,
+  },
+  '/agent/product': {
+    name: '代理商关联产品列表',
+  },
+  '/agent/product/:id': {
+    component: AgentProduct,
   },
   '/system': {
     name: '系统管理',

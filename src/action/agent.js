@@ -1,5 +1,5 @@
 import API from '../utils/api';
-import { get, post, put } from '../utils/request';
+import { get, post, put, deleted } from '../utils/request';
 import { authUserExpire } from './auth';
 
 export const GET_AGENT_LIST = 'GET_AGENT_LIST';
@@ -43,6 +43,20 @@ export async function addAgent(params) {
 
 export async function putAgent(params) {
   const result = await put(API.putAgent, params);
+  if (result && result.status === 200) {
+    return result.data;
+  }
+}
+
+export async function deleteAgentById(id) {
+  const result = await deleted(`${API.deleteAgentById}/${id}`);
+  if (result && result.status === 200) {
+    return result.data;
+  }
+}
+
+export async function agentProduct(params) {
+  const result = await post(API.agentProduct, params);
   if (result && result.status === 200) {
     return result.data;
   }

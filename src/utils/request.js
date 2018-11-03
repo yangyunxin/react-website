@@ -55,8 +55,6 @@ export async function post(url, data = {}) {
       if (error.response.status === 401) {
         message.error('登录有效期失效，请重新登录');
         store.dispatch(authUserExpire());
-      } else {
-        message.error(error.response.statusText);
       }
     } else {
       message.error('Error', error);
@@ -111,8 +109,6 @@ export async function deleted(url, data = {}) {
       if (error.response.status === 401) {
         message.error('登录有效期失效，请重新登录');
         store.dispatch(authUserExpire());
-      } else {
-        message.error(error.response.statusText);
       }
     } else {
       message.error('Error', error);
@@ -142,8 +138,6 @@ export async function put(url, data = {}) {
       if (error.response.status === 401) {
         message.error('登录有效期失效，请重新登录');
         store.dispatch(authUserExpire());
-      } else {
-        message.error(error.response.statusText);
       }
     } else {
       message.error('Error', error);

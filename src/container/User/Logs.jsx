@@ -1,41 +1,77 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button } from 'antd';
 import logsColumns from './columns/logs';
+import { formItemLayout, showTotal } from '../../utils/constant';
+import { getUserLoginList } from '../../action/user';
 import './index.css'
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 }
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 }
-  }
-};
 
+@connect(({ user }) => ({
+  userLoginLogs: user.userLoginLogs
+}), {
+  getUserLoginList
+})
 @Form.create()
 export default class UserLogsList extends React.PureComponent {
   state = {
-    selectedRowKeys: [],
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+    },
+    loading: false,
   };
 
+  componentDidMount() {
+    this.getUserLoginList();
+  }
+
+  getUserLoginList = async (params) => {
+    this.setState({ loading: true });
+    this.props.form.validateFields(async(err, values) => {
+      if (!err) {
+        const { createdTime, ...newParams } = values;
+        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
+        await this.props.getUserLoginList({ ...newParams, ...params, beginTime, endTime});
+        this.setState({ loading: false });
+      } else {
+        this.setState({ loading: false });
+      }
+    });
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.getUserLoginList();
+  }
+
   onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   }
 
+  handleTableChange = (pagination) => {
+    const pager = { ...this.state.pagination };
+    pager.current = pagination.current;
+    pager.pageSize = pagination.pageSize;
+    this.setState({ pagination: pager });
+    this.getUserLoginList({
+      page: pagination.current,
+      limit: pagination.pageSize,
+    });
+  }
+
+  handleReset = () => {
+    this.props.form.resetFields();
+  };
+
   render() {
-    const { form: { getFieldDecorator } } = this.props;
-    const { selectedRowKeys } = this.state;
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    }
+    const { form: { getFieldDecorator }, userLoginLogs: { records = [], total } } = this.props;
+    const { pagination, loading } = this.state;
     return (
       <div className="page-list product-list">
         <Card bordered={false} className="form-container">
@@ -82,7 +118,14 @@ export default class UserLogsList extends React.PureComponent {
           </Form>
         </Card>
         <Card bordered={false}>
-          <Table rowSelection={rowSelection} columns={logsColumns} dataSource={[] } />
+        <Table
+            rowKey="id"
+            columns={logsColumns}
+            dataSource={records}
+            onChange={this.handleTableChange}
+            pagination={{ showTotal: showTotal, total: total, ...pagination }}
+            loading={loading}
+          />
         </Card>
       </div>
     )

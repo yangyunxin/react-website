@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message } from 'antd';
+import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message, Popconfirm } from 'antd';
 import { formItemLayout, showTotal } from '../../utils/constant';
 import listColumns from './columns/list';
 import { getUsertList, updateUser } from '../../action/user';
@@ -33,9 +33,11 @@ export default class UserList extends React.PureComponent {
             <div>
               <Link to={`/user/detail/${record.id}`}>查看</Link>
               <Divider type="vertical" />
-              <a onClick={() => this.updateStatus(record)} href="javascript:;">{record.status === "1" ? '禁用' : '解禁'}</a>
+              <Popconfirm placement="topLeft" title="请确定是否禁用该用户？" onConfirm={() => this.updateStatus(record)} okText="确定" cancelText="取消">
+                <a href="javascript:;">{record.status === "0" ? '禁用' : '解禁'}</a>
+              </Popconfirm>
               <Divider type="vertical" />
-              <a href="javascript:;">升级代理商</a>
+              <Link to={`/user/upgrade/${record.id}`}>升级代理商</Link>
             </div>
           )
         }
@@ -78,10 +80,10 @@ export default class UserList extends React.PureComponent {
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        const { createdTime, ...params } = values;
+        const { createdTime, ...newParams } = values;
         const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
         const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
-        await this.props.getUsertList({ ...params, beginTime, endTime});
+        await this.props.getUsertList({ ...newParams, ...params, beginTime, endTime});
         this.setState({ loading: false });
       } else {
         this.setState({ loading: false });

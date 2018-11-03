@@ -29,6 +29,16 @@ export const formItemLayout3 = {
     sm: { span: 18 },
   },
 };
+export const formItemLayout4 = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
+};
 export function showTotal(total, range) {
   return `共${total}条数据`;
 }
@@ -67,4 +77,11 @@ export const ORDER_OPERATE = {
   0: '取消订单',
   1: '订单发货',
   2: '确认收货',
+}
+export const AGENT_TYPE = {
+  0: '门店代理商',
+  1: '个人代理商',
+}
+export const SKY_TYPE = {
+  1: 'Banner',
 }

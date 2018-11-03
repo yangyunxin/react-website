@@ -1,9 +1,13 @@
+import { formatDateSecond } from '../../../utils/utils';
+import { nullString, AGENT_TYPE } from '../../../utils/constant';
+
 const columns = [
   {
     title: '代理商类型',
     dataIndex: 'type',
     key: 'type',
     align: 'center',
+    render: (text) => AGENT_TYPE[text] || nullString
   },
   {
     title: '代理商名称',
@@ -21,7 +25,7 @@ const columns = [
     title: '返点率',
     dataIndex: 'diPer',
     key: 'diPer',
-    align: 'diPer',
+    align: 'center',
   },
   {
     title: '代理商状态',
@@ -34,12 +38,7 @@ const columns = [
     dataIndex: 'createTime',
     key: 'createTime',
     align: 'center',
-  },
-  {
-    title: '操作',
-    dataIndex: 'operate',
-    key: 'operate',
-    align: 'center',
+    render: (text) => text ? formatDateSecond(text) : nullString
   },
 ];
 export default columns;

@@ -1,0 +1,9 @@
+.print-wrap {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.print-wrap img {
+  width: 150px;
+  height: 150px;
+  margin: 0 5px;
+}

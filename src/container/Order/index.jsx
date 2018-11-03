@@ -63,10 +63,10 @@ export default class OrderList extends React.PureComponent {
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        const { createdTime, ...params } = values;
+        const { createdTime, ...newParams } = values;
         const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
         const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
-        await this.props.getOrderList({ ...params, beginTime, endTime});
+        await this.props.getOrderList({ ...newParams, ...params, beginTime, endTime});
         this.setState({ loading: false });
       } else {
         this.setState({ loading: false });
@@ -99,15 +99,15 @@ export default class OrderList extends React.PureComponent {
   }
 
   updateStatus = async ({ id, accountId, status }) => {
-    let nextStatus = 0;
+    let nextStatus = '0';
     switch (status) {
-      case 0: nextStatus = 4;
+      case '0': nextStatus = '4';
         break;
-      case 1: nextStatus = 2;
+      case '1': nextStatus = '2';
         break;
-      case 2: nextStatus = 3
+      case '2': nextStatus = '3'
         break;
-      default: nextStatus = 0;
+      default: nextStatus = '0';
     }
     const result = await updateOrder({
       id,
@@ -117,7 +117,7 @@ export default class OrderList extends React.PureComponent {
     if (result && result.code === 0) {
       message.success(`订单ID为${id}的产品${ORDER_OPERATE[status]}变更成功`);
       const pager = { ...this.state.pagination };
-      this.getProductList({
+      this.getOrderList({
         limit: pager.pageSize,
         page: pager.current,
       });

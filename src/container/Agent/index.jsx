@@ -1,24 +1,16 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button } from 'antd';
-import { getAgentList } from '../../action/agent';
+import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, Popconfirm, message } from 'antd';
+import { getAgentList, deleteAgentById } from '../../action/agent';
 import listColumns from './columns/list';
-import './index.css'
+import { formItemLayout, showTotal } from '../../utils/constant';
+import './index.css';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 }
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 }
-  }
-};
 
 @connect(({ agent }) => ({
   agentList: agent.agentList
@@ -27,22 +19,107 @@ const formItemLayout = {
 })
 @Form.create()
 export default class AgentList extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.columns = [
+      ...listColumns,
+      {
+        title: '操作',
+        dataIndex: 'operate',
+        key: 'operate',
+        align: 'center',
+        render: (text, record) => {
+          return (
+            <div>
+              <Link to={`/agent/detail/${record.id}`}>查看</Link>
+              <Divider type="vertical" />
+              <Link to={`/agent/edit/${record.id}`}>编辑</Link>
+              <Divider type="vertical" />
+              <Popconfirm placement="topLeft" title={`请确定是否删除该代理商？`} onConfirm={() => this.deleteAgentById(record)} okText="确定" cancelText="取消">
+                <a href="javascript:;">删除</a>
+              </Popconfirm>
+              <Divider type="vertical" />
+              <Link to={`/agent/product/${record.id}`}>产品列表</Link>
+            </div>
+          )
+        }
+      },
+    ];
+  }
+
   state = {
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+    },
     selectedRowKeys: [],
+    loading: false,
   };
 
   componentDidMount() {
-    this.props.getAgentList();
+    this.getAgentList();
+  }
+
+  componentWillUnmount() {
+    this.setState = (state,callback) => { };
+  }
+
+  deleteAgent = async (id) => {
+    const result = await deleteAgentById(id);
+    if (result && result.code === 0) {
+      message.success(`运营商ID为${id}删除成功`);
+      const pager = { ...this.props.pagination };
+      this.getAgentList({
+        limit: pager.pageSize,
+        page: pager.current,
+      });
+    } else {
+      message.error('删除失败，请稍后重试');
+    }
+  }
+
+  getAgentList = async (params) => {
+    this.setState({ loading: true });
+    this.props.form.validateFields(async(err, values) => {
+      if (!err) {
+        const { createdTime, ...newParams } = values;
+        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
+        await this.props.getAgentList({ ...newParams, ...params, beginTime, endTime});
+        this.setState({ loading: false });
+      } else {
+        this.setState({ loading: false });
+      }
+    });
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.getAgentList();
   }
 
   onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   }
 
+  handleReset = () => {
+    this.props.form.resetFields();
+  }
+
+  handleTableChange = (pagination) => {
+    const pager = { ...this.state.pagination };
+    pager.current = pagination.current;
+    pager.pageSize = pagination.pageSize;
+    this.setState({ pagination: pager });
+    this.getAgentList({
+      limit: pagination.pageSize,
+      page: pagination.current,
+    });
+  }
+
   render() {
-    const { form: { getFieldDecorator } } = this.props;
-    const { selectedRowKeys } = this.state;
+    const { form: { getFieldDecorator }, agentList } = this.props;
+    const { selectedRowKeys, loading } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -107,7 +184,16 @@ export default class AgentList extends React.PureComponent {
           </Form>
         </Card>
         <Card bordered={false}>
-          <Table rowSelection={rowSelection} columns={listColumns} dataSource={[] } />
+          <Table
+            title={this.title}
+            rowKey="id"
+            onChange={this.handleTableChange}
+            pagination={{ showTotal: showTotal, total: agentList.total, ...this.state.pagination }}
+            rowSelection={rowSelection}
+            columns={this.columns}
+            dataSource={agentList.records}
+            loading={loading}
+          />
         </Card>
       </div>
     )
