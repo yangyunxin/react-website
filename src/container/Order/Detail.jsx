@@ -1,34 +1,79 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Card, Steps, Icon, Button, Table } from 'antd';
+import { Card, Steps, Icon, Button, Table, Modal, Form, Input, } from 'antd';
 import { getOrderById } from '../../action/order';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import DescriptionList from '../../component/DescriptionList';
 import productColumns from './columns/product';
 import operatorColumns from './columns/operator';
-import './index.css';
 import { formatDateSecond } from '../../utils/utils';
 import { ORDER_STATUS } from '../../utils/constant';
+import { formItemLayout3 } from '../../utils/constant';
+import './index.css';
 
+const FormItem = Form.Item;
 const { Step } = Steps;
 const { Description } = DescriptionList;
+const { TextArea } = Input;
 
 @connect(({ order }) => ({
   orderDetail: order.orderDetail
 }), {
   getOrderById
 })
+@Form.create()
 export default class OrderDetail extends React.PureComponent {
+  state = {
+    visible: false,
+  }
+
+  showModal = () => {
+    this.setState({
+      visible: true,
+    });
+  }
+
   componentDidMount() {
     const { match: { params } } = this.props;
     const id = params.id;
     this.props.getOrderById(id);
   }
+
+  handleOk = (e) => {
+    this.setState({
+      visible: false,
+    });
+  }
+
+  handleCancel = (e) => {
+    this.setState({
+      visible: false,
+    });
+  }
+
   render() {
     const { orderDetail = {} } = this.props;
-    console.log(this.props)
+    const { getFieldDecorator } = this.props.form;
     return (
       <div className="page-detail">
+        <Modal
+          title="备注订单"
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
+          <Form>
+            <FormItem {...formItemLayout3} label="操作备注">
+              {getFieldDecorator('email', {
+                rules: [{
+                  required: true, message: '请输入操作备注',
+                }],
+              })(
+                <TextArea rows={4} placeholder="请输入操作备注" />
+              )}
+            </FormItem>
+          </Form>
+        </Modal>
         <Card bordered={false}>
           <EnhanceTitle title="订单状态流" />
           <Steps current={Number(orderDetail.status)}>
@@ -40,11 +85,12 @@ export default class OrderDetail extends React.PureComponent {
           </Steps>
         </Card>
         <div className="order-status">
-          <div style={{ color: '#f5222d' }}><Icon type="exclamation-circle" theme="outlined" />
+          <div style={{ color: '#f5222d' }}>
+            <Icon style={{ marginRight: 5 }} type="exclamation-circle" theme="outlined" />
             当前订单状态：{ORDER_STATUS[orderDetail.status] || '未支付'}
           </div>
           <div>
-            <Button style={{ width: '80px', marginRight: '20px' }} type="primary">关闭订单</Button>
+            <Button onClick={this.showModal} style={{ width: '80px', marginRight: '20px' }} type="primary">关闭订单</Button>
             <Button style={{ width: '80px', marginRight: '20px' }} >备注订单</Button>
           </div>
         </div>

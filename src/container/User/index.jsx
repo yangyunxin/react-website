@@ -61,9 +61,14 @@ export default class UserList extends React.PureComponent {
       id: record.id,
       status: record.status === "0" ? "1" : "0",
     });
+    const info = record.status === "1" ? '禁用' : '解禁'
     if (result && result.code === 0) {
-      message.success('变更用户状态成功');
-      this.getUsertList();
+      message.success(`用户${record.phoneNumber}${info}成功`);
+      const pager = { ...this.state.pagination };
+      this.getUsertList({
+        limit: pager.pageSize,
+        page: pager.current,
+      });
     } else {
       message.error('变更用户状态失败');
     }
@@ -86,27 +91,17 @@ export default class UserList extends React.PureComponent {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.getUsertList();
+    this.getUsertList();
   }
 
-  rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      const { selectedRows: orderList } = this.state;
-      let newRows = [];
-      if (selectedRowKeys.length === selectedRows.length) {
-        newRows = [...selectedRows];
-      } else if (selectedRowKeys.length > selectedRows.length) {
-        const otherRowsKeys = selectedRowKeys.filter(item => selectedRows.every(row => row.id !== item));
-        const otherRows = orderList.filter(item => otherRowsKeys.indexOf(item.id) !== -1);
-        newRows = otherRows.concat(selectedRows);
-      }
-      this.setState({ selectedRows: newRows, selectedRowKeys });
-    }
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys });
   }
 
   handleTableChange = (pagination) => {
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
+    pager.pageSize = pagination.pageSize;
     this.setState({ pagination: pager });
     this.getUsertList({
       page: pagination.current,
@@ -121,7 +116,10 @@ export default class UserList extends React.PureComponent {
   render() {
     const { form: { getFieldDecorator }, userList: { records = [], total } } = this.props;
     const { selectedRowKeys, pagination, loading } = this.state;
-    const rowSelection = { selectedRowKeys, ...this.rowSelection };
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    }
     return (
       <div className="page-list product-list">
         <Card bordered={false} className="form-container">
@@ -174,10 +172,7 @@ export default class UserList extends React.PureComponent {
             <Row>
               <Col xs={{ span: 8, push: 16 }} sm={{ span: 12, push: 12 }} lg={{ span: 8, push: 16 }} style={{ textAlign: 'center' }}>
                 <Button type="primary" htmlType="submit">搜索</Button>
-                <Button
-                  style={{ marginLeft: '8px', marginRight: '8px' }}
-                  onClick={this.handleReset}
-                >
+                <Button style={{ marginLeft: '8px', marginRight: '8px' }} onClick={this.handleReset}>
                   清空
                 </Button>
               </Col>

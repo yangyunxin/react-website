@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message, Modal } from 'antd';
 import PriceForm from './PriceForm';
-import { getProductList, addBatch, batchUpProduct, batchDownProduct } from '../../action/product';
+import { getProductList, addBatch, batchUpProduct, batchDownProduct, updateProduct } from '../../action/product';
 import listColumns from './columns/list';
 import { formItemLayout, showTotal } from '../../utils/constant';
 import './index.css'
@@ -19,6 +20,30 @@ const dateFormat = 'YYYY/MM/DD';
 })
 @Form.create()
 export default class ProductList extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.columns = [
+      ...listColumns,
+      {
+        title: '操作',
+        dataIndex: 'operate',
+        key: 'operate',
+        align: 'center',
+        render: (text, record) => {
+          return (
+            <div>
+              <Link to={`/product/detail/${record.id}`}>查看</Link>
+              <Divider type="vertical" />
+              <Link to={`/product/edit/${record.id}`}>编辑</Link>
+              <Divider type="vertical" />
+              <a onClick={() => this.updateProductStatus(record)} href="javascript:;">{record.state === '1' ? '下架' : '上架'}</a>
+            </div>
+          )
+        }
+      },
+    ];
+  }
+
   state = {
     pagination: {
       showSizeChanger: true,
@@ -36,18 +61,17 @@ export default class ProductList extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    this.setState = (state,callback) => { }
-    return;
+    this.setState = (state,callback) => { };
   }
 
   getProductList = async (params) => {
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        const { createdTime, ...params } = values;
+        const { createdTime, ...newParams } = values;
         const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
         const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
-        await this.props.getProductList({ ...params, beginTime, endTime});
+        await this.props.getProductList({ ...newParams, ...params, beginTime, endTime});
         this.setState({ loading: false });
       } else {
         this.setState({ loading: false });
@@ -55,24 +79,36 @@ export default class ProductList extends React.PureComponent {
     });
   }
 
+  updateProductStatus = async ({ id, status }) => {
+    let nextStatus = '1';
+    let info = '上架';
+    if (status === '1') {
+      nextStatus = '2';
+      info = '下架';
+    }
+    const result = await updateProduct({
+      id,
+      status: nextStatus,
+    });
+    if (result && result.code === 0) {
+      message.success(`产品ID为${id}的产品${info}成功`);
+      const pager = { ...this.state.pagination };
+      this.getProductList({
+        limit: pager.pageSize,
+        page: pager.current,
+      });
+    } else {
+      message.error('产品状态变更失败，请稍后重试');
+    }
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.getProductList();
   }
 
-  rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      const { selectedRows: orderList } = this.state;
-      let newRows = [];
-      if (selectedRowKeys.length === selectedRows.length) {
-        newRows = [...selectedRows];
-      } else if (selectedRowKeys.length > selectedRows.length) {
-        const otherRowsKeys = selectedRowKeys.filter(item => selectedRows.every(row => row.id !== item));
-        const otherRows = orderList.filter(item => otherRowsKeys.indexOf(item.id) !== -1);
-        newRows = otherRows.concat(selectedRows);
-      }
-      this.setState({ selectedRows: newRows, selectedRowKeys });
-    }
+  onSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys });
   }
 
   handleReset = () => {
@@ -82,6 +118,7 @@ export default class ProductList extends React.PureComponent {
   handleTableChange = (pagination) => {
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
+    pager.pageSize = pagination.pageSize;
     this.setState({ pagination: pager });
     this.getProductList({
       limit: pagination.pageSize,
@@ -97,15 +134,8 @@ export default class ProductList extends React.PureComponent {
 
   handleOk = () => {
     this.setState({
-      ModalText: 'The modal will be closed after two seconds',
       confirmLoading: true,
     });
-    setTimeout(() => {
-      this.setState({
-        visible: false,
-        confirmLoading: false,
-      });
-    }, 2000);
   }
 
   handleCancel = () => {
@@ -115,14 +145,15 @@ export default class ProductList extends React.PureComponent {
   }
 
   title = () => {
+    const { selectedRowKeys } = this.state;
     return (
       <div>
         <span>操作处理：</span>
-        <Button onClick={this.showModal} type="primary">批量定价</Button>
+        <Button disabled={!selectedRowKeys.length} onClick={this.showModal} type="primary">批量定价</Button>
         <Divider type="vertical" />
-        <Button onClick={this.batchUpProduct} type="primary">批量上架</Button>
+        <Button disabled={!selectedRowKeys.length} onClick={this.batchUpProduct} type="primary">批量上架</Button>
         <Divider type="vertical" />
-        <Button onClick={this.batchDownProduct} type="primary">批量下架</Button>
+        <Button disabled={!selectedRowKeys.length} onClick={this.batchDownProduct} type="primary">批量下架</Button>
       </div>
     )
   }
@@ -150,39 +181,15 @@ export default class ProductList extends React.PureComponent {
         unit: params.unit,
       });
     });
-    console.log('---------')
-    // for (let i = 0; i < selectedRowKeys.length; i + 1) {
-    //   values.push({
-    //     projectId: selectedRowKeys[i],
-    //     interval: `${params.num1}-${params.num2}`,
-    //     price: params.price1,
-    //     unit: params.unit,
-    //   });
-    //   values.push({
-    //     projectId: selectedRowKeys[i],
-    //     interval: `${params.num3}-${params.num4}`,
-    //     price: params.price2,
-    //     unit: params.unit,
-    //   });
-    //   values.push({
-    //     projectId: selectedRowKeys[i],
-    //     interval: `${params.num5}-${params.num6}`,
-    //     price: params.price3,
-    //     unit: params.unit,
-    //   });
-    // }
-    console.log(values);
 
-    // const values = selectedRowKeys.map(item => ({
-    //   projectId: item,
-    //   interval: '1-10',
-    //   price: 1,
-    //   unit: 'm',
-    // }));
     const result = await addBatch(values);
     if (result && result.code === 0) {
       message.success(`产品ID为${selectedRowKeys}批量定价成功`);
-      this.getProductList();
+      const pager = { ...this.props.pagination };
+      this.getProductList({
+        limit: pager.pageSize,
+        page: pager.current,
+      });
       this.setState({ selectedRowKeys: [], selectedRows: [] });
     } else {
       message.error('批量定价失败，请稍后重试');
@@ -194,7 +201,11 @@ export default class ProductList extends React.PureComponent {
     const result = await batchUpProduct(selectedRowKeys);
     if (result && result.code === 0) {
       message.success(`产品ID为${selectedRowKeys}批量上架成功`);
-      this.getProductList();
+      const pager = { ...this.props.pagination };
+      this.getProductList({
+        limit: pager.pageSize,
+        page: pager.current,
+      });
       this.setState({ selectedRowKeys: [], selectedRows: [] });
     } else {
       message.error('批量上架失败，请稍后重试');
@@ -206,7 +217,11 @@ export default class ProductList extends React.PureComponent {
     const result = await batchDownProduct(selectedRowKeys);
     if (result && result.code === 0) {
       message.success(`产品ID为${selectedRowKeys}批量下架成功`);
-      this.getProductList();
+      const pager = { ...this.props.pagination };
+      this.getProductList({
+        limit: pager.pageSize,
+        page: pager.current,
+      });
       this.setState({ selectedRowKeys: [], selectedRows: [] });
     } else {
       message.error('批量下架失败，请稍后重试');
@@ -216,7 +231,7 @@ export default class ProductList extends React.PureComponent {
   render() {
     const { form: { getFieldDecorator }, productList = {} } = this.props;
     const { selectedRowKeys, loading, visible, confirmLoading } = this.state;
-    const rowSelection = { selectedRowKeys, ...this.rowSelection };
+    const rowSelection = { selectedRowKeys, onChange: this.onSelectChange };
     return (
       <div className="page-list product-list">
         <Card bordered={false} className="form-container">
@@ -295,7 +310,7 @@ export default class ProductList extends React.PureComponent {
             onChange={this.handleTableChange}
             pagination={{ showTotal: showTotal, total: productList.total, ...this.state.pagination }}
             rowSelection={rowSelection}
-            columns={listColumns}
+            columns={this.columns}
             dataSource={productList.records}
             loading={loading}
           />

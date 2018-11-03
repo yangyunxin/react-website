@@ -18,4 +18,6 @@
 9. 配置文件：`pm2 init`
 10. 日志信息：`pm2 logs`
 
+export NODE_ENV=production && pm2 start ./server/index.js --watch
+
 ### nginx配置代理

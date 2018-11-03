@@ -29,11 +29,5 @@ const columns = [
     key: 'creator',
     align: 'center',
   },
-  {
-    title: '操作',
-    dataIndex: 'operate',
-    key: 'operate',
-    align: 'center',
-  },
 ];
 export default columns;

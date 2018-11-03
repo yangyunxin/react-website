@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider } from 'antd';
+import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message } from 'antd';
 import { ORDER_OPERATE, formItemLayout, showTotal, ORDER_STATUS, REGIST_CHANNEL } from '../../utils/constant';
 import { getOrderList, updateOrder } from '../../action/order';
 import listColumns from './columns/list';
@@ -11,7 +11,6 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
-
 
 @connect(({ order }) => ({
   orderList: order.orderList
@@ -91,6 +90,7 @@ export default class OrderList extends React.PureComponent {
   handleTableChange = (pagination) => {
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
+    pager.pageSize = pagination.pageSize;
     this.setState({ pagination: pager });
     this.getOrderList({
       limit: pagination.pageSize,
@@ -98,7 +98,7 @@ export default class OrderList extends React.PureComponent {
     });
   }
 
-  updateStatus = ({ id, accountId, status }) => {
+  updateStatus = async ({ id, accountId, status }) => {
     let nextStatus = 0;
     switch (status) {
       case 0: nextStatus = 4;
@@ -109,11 +109,21 @@ export default class OrderList extends React.PureComponent {
         break;
       default: nextStatus = 0;
     }
-    updateOrder({
+    const result = await updateOrder({
       id,
       accountId,
       status: nextStatus,
     });
+    if (result && result.code === 0) {
+      message.success(`订单ID为${id}的产品${ORDER_OPERATE[status]}变更成功`);
+      const pager = { ...this.state.pagination };
+      this.getProductList({
+        limit: pager.pageSize,
+        page: pager.current,
+      });
+    } else {
+      message.error('产品状态变更失败，请稍后重试');
+    }
   }
 
   render() {
@@ -167,7 +177,7 @@ export default class OrderList extends React.PureComponent {
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="代理商">
                   {getFieldDecorator('agentId')(
-                    <Input placeholder="请输入代理商ID" />
+                    <Input placeholder="请输入代理商" />
                   )}
                 </FormItem>
               </Col>

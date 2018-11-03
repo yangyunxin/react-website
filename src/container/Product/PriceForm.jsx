@@ -6,11 +6,11 @@ const Option = Select.Option;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 8 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 },
+    sm: { span: 18 },
   },
 };
 
@@ -39,74 +39,94 @@ export default class PriceForm extends React.PureComponent {
             }],
           })(
             <Select>
-              <Option value={1}>米</Option>
-              <Option value={2}>平方</Option>
+              <Option value="m">米</Option>
+              <Option value="m²">平方</Option>
             </Select>
           )}
         </FormItem>
         <FormItem required {...formItemLayout} label="产品价格">
-          <table style={{ width: '100%', textAlign: 'center' }}>
+          <table className="priceform-table">
             <thead>
               <tr>
-                <th style={{ border: '1px solid #dddddd' }}>数量</th>
-                <th style={{ border: '1px solid #dddddd' }}>价格</th>
+                <th>数量</th>
+                <th>价格</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ border: '1px solid #dddddd' }}>
-                  {getFieldDecorator('num', {
-                    initialValue: 1,
-                  })(
-                    <Input style={{ width: 60 }} />
-                  )}
+                <td>
+                  <FormItem style={{ display: 'inline-block' }}>
+                    {getFieldDecorator('num1', {
+                      initialValue: 1,
+                    })(
+                      <Input style={{ width: 60 }} />
+                    )}
+                  </FormItem>
                   <span style={{ padding: '0 15px' }}>至</span>
-                  {getFieldDecorator('num2')(
-                    <Input style={{ width: 60 }} />
-                  )}
+                  <FormItem style={{ display: 'inline-block' }}>
+                    {getFieldDecorator('num2')(
+                      <Input style={{ width: 60 }} />
+                    )}
+                  </FormItem>
                 </td>
-                <td style={{ border: '1px solid #dddddd' }}>
-                  {getFieldDecorator('price')(
-                    <Input style={{ width: 60 }} />
-                  )}
+                <td>
+                  <FormItem style={{ display: 'inline-block' }}>
+                    {getFieldDecorator('price1')(
+                      <Input style={{ width: 60 }} />
+                    )}
+                  </FormItem>
                 </td>
               </tr>
               <tr>
-                <td style={{ border: '1px solid #dddddd' }}>
-                  {getFieldDecorator('nu3')(
-                    <Input style={{ width: 60 }} />
-                  )}
+                <td>
+                  <FormItem style={{ display: 'inline-block' }}>
+                    {getFieldDecorator('num3')(
+                      <Input style={{ width: 60 }} />
+                    )}
+                  </FormItem>
                   <span style={{ padding: '0 15px' }}>至</span>
-                  {getFieldDecorator('num4')(
-                    <Input style={{ width: 60 }} />
-                  )}
+                  <FormItem style={{ display: 'inline-block' }}>
+                    {getFieldDecorator('num4')(
+                      <Input style={{ width: 60 }} />
+                    )}
+                  </FormItem>
                 </td>
-                <td style={{ border: '1px solid #dddddd' }}>
-                  {getFieldDecorator('price2')(
-                    <Input style={{ width: 60 }} />
-                  )}
+                <td>
+                  <FormItem style={{ display: 'inline-block' }}>
+                    {getFieldDecorator('price2')(
+                      <Input style={{ width: 60 }} />
+                    )}
+                  </FormItem>
                 </td>
               </tr>
               <tr>
-                <td style={{ border: '1px solid #dddddd' }}>
-                  {getFieldDecorator('num5')(
-                    <Input style={{ width: 60 }} />
-                  )}
+                <td>
+                  <FormItem style={{ display: 'inline-block' }}>
+                    {getFieldDecorator('num5')(
+                      <Input style={{ width: 60 }} />
+                    )}
+                  </FormItem>
                   <span style={{ padding: '0 15px' }}>至</span>
-                  {getFieldDecorator('num6')(
-                    <Input style={{ width: 60 }} />
-                  )}
+                  <FormItem style={{ display: 'inline-block' }}>
+                    {getFieldDecorator('num6', {
+                      initialValue: 'max',
+                    })(
+                      <Input style={{ width: 60 }} />
+                    )}
+                  </FormItem>
                 </td>
-                <td style={{ border: '1px solid #dddddd' }}>
-                  {getFieldDecorator('price3')(
-                    <Input style={{ width: 60 }} />
-                  )}
+                <td>
+                  <FormItem style={{ display: 'inline-block' }}>
+                    {getFieldDecorator('price3')(
+                      <Input style={{ width: 60 }} />
+                    )}
+                  </FormItem>
                 </td>
               </tr>
             </tbody>
           </table>
         </FormItem>
-        <FormItem required {...formItemLayout}>
+        <FormItem {...formItemLayout}>
           <Button style={{ width: '120px', marginRight: '20px' }} type="primary" htmlType="submit">提交</Button>
           <Button onClick={this.props.handleCancel} style={{ width: '120px' }}>清空</Button>
         </FormItem>

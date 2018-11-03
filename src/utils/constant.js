@@ -9,6 +9,26 @@ export const formItemLayout = {
     sm: { span: 16 }
   }
 };
+export const formItemLayout2 = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+};
+export const formItemLayout3 = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
 export function showTotal(total, range) {
   return `共${total}条数据`;
 }

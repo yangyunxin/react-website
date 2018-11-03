@@ -1,0 +1,10 @@
+.priceform-table {
+  width: 100%;
+  text-align: center;
+}
+.priceform-table th, .priceform-table td {
+  border: 1px solid #dddddd;
+}
+.priceform-table .ant-form-item {
+  margin-bottom: 0;
+}

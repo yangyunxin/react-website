@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { LocaleProvider } from 'antd';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
+import 'moment/locale/zh-cn';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import  configureStore from './store/configureStore';

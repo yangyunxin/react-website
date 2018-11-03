@@ -1,37 +1,101 @@
 import React from 'react';
-import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button } from 'antd';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider } from 'antd';
 import listColumns from './columns/list';
+import { formItemLayout, showTotal } from '../../utils/constant';
+import { getSkylightList } from '../../action/skylight';
 import './index.css'
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 }
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 }
-  }
-};
 
+@connect(({ skylight }) => ({
+  skylightList: skylight.skylightList
+}), {
+  getSkylightList
+})
 @Form.create()
 export default class SkylightList extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.columns = [
+      ...listColumns,
+      {
+        title: '操作',
+        dataIndex: 'operate',
+        key: 'operate',
+        align: 'center',
+        render: (text, record) => (
+          <div>
+            <Link to={`/skylight/detail/${record.id}`}>查看</Link>
+            <Divider type="vertical" />
+            <Link to={`/skylight/edit/${record.id}`}>编辑</Link>
+            <Divider type="vertical" />
+            <a onClick={this.deleteSkylight} href="javascript:;">删除</a>
+          </div>
+        )
+      },
+    ];
+  }
+
   state = {
     selectedRowKeys: [],
+    loading: false,
   };
+
+  componentDidMount() {
+    this.getSkylightList();
+  }
 
   onSelectChange = (selectedRowKeys) => {
     console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   }
 
+  getSkylightList = (params) => {
+    this.setState({ loading: true });
+    this.props.form.validateFields(async(err, values) => {
+      if (!err) {
+        const { createdTime, ...params } = values;
+        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
+        await this.props.getSkylightList({ ...params, beginTime, endTime});
+        this.setState({ loading: false });
+      } else {
+        this.setState({ loading: false });
+      }
+    });
+  }
+
+  deleteSkylight = (id) => {
+
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.getSkylightList();
+  }
+
+  handleReset = () => {
+    this.props.form.resetFields();
+  }
+
+  handleTableChange = (pagination) => {
+    const pager = { ...this.state.pagination };
+    pager.current = pagination.current;
+    this.setState({ pagination: pager });
+    this.getSkylightList({
+      limit: pagination.pageSize,
+      page: pagination.current,
+    });
+  }
+
   render() {
-    const { form: { getFieldDecorator } } = this.props;
-    const { selectedRowKeys } = this.state;
+    const { form: { getFieldDecorator }, skylightList } = this.props;
+    const { selectedRowKeys, loading } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -79,7 +143,15 @@ export default class SkylightList extends React.PureComponent {
           </Form>
         </Card>
         <Card bordered={false}>
-          <Table rowSelection={rowSelection} columns={listColumns} dataSource={[] } />
+          <Table
+            rowKey="id"
+            rowSelection={rowSelection}
+            columns={this.columns}
+            dataSource={skylightList.records}
+            onChange={this.handleTableChange}
+            pagination={{ showTotal: showTotal, total: skylightList.total, ...this.state.pagination }}
+            loading={loading}
+          />
         </Card>
       </div>
     )

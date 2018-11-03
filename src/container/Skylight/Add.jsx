@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Form, Input, Table, Select, Button, Drawer, DatePicker, Radio } from 'antd';
+import { Card, Form, Input, Table, Select, Button, Drawer, DatePicker, Radio, Icon } from 'antd';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
 import bannerOperateColumns from './columns/bannerOperate';
@@ -95,7 +95,7 @@ export default class SkylightAdd extends React.PureComponent {
               })(
                 <div onClick={this.showDrawer} className="ant-upload ant-upload-select ant-upload-select-picture-card">
                   <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-                    <i className="anticon anticon-plus"></i>
+                    <Icon type="plus" theme="outlined" />
                     <div className="antd-upload-text">添加</div>
                   </div>
                 </div>

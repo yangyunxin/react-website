@@ -1,6 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Divider } from 'antd';
 import { formatDateMinute } from '../../../utils/utils';
 import { nullString, PRODUCT_STATUS } from '../../../utils/constant';
 
@@ -69,23 +67,6 @@ const columns = [
     key: 'status',
     align: 'center',
     render: (text) => text ? PRODUCT_STATUS[text] : '待上架'
-  },
-  {
-    title: '操作',
-    dataIndex: 'operate',
-    key: 'operate',
-    align: 'center',
-    render: (text, record) => {
-      return (
-        <div>
-          <Link to={`/product/detail/${record.id}`}>查看</Link>
-          <Divider type="vertical" />
-          <Link to={`/product/edit/${record.id}`}>编辑</Link>
-          <Divider type="vertical" />
-          <a href="javascript:;">{record.state === 1 ? '下架' : '上架'}</a>
-        </div>
-      )
-    }
   },
 ];
 export default columns;

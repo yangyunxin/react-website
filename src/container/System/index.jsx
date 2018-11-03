@@ -1,67 +1,76 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button } from 'antd';
-import { getProductList } from '../../action/product';
+import { getSystemLogList } from '../../action/system';
 import listColumns from './columns/list';
+import { formItemLayout, showTotal } from '../../utils/constant';
 import './index.css'
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 }
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 }
-  }
-};
 
-@connect(({ product }) => ({
-  productList: product.productList
+@connect(({ system }) => ({
+  systemLogList: system.systemLogList
 }), {
-  getProductList,
+  getSystemLogList,
 })
 @Form.create()
 export default class OperateLog extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.columns = [
+      ...listColumns,
+    ];
+  }
   state = {
     selectedRowKeys: [],
+    loading: false,
   };
 
   componentDidMount() {
-    this.props.getProductList();
+    this.props.getSystemLogList();
+  }
+
+  getSystemLogList = (params) => {
+    this.setState({ loading: true });
+    this.props.form.validateFields(async(err, values) => {
+      if (!err) {
+        const { createdTime, ...params } = values;
+        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
+        await this.props.getSystemLogList({ ...params, beginTime, endTime});
+        this.setState({ loading: false });
+      } else {
+        this.setState({ loading: false });
+      }
+    });
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        this.props.getProductList(values);
-      }
-    })
+    this.getSystemLogList();
   }
 
-  rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      const { selectedRows: orderList } = this.state;
-      let newRows = [];
-      if (selectedRowKeys.length === selectedRows.length) {
-        newRows = [...selectedRows];
-      } else if (selectedRowKeys.length > selectedRows.length) {
-        const otherRowsKeys = selectedRowKeys.filter(item => selectedRows.every(row => row.id !== item));
-        const otherRows = orderList.filter(item => otherRowsKeys.indexOf(item.id) !== -1);
-        newRows = otherRows.concat(selectedRows);
-      }
-      this.setState({ selectedRows: newRows, selectedRowKeys });
-    }
+  onSelectChange = (selectedRowKeys) => {
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    this.setState({ selectedRowKeys });
+  }
+
+  handleTableChange = (pagination) => {
+    const pager = { ...this.state.pagination };
+    pager.current = pagination.current;
+    this.setState({ pagination: pager });
+    this.getSystemLogList({
+      limit: pagination.pageSize,
+      page: pagination.current,
+    });
   }
 
   render() {
-    const { form: { getFieldDecorator }, productList = {} } = this.props;
-    const { selectedRowKeys } = this.state;
+    const { form: { getFieldDecorator }, systemLogList = {} } = this.props;
+    const { selectedRowKeys, loading } = this.state;
     const rowSelection = { selectedRowKeys, ...this.rowSelection };
     return (
       <div className="page-list operateLog-list">
@@ -106,7 +115,15 @@ export default class OperateLog extends React.PureComponent {
           </Form>
         </Card>
         <Card bordered={false}>
-          <Table rowKey="id" rowSelection={rowSelection} columns={listColumns} dataSource={productList.records} />
+          <Table
+            rowKey="id"
+            rowSelection={rowSelection}
+            columns={this.columns}
+            dataSource={systemLogList.records}
+            onChange={this.handleTableChange}
+            pagination={{ showTotal: showTotal, total: systemLogList.total, ...this.state.pagination }}
+            loading={loading}
+          />
         </Card>
       </div>
     )

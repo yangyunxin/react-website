@@ -109,7 +109,8 @@ export default class Main extends React.PureComponent {
           collapsed={collapsed}
         >
           <div className="logo">
-          测试后台
+            <Icon type="appstore" theme="outlined" />
+            <span>快易布管理系统</span>
           </div>
           <Menu theme="dark" defaultOpenKeys={[pathSnippet]} defaultSelectedKeys={[location.pathname]} mode="inline">
             {
@@ -140,7 +141,7 @@ export default class Main extends React.PureComponent {
               <Dropdown overlay={menu}>
                 <span className="action account">
                   <Avatar size="small" src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png" />
-                  <span className="username">测试人员</span>
+                  <span className="username">管理员</span>
                 </span>
               </Dropdown>
             </div>
@@ -159,7 +160,7 @@ export default class Main extends React.PureComponent {
             </div>
           </Content>
           <Footer style={{ textAlign: 'center' }}>
-            Ant Design ©2018 Created by Ant UED
+            备案号：粤ICP备18103794号-1
           </Footer>
         </Layout>
       </Layout>

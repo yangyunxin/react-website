@@ -6,7 +6,7 @@ const API = {
   getProductById: '/api/goods/tProduct',
   batchUpProduct: '/api/goods/tProduct/batchUpProduct', // post
   batchDownProduct: '/api/goods/tProduct/batchDownProduct', //post
-  addBatch: '/api/goods/tProduct/addBatch',
+  addBatch: '/api/goods/tProduct/addbatch',
   orderList: '/api/goods/order/page',
   updateOrder: '/api/goods/order/update', //put
   getOrderById: '/api/goods/order',
@@ -20,5 +20,7 @@ const API = {
   getAgentById: '/api/goods/tAgent',
   addAgent: '/api/goods/tAgent/add', // post
   putAgent: '/api/goods/tAgent/update',
+  getSkylightList: '/api/goods/tSkyLight/page',
+  getSystemLogList: '/api/admin/log/logPage',
 }
 export default API;
