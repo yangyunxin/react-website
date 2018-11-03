@@ -170,19 +170,19 @@ export default class ProductList extends React.PureComponent {
     let values = [];
     selectedRowKeys.forEach(item => {
       values.push({
-        projectId: item,
+        productId: item,
         interval: `${params.num1}-${params.num2}`,
         price: params.price1,
         unit: params.unit,
       });
       values.push({
-        projectId: item,
+        productId: item,
         interval: `${params.num3}-${params.num4}`,
         price: params.price2,
         unit: params.unit,
       });
       values.push({
-        projectId: item,
+        productId: item,
         interval: `${params.num5}-${params.num6}`,
         price: params.price3,
         unit: params.unit,
@@ -191,6 +191,7 @@ export default class ProductList extends React.PureComponent {
 
     const result = await addBatch(values);
     if (result && result.code === 0) {
+      this.handleCancel();
       message.success(`产品ID为${selectedRowKeys}批量定价成功`);
       const pager = { ...this.props.pagination };
       this.getProductList({

@@ -15,3 +15,29 @@ export function getSkylightList(params) {
     }
   }
 }
+
+export function getSkylightById(id) {
+  return async (dispatch) => {
+    const result = await get(`${API.getSkylightById}/${id}`);
+    if (result && result.status === 200) {
+      dispatch({
+        type: GET_SKYLIGHT_BYID,
+        data: result.data.data
+      })
+    }
+  }
+}
+
+export async function addSkylight(params) {
+  const result = await post(API.addSkylight, params);
+  if (result && result.status === 200) {
+    return result.data
+  }
+}
+
+export async function updateSkylight(params) {
+  const result = await put(API.updateSkylight, params);
+  if (result && result.status === 200) {
+    return result.data
+  }
+}

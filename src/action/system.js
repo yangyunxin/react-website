@@ -1,5 +1,5 @@
 import API from '../utils/api';
-import { get, post, put } from '../utils/request';
+import { get } from '../utils/request';
 
 export const GET_SYSTEM_LOG_LIST = 'GET_SYSTEM_LOG_LIST';
 

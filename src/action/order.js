@@ -16,7 +16,6 @@ export function getOrderList(params) {
   }
 }
 
-
 export function getOrderById(id) {
   return async (dispatch) => {
     const result = await get(`${API.getOrderById}/${id}`);

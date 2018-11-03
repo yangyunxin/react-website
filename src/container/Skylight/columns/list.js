@@ -1,4 +1,4 @@
-import { formatDateMinute } from '../../../utils/utils';
+import { formatDateSecond } from '../../../utils/utils';
 import { nullString, SKY_TYPE } from '../../../utils/constant';
 
 const columns = [
@@ -26,7 +26,7 @@ const columns = [
     dataIndex: 'createTime',
     key: 'createTime',
     align: 'center',
-    render: (text) => text ? formatDateMinute(text) : nullString
+    render: (text) => text ? formatDateSecond(text) : nullString
   },
   {
     title: '创建人',

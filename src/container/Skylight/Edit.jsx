@@ -1,37 +1,50 @@
 import React from 'react';
-import { Card, Form, Input, Table, Select, Button, Drawer, DatePicker, Radio } from 'antd';
+import { connect } from 'react-redux';
+import { Card, Form, Input, Table, Select, Button, Drawer, message, DatePicker, Radio } from 'antd';
 import EnhanceTitle from '../../component/EnhanceTitle';
-import Uploader from '../../component/Uploader';
-import bannerOperateColumns from './columns/bannerOperate';
+// import bannerOperateColumns from './columns/bannerOperate';
+import { formItemLayout2, SKY_TYPE } from '../../utils/constant';
+import { getSkylightById, updateSkylight } from '../../action/skylight';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const { TextArea } = Input;
-const RadioGroup = Radio.Group;
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 8 },
-  },
-};
-const drawerItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 12 },
-  },
-};
 
+@connect(({ skylight }) => ({
+  skylightDetail: skylight.skylightDetail
+}), {
+  getSkylightById
+})
 @Form.create()
 export default class SkylightEdit extends React.PureComponent {
   state = { visible: false };
+
+  componentDidMount() {
+    const { match } = this.props;
+    const { params: { id } } = match;
+    this.props.getSkylightById(id);
+  }
+
+  componentWillUnmount() {
+    this.timer = null;
+  }
+
+  timer = null
+
+  handleSubmit= (e) => {
+    e.preventDefault();
+    this.props.form.validateFields(async (err, values) => {
+      if (!err) {
+        const result = await updateSkylight(values);
+        if (result && result.code === 0) {
+          message.success('更新天窗成功！1s后跳转天窗列表页面');
+          this.timer = setTimeout(() => {
+            this.props.history.push('/skylight/list');
+          }, 1000)
+        }
+      }
+    });
+  }
 
   showDrawer = () => {
     this.setState({ visible: true });
@@ -44,13 +57,15 @@ export default class SkylightEdit extends React.PureComponent {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { visible } = this.state;
+    const { skylightDetail = {} } = this.props;
     return (
       <div className="page-detail">
         <Form onSubmit={this.handleSubmit}>
           <Card bordered={false}>
             <EnhanceTitle title="基本信息" />
-            <FormItem {...formItemLayout} label="天窗ID">
+            <FormItem {...formItemLayout2} label="天窗ID">
               {getFieldDecorator('skyId', {
+                initialValue: skylightDetail.skyId,
                 rules: [{
                   required: true, message: '请输入天窗ID',
                 }],
@@ -58,19 +73,23 @@ export default class SkylightEdit extends React.PureComponent {
                 <Input placeholder="请输入天窗ID" />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="天窗类型">
+            <FormItem {...formItemLayout2} label="天窗类型">
               {getFieldDecorator('skyType', {
+                initialValue: skylightDetail.skyType,
                 rules: [{
                   required: true, message: '请选择天窗类型',
                 }],
               })(
                 <Select allowClear placeholder="请选择天窗类型">
-                  <Option value="Banner">Banner</Option>
+                  {Object.keys(SKY_TYPE).map(item => (
+                    <Option key={item} value={item}>{SKY_TYPE[item]}</Option>
+                  ))}
                 </Select>
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="天窗标题">
+            <FormItem {...formItemLayout2} label="天窗标题">
               {getFieldDecorator('skyTitle', {
+                initialValue: skylightDetail.skyTitle,
                 rules: [{
                   required: true, message: '请输入天窗标题',
                 }],
@@ -78,8 +97,9 @@ export default class SkylightEdit extends React.PureComponent {
                 <Input placeholder="请输入天窗标题" />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="天窗描述">
+            <FormItem {...formItemLayout2} label="天窗描述">
               {getFieldDecorator('description', {
+                initialValue: skylightDetail.description,
                 rules: [{
                   required: true, message: '请输入天窗描述',
                 }],
@@ -87,8 +107,9 @@ export default class SkylightEdit extends React.PureComponent {
                 <TextArea rows={4} placeholder="请输入天窗描述" />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="添加banner">
+            {/* <FormItem {...formItemLayout2} label="添加banner">
               {getFieldDecorator('detail', {
+                initialValue: skylightDetail.skyId,
                 rules: [{
                   required: true, message: '请添加banner',
                 }],
@@ -100,12 +121,12 @@ export default class SkylightEdit extends React.PureComponent {
                   </div>
                 </div>
               )}
-            </FormItem>
+            </FormItem> */}
           </Card>
-          <Card bordered={false}>
+          {/* <Card bordered={false}>
             <EnhanceTitle title="关联banner" />
             <Table bordered columns={bannerOperateColumns} dataSource={[] } />
-          </Card>
+          </Card> */}
           <div>
             <Button style={{ width: '120px', marginRight: '20px' }} type="primary" htmlType="submit">提交</Button>
             <Button style={{ width: '120px' }}>清空</Button>
@@ -119,79 +140,6 @@ export default class SkylightEdit extends React.PureComponent {
           onClose={this.onClose}
           visible={visible}
         >
-          <Form onSubmit={this.handleSubmit}>
-            <FormItem {...drawerItemLayout} label="banner标题">
-              {getFieldDecorator('colour', {
-                rules: [{
-                  required: true, message: '请输入banner标题',
-                }],
-              })(
-                <Input placeholder="请输入banner标题" />
-              )}
-            </FormItem>
-            <FormItem {...drawerItemLayout} label="banner描述">
-              {getFieldDecorator('name', {
-                rules: [{
-                  required: true, message: '请输入banner描述',
-                }],
-              })(
-                <TextArea rows={4} placeholder="请输入banner描述" />
-              )}
-            </FormItem>
-            <FormItem {...drawerItemLayout} label="图片">
-              {getFieldDecorator('detail', {
-                rules: [{
-                  required: true, message: '请添加产品图片',
-                }],
-              })(
-                <Uploader placeholder="请添加产品图片" />
-              )}
-            </FormItem>
-            <FormItem {...drawerItemLayout} label="链接">
-              {getFieldDecorator('name', {
-                rules: [{
-                  required: true, message: '请输入链接',
-                }],
-              })(
-                <Input placeholder="请输入链接" />
-              )}
-            </FormItem>
-            <FormItem {...drawerItemLayout} label="开始时间">
-              {getFieldDecorator('startTime', {
-                rules: [{
-                  required: true, message: '请选择开始时间',
-                }],
-              })(
-                <DatePicker placeholder="请选择开始时间"  />
-              )}
-            </FormItem>
-            <FormItem {...drawerItemLayout} label="到期时间">
-              {getFieldDecorator('endTime', {
-                rules: [{
-                  required: true, message: '请选择到期时间',
-                }],
-              })(
-                <DatePicker placeholder="请选择到期时间"  />
-              )}
-            </FormItem>
-            <FormItem {...drawerItemLayout} label="上线/下线">
-              {getFieldDecorator('status', {
-                rules: [{
-                  required: true, message: '请选择上线/下线',
-                }],
-              })(
-                <RadioGroup>
-                  <Radio value={0}>上线</Radio>
-                  <Radio value={1}>下线</Radio>
-                </RadioGroup>
-              )}
-            </FormItem>
-
-            <div>
-              <Button style={{ width: '120px', marginRight: '20px' }} type="primary" htmlType="submit">提交</Button>
-              <Button style={{ width: '120px' }}>清空</Button>
-            </div>
-          </Form>
         </Drawer>
       </div>
     )

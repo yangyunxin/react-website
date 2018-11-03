@@ -18,7 +18,7 @@ const API = {
   getUserById: '/api/goods/tUserAccount',
   getUserAddressById: '/api/goods/tUserAccountReceiveAddress',
   getUserOrderById: '/api/goods/order/page',
-  getUserLoginList: '/api/amdin/log/loginLogPage',
+  getUserLoginList: '/api/admin/log/loginLogPage',
   agentList: '/api/goods/tAgent/page',
   getAgentById: '/api/goods/tAgent',
   addAgent: '/api/goods/tAgent/add', // post
@@ -26,6 +26,9 @@ const API = {
   agentProduct: '/api/goods/tAgentProduct/addBatch',
   deleteAgentById: '/api/goods/tAgent',
   getSkylightList: '/api/goods/tSkyLight/page',
+  getSkylightById: '/api/goods/tSkyLight',
+  addSkylight: '/api/goods/tSkyLight/add',
+  updateSkylight: '/api/goods/tSkyLight/update',
   getSystemLogList: '/api/admin/log/logPage',
   getUserInfo: '/api/admin/user/info',
 }

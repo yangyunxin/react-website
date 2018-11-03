@@ -1,4 +1,4 @@
-import { GET_SKYLIGHT_LIST } from '../action/skylight';
+import { GET_SKYLIGHT_LIST, GET_SKYLIGHT_BYID } from '../action/skylight';
 
 const defaultState = {
   skylightList: {},
@@ -11,6 +11,11 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         skylightList: action.data
+      }
+    case GET_SKYLIGHT_BYID:
+      return {
+        ...state,
+        skylightDetail: action.data
       }
     default:
       return state
