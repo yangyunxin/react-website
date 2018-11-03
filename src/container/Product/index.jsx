@@ -36,7 +36,13 @@ export default class ProductList extends React.PureComponent {
               <Divider type="vertical" />
               <Link to={`/product/edit/${record.id}`}>编辑</Link>
               <Divider type="vertical" />
-              <Popconfirm placement="topLeft" title={`请确定是否${record.status === '1' ? '下架' : '上架'}该产品？`} onConfirm={() => this.updateProductStatus(record)} okText="确定" cancelText="取消">
+              <Popconfirm
+                placement="topLeft"
+                title={`请确定是否${record.status === '1' ? '下架' : '上架'}该产品？`}
+                onConfirm={() => this.updateProductStatus(record)}
+                okText="确定"
+                cancelText="取消"
+              >
                 <a href="javascript:;">{record.status === '1' ? '下架' : '上架'}</a>
               </Popconfirm>
             </div>
@@ -80,7 +86,7 @@ export default class ProductList extends React.PureComponent {
     });
   }
 
-  updateProductStatus = async ({ id, status }) => {
+  updateProductStatus = async ({ id, status, name }) => {
     let nextStatus = '1';
     let info = '上架';
     if (status === '1') {
@@ -92,7 +98,7 @@ export default class ProductList extends React.PureComponent {
       status: nextStatus,
     });
     if (result && result.code === 0) {
-      message.success(`产品ID为${id}的产品${info}成功`);
+      message.success(`产品名称为${name}的产品${info}成功`);
       const pager = { ...this.state.pagination };
       this.getProductList({
         limit: pager.pageSize,

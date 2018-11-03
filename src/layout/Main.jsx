@@ -25,9 +25,17 @@ function getFirstChildPath(parentPath) {
     return `/${parentPath}`;
   }
 }
+let menuPaths = [];
+MenuData.forEach(parent => {
+  if (parent.children) {
+    parent.children.forEach(child => {
+      menuPaths.push(`/${parent.path}/${child.path}`)
+    })
+  }
+});
 
-@connect(({ user }) => ({
-  user: user
+@connect(({ auth }) => ({
+  userInfo: auth.userInfo,
 }), {
   authUserLogin,
   authUserLogout,
@@ -62,7 +70,10 @@ export default class Main extends React.PureComponent {
 
   render() {
     const { history, location } = this.props;
-
+    let selectedKeys = [location.pathname];
+    if (!menuPaths.includes(location.pathname)) {
+      selectedKeys = [getFirstChildPath(location.pathname.split('/')[1])];
+    }
     const pathSnippet = location.pathname.split('/')[1];
     const childPath = getFirstChildPath(pathSnippet);
 
@@ -95,12 +106,14 @@ export default class Main extends React.PureComponent {
 
     const menu = (
       <Menu onClick={this.onMenuClick} className="menu" placement="bottomRight">
-        <Menu.Item><Icon type="user" />个人中心</Menu.Item>
-        <Menu.Item><Icon type="setting" />设置</Menu.Item>
+        {/* <Menu.Item><Icon type="user" />个人中心</Menu.Item>
+        <Menu.Item><Icon type="setting" />设置</Menu.Item> */}
         <Menu.Divider />
         <Menu.Item key="logout"><Icon type="logout" />退出登录</Menu.Item>
       </Menu>
-    )
+    );
+    const { userInfo = {} } = this.props;
+    const { sysUser = {} } = userInfo;
     return (
       <Layout className="main-layout" style={{ minHeight: '100vh' }}>
         <Sider
@@ -112,7 +125,7 @@ export default class Main extends React.PureComponent {
             <Icon type="appstore" theme="outlined" />
             <span>快易布管理系统</span>
           </div>
-          <Menu theme="dark" defaultOpenKeys={[pathSnippet]} defaultSelectedKeys={[location.pathname]} mode="inline">
+          <Menu theme="dark" defaultOpenKeys={[pathSnippet]} selectedKeys={selectedKeys} mode="inline">
             {
               MenuData.map(item => (
                 <SubMenu
@@ -141,7 +154,7 @@ export default class Main extends React.PureComponent {
               <Dropdown overlay={menu}>
                 <span className="action account">
                   <Avatar size="small" src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png" />
-                  <span className="username">管理员</span>
+                  <span className="username">{sysUser.username}</span>
                 </span>
               </Dropdown>
             </div>

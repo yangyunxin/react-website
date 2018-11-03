@@ -134,41 +134,6 @@ export default class ProductDetail extends React.PureComponent {
                 <Input placeholder="请输入产品货号" />
               )}
             </FormItem>
-            <FormItem {...formItemLayout2} label="成分">
-              {getFieldDecorator('name')(
-                <Input placeholder="请输入产品成分" />
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout2} label="产品克重">
-              {getFieldDecorator('name')(
-                <Input placeholder="请输入产品克重" />
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout2} label="产品门幅">
-              {getFieldDecorator('name')(
-                <Input placeholder="请输入产品门幅" />
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout2} label="产品用途">
-              {getFieldDecorator('name')(
-                <Input placeholder="请输入产品用途" />
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout2} label="加工工艺">
-              {getFieldDecorator('name')(
-                <Input placeholder="请输入加工工艺" />
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout2} label="供应状态">
-              {getFieldDecorator('name')(
-                <Input placeholder="请输入供应状态" />
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout2} label="发货地点">
-              {getFieldDecorator('name')(
-                <Input placeholder="请输入发货地点" />
-              )}
-            </FormItem>
           </Card>
           <div>
             <Button style={{ width: '100px', marginRight: '20px' }} type="primary" htmlType="submit">提交</Button>

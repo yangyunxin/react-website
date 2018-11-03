@@ -4,6 +4,12 @@ import { nullString, PRODUCT_STATUS } from '../../../utils/constant';
 
 const columns = [
   {
+    title: '产品名称',
+    dataIndex: 'name',
+    key: 'name',
+    align: 'center',
+  },
+  {
     title: '产品大类',
     dataIndex: 'productCategory',
     key: 'productCategory',
@@ -21,12 +27,6 @@ const columns = [
     key: 'mainPicture',
     align: 'center',
     render: (text) => <img width="50" height="50" src={text} alt="产品图片" />
-  },
-  {
-    title: '产品名称',
-    dataIndex: 'name',
-    key: 'name',
-    align: 'center',
   },
   {
     title: '价格（元）',
