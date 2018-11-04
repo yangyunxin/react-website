@@ -3,14 +3,11 @@ import { connect } from 'react-redux';
 import { Card, Table, message } from 'antd';
 import { formatDateSecond } from '../../utils/utils';
 import EnhanceTitle from '../../component/EnhanceTitle';
-import DescriptionList from '../../component/DescriptionList';
 import addressColumns from './columns/address';
 import orderColumns from './columns/order';
 import { getUserById, getUserAddressById, getUserOrderById } from '../../action/user';
 import { deleteOrderById } from '../../action/order';
 import './index.css';
-
-const { Description } = DescriptionList;
 
 @connect(({ user }) => ({
   userDetail: user.userDetail,
@@ -40,13 +37,15 @@ export default class OrderDetail extends React.PureComponent {
     const { match: { params } } = this.props;
     this.props.getUserById(params.id);
     this.props.getUserAddressById(params.id);
-    this.props.getUserOrderById({ account_id: params.id });
+    this.props.getUserOrderById({ accountId: params.id });
   }
 
   deleteUserOrderById = async (id) => {
     const result = await deleteOrderById(id);
     if (result && result.code === 0) {
-      message.error(`删除${id}订单成功`);
+      message.success(`删除${id}订单成功`);
+      const { match: { params } } = this.props;
+      this.props.getUserOrderById({ accountId: params.id });
     }
   }
 
@@ -57,15 +56,24 @@ export default class OrderDetail extends React.PureComponent {
       <div className="page-detail">
         <Card bordered={false}>
           <EnhanceTitle title="用户详情" />
-          <DescriptionList>
-            <Description term="头像"><img alt="用户头像" src={userDetail.url} /></Description>
-            <Description term="用户ID">{userDetail.id}</Description>
-            <Description term="手机号">{userDetail.phoneNumber}</Description>
-            <Description term="姓名">{userDetail.name}</Description>
-            <Description term="用户来源">{userDetail.registChannel}</Description>
-            <Description term="性别">TODO</Description>
-            <Description term="注册时间">{formatDateSecond(userDetail.createTime)}</Description>
-          </DescriptionList>
+          <div className="userinfo-box">
+            <div className="userinfo-left">
+              <img alt="用户头像" src={userDetail.url} />
+              <p>{userDetail.phoneNumber}</p>
+            </div>
+            <div className="userinfo-right">
+              <div className="userinfo-right1">
+                <p><span>用户ID</span><span>{userDetail.id}</span></p>
+                <p><span>姓名</span><span>{userDetail.name}</span></p>
+                <p><span>性别</span><span>TODO</span></p>
+              </div>
+              <div className="userinfo-right2">
+                <p><span>手机号</span><span>{userDetail.phoneNumber}</span></p>
+                <p><span>用户来源</span><span>{userDetail.registChannel}</span></p>
+                <p><span>注册时间</span><span>{formatDateSecond(userDetail.createTime)}</span></p>
+              </div>
+            </div>
+          </div>
         </Card>
         <Card bordered={false}>
           <EnhanceTitle title="收货地址" />

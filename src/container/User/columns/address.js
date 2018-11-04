@@ -1,8 +1,10 @@
+import { IS_DEFAULT, nullString } from '../../../utils/constant';
+
 const columns = [
   {
     title: '姓名',
-    dataIndex: 'name',
-    key: 'name',
+    dataIndex: 'consigneeName',
+    key: 'consigneeName',
     align: 'center',
   },
   {
@@ -16,18 +18,23 @@ const columns = [
     dataIndex: 'address',
     key: 'address',
     align: 'center',
+    render: (text, record) => record.cityName
+      ?`${record.cityName}${record.districtName}${record.fullAddress}`
+      : nullString
   },
   {
     title: '邮政编码',
-    dataIndex: 'createTime',
-    key: 'createTime',
+    dataIndex: 'zipCode',
+    key: 'zipCode',
     align: 'center',
+    render: (text) => text || nullString
   },
   {
     title: '默认地址',
     dataIndex: 'isDefult',
     key: 'isDefult',
     align: 'center',
+    render: (text) => IS_DEFAULT[text]
   },
 ];
 export default columns;

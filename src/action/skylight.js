@@ -1,5 +1,5 @@
 import API from '../utils/api';
-import { get, post, put } from '../utils/request';
+import { get, post, put, deleted } from '../utils/request';
 
 export const GET_SKYLIGHT_LIST = 'GET_SKYLIGHT_LIST';
 export const GET_SKYLIGHT_BYID = 'GET_SKYLIGHT_BYID';
@@ -37,6 +37,13 @@ export async function addSkylight(params) {
 
 export async function updateSkylight(params) {
   const result = await put(API.updateSkylight, params);
+  if (result && result.status === 200) {
+    return result.data
+  }
+}
+
+export async function deleteSkylight(id) {
+  const result = await deleted(`${API.deleteSkylight}/${id}`);
   if (result && result.status === 200) {
     return result.data
   }

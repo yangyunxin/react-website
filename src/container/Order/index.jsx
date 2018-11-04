@@ -63,9 +63,9 @@ export default class OrderList extends React.PureComponent {
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        const { createdTime, ...newParams } = values;
-        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
-        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
+        const { createTime, ...newParams } = values;
+        const beginTime = values.createTime ? values.createTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createTime ? values.createTime[1].format('YYYY-MM-DD') : undefined;
         await this.props.getOrderList({ ...newParams, ...params, beginTime, endTime});
         this.setState({ loading: false });
       } else {
@@ -183,7 +183,7 @@ export default class OrderList extends React.PureComponent {
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="提交起止时间">
-                  {getFieldDecorator('createdTime')(
+                  {getFieldDecorator('createTime')(
                     <RangePicker format={dateFormat} />
                   )}
                 </FormItem>

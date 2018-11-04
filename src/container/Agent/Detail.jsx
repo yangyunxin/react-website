@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, Form, Input, Select, Button } from 'antd';
 import { getAgentById } from '../../action/agent';
-import { formItemLayout2 } from '../../utils/constant';
+import { formItemLayout2, AGENT_TYPE } from '../../utils/constant';
 import { formatDateSecond } from '../../utils/utils';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
@@ -36,8 +36,9 @@ export default class AgentDetail extends React.PureComponent {
             </FormItem>
             <FormItem {...formItemLayout2} label="代理商类型">
               <Select value={agentDetail.type} placeholder="请选择代理商类型">
-                <Option value="0">门店代理商</Option>
-                <Option value="1">个人代理商</Option>
+                {Object.keys(AGENT_TYPE).map(item => (
+                  <Option key={item} value={item}>{AGENT_TYPE[item]}</Option>
+                ))}
               </Select>
             </FormItem>
             <FormItem {...formItemLayout2} label="代理商名称">

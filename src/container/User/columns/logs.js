@@ -7,8 +7,8 @@ const columns = [
   },
   {
     title: '登录时间',
-    dataIndex: 'loginTime',
-    key: 'loginTime',
+    dataIndex: 'createTime',
+    key: 'createTime',
     align: 'center',
   },
   {
@@ -19,8 +19,8 @@ const columns = [
   },
   {
     title: 'IP',
-    dataIndex: 'loginIPAddress',
-    key: 'loginIPAddress',
+    dataIndex: 'remoteAddr',
+    key: 'remoteAddr',
     align: 'center',
   },
   {

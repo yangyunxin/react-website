@@ -88,6 +88,10 @@ export const ORDER_OPERATE = {
   1: '订单发货',
   2: '确认收货',
 }
+export const IS_DEFAULT = {
+  0: '否',
+  1: '是',
+}
 export const AGENT_TYPE = {
   0: '门店代理商',
   1: '个人代理商',

@@ -74,9 +74,9 @@ export default class AgentProduct extends React.PureComponent {
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        const { createdTime, ...newParams } = values;
-        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
-        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
+        const { createTime, ...newParams } = values;
+        const beginTime = values.createTime ? values.createTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createTime ? values.createTime[1].format('YYYY-MM-DD') : undefined;
         await this.props.getProductList({ ...newParams, ...params, beginTime, endTime});
         this.setState({ loading: false });
       } else {
@@ -142,7 +142,7 @@ export default class AgentProduct extends React.PureComponent {
 
   agentProduct = async(sign) => {
     const agentId = this.props.match.params.id;
-    const { selectedRowKeys } = this.state;
+    const { selectedRowKeys, selectedRows } = this.state;
     const values = selectedRowKeys.map(item => ({
       projectId: item,
       agentId,
@@ -150,7 +150,7 @@ export default class AgentProduct extends React.PureComponent {
     }));
     const result = await agentProduct(values);
     if (result && result.code === 0) {
-      message.success(`产品ID为${selectedRowKeys}关联代理商成功`);
+      message.success(`产品名称为${selectedRows.map(item => item.name).join('、')}关联代理商成功`);
       const pager = { ...this.props.pagination };
       this.getProductList({
         limit: pager.pageSize,
@@ -170,7 +170,7 @@ export default class AgentProduct extends React.PureComponent {
       sign: 0,
     });
     if (result && result.code === 0) {
-      message.success(`产品ID为${record.name}关联代理商成功`);
+      message.success(`产品名称为${record.name}关联代理商成功`);
       const pager = { ...this.props.pagination };
       this.getProductList({
         limit: pager.pageSize,

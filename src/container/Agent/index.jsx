@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, Popconfirm, message } from 'antd';
 import { getAgentList, deleteAgentById } from '../../action/agent';
 import listColumns from './columns/list';
-import { formItemLayout, showTotal } from '../../utils/constant';
+import { formItemLayout, showTotal, AGENT_TYPE } from '../../utils/constant';
 import './index.css';
 
 const FormItem = Form.Item;
@@ -64,10 +64,10 @@ export default class AgentList extends React.PureComponent {
     this.setState = (state,callback) => { };
   }
 
-  deleteAgent = async (id) => {
-    const result = await deleteAgentById(id);
+  deleteAgent = async (record) => {
+    const result = await deleteAgentById(record.id);
     if (result && result.code === 0) {
-      message.success(`运营商ID为${id}删除成功`);
+      message.success(`代理商商ID为${record.name}删除成功`);
       const pager = { ...this.props.pagination };
       this.getAgentList({
         limit: pager.pageSize,
@@ -82,9 +82,9 @@ export default class AgentList extends React.PureComponent {
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        const { createdTime, ...newParams } = values;
-        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
-        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
+        const { createTime, ...newParams } = values;
+        const beginTime = values.createTime ? values.createTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createTime ? values.createTime[1].format('YYYY-MM-DD') : undefined;
         await this.props.getAgentList({ ...newParams, ...params, beginTime, endTime});
         this.setState({ loading: false });
       } else {
@@ -140,8 +140,9 @@ export default class AgentList extends React.PureComponent {
                 <FormItem {...formItemLayout} label="代理商类型">
                   {getFieldDecorator('type')(
                     <Select allowClear placeholder="请选择代理商类型">
-                      <Option value="0">门店代理商</Option>
-                      <Option value="1">个人代理商</Option>
+                      {Object.keys(AGENT_TYPE).map(item => (
+                        <Option key={item} value={item}>{AGENT_TYPE[item]}</Option>
+                      ))}
                     </Select>
                   )}
                 </FormItem>

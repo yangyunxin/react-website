@@ -3,17 +3,17 @@ import { nullString, AGENT_TYPE } from '../../../utils/constant';
 
 const columns = [
   {
+    title: '代理商名称',
+    dataIndex: 'name',
+    key: 'name',
+    align: 'center',
+  },
+  {
     title: '代理商类型',
     dataIndex: 'type',
     key: 'type',
     align: 'center',
     render: (text) => AGENT_TYPE[text] || nullString
-  },
-  {
-    title: '代理商名称',
-    dataIndex: 'name',
-    key: 'name',
-    align: 'center',
   },
   {
     title: '代理商账号',

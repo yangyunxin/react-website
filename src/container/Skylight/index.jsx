@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider } from 'antd';
+import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message, Popconfirm } from 'antd';
 import listColumns from './columns/list';
-import { formItemLayout, showTotal } from '../../utils/constant';
-import { getSkylightList } from '../../action/skylight';
+import { formItemLayout, showTotal, SKY_TYPE } from '../../utils/constant';
+import { getSkylightList, deleteSkylight } from '../../action/skylight';
 import './index.css'
 
 const FormItem = Form.Item;
@@ -34,7 +34,15 @@ export default class SkylightList extends React.PureComponent {
             <Divider type="vertical" />
             <Link to={`/skylight/edit/${record.id}`}>编辑</Link>
             <Divider type="vertical" />
-            <a onClick={this.deleteSkylight} href="javascript:;">删除</a>
+            <Popconfirm
+              placement="topLeft"
+              title={`请确定是否删除此天窗？`}
+              onConfirm={() => this.deleteSkylight(record.id)}
+              okText="确定"
+              cancelText="取消"
+            >
+              <a href="javascript:;">删除</a>
+            </Popconfirm>
           </div>
         )
       },
@@ -43,6 +51,10 @@ export default class SkylightList extends React.PureComponent {
 
   state = {
     selectedRowKeys: [],
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+    },
     loading: false,
   };
 
@@ -51,7 +63,6 @@ export default class SkylightList extends React.PureComponent {
   }
 
   onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   }
 
@@ -59,10 +70,10 @@ export default class SkylightList extends React.PureComponent {
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        const { createdTime, ...params } = values;
-        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
-        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
-        await this.props.getSkylightList({ ...params, beginTime, endTime});
+        const { createTime, ...newParams } = values;
+        const beginTime = values.createTime ? values.createTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createTime ? values.createTime[1].format('YYYY-MM-DD') : undefined;
+        await this.props.getSkylightList({ ...newParams, ...params, beginTime, endTime});
         this.setState({ loading: false });
       } else {
         this.setState({ loading: false });
@@ -70,8 +81,18 @@ export default class SkylightList extends React.PureComponent {
     });
   }
 
-  deleteSkylight = (id) => {
-
+  deleteSkylight = async (id) => {
+    const result = await deleteSkylight(id);
+    if (result && result.code === 0) {
+      message.success(`删除ID为${id}的天窗成功`);
+      const pager = { ...this.props.pagination };
+      this.getSkylightList({
+        limit: pager.pageSize,
+        page: pager.current,
+      });
+    } else {
+      message.error('删除天窗失败，请稍后重试');
+    }
   }
 
   handleSubmit = (e) => {
@@ -86,6 +107,7 @@ export default class SkylightList extends React.PureComponent {
   handleTableChange = (pagination) => {
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
+    pager.pageSize = pagination.pageSize;
     this.setState({ pagination: pager });
     this.getSkylightList({
       limit: pagination.pageSize,
@@ -116,7 +138,9 @@ export default class SkylightList extends React.PureComponent {
                 <FormItem {...formItemLayout} label="天窗类型">
                   {getFieldDecorator('skyType')(
                     <Select allowClear placeholder="请选择天窗类型">
-                      <Option value="Banner">Banner</Option>
+                      {Object.keys(SKY_TYPE).map(item => (
+                        <Option key={item} value={item}>{SKY_TYPE[item]}</Option>
+                      ))}
                     </Select>
                   )}
                 </FormItem>

@@ -29,6 +29,7 @@ export default class ProductList extends React.PureComponent {
         dataIndex: 'operate',
         key: 'operate',
         align: 'center',
+        fixed: 'right',
         render: (text, record) => {
           return (
             <div>
@@ -75,9 +76,9 @@ export default class ProductList extends React.PureComponent {
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        const { createdTime, ...newParams } = values;
-        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
-        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
+        const { createTime, ...newParams } = values;
+        const beginTime = values.createTime ? values.createTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createTime ? values.createTime[1].format('YYYY-MM-DD') : undefined;
         await this.props.getProductList({ ...newParams, ...params, beginTime, endTime});
         this.setState({ loading: false });
       } else {
@@ -253,6 +254,13 @@ export default class ProductList extends React.PureComponent {
                 </FormItem>
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
+                <FormItem {...formItemLayout} label="产品货号">
+                  {getFieldDecorator('sameStyleNum')(
+                    <Input placeholder="请输入产品货号" />
+                  )}
+                </FormItem>
+              </Col>
+              <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="产品大类">
                   {getFieldDecorator('productCategory')(
                     <Select allowClear placeholder="请选择产品大类">
@@ -297,7 +305,7 @@ export default class ProductList extends React.PureComponent {
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="创建起止时间">
-                  {getFieldDecorator('createdTime')(
+                  {getFieldDecorator('createTime')(
                     <RangePicker format={dateFormat} />
                   )}
                 </FormItem>
@@ -315,6 +323,7 @@ export default class ProductList extends React.PureComponent {
           <Table
             title={this.title}
             rowKey="id"
+            scroll={{ x: 1100 }}
             onChange={this.handleTableChange}
             pagination={{ showTotal: showTotal, total: productList.total, ...this.state.pagination }}
             rowSelection={rowSelection}

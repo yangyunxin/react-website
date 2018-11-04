@@ -64,10 +64,10 @@ const menuData = [
         name: '代理商维护',
         path: 'list',
       },
-      {
-        name: '代理商添加',
-        path: 'add',
-      }
+      // {
+      //   name: '代理商添加',
+      //   path: 'add',
+      // }
     ],
   },
   {

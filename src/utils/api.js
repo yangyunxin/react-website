@@ -22,13 +22,14 @@ const API = {
   agentList: '/api/goods/tAgent/page',
   getAgentById: '/api/goods/tAgent',
   addAgent: '/api/goods/tAgent/add', // post
-  putAgent: '/api/goods/tAgent/update',
+  updateAgent: '/api/goods/tAgent/update',
   agentProduct: '/api/goods/tAgentProduct/addBatch',
   deleteAgentById: '/api/goods/tAgent',
   getSkylightList: '/api/goods/tSkyLight/page',
   getSkylightById: '/api/goods/tSkyLight',
   addSkylight: '/api/goods/tSkyLight/add',
   updateSkylight: '/api/goods/tSkyLight/update',
+  deleteSkylight: '/api/goods/tSkyLight',
   getSystemLogList: '/api/admin/log/logPage',
   getUserInfo: '/api/admin/user/info',
 }

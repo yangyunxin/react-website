@@ -13,6 +13,13 @@ const columns = [
     dataIndex: 'name',
     key: 'name',
     align: 'center',
+    fixed: 'left',
+  },
+  {
+    title: '产品货号',
+    dataIndex: 'sameStyleNum',
+    key: 'sameStyleNum',
+    align: 'center',
   },
   {
     title: '产品大类',
@@ -33,7 +40,7 @@ const columns = [
     dataIndex: 'mainPicture',
     key: 'mainPicture',
     align: 'center',
-    render: (text) => <img width="50" height="50" src={text} alt="产品图片" />
+    render: (text) => <img style={{ display: 'block' }} width="50" height="50" src={text} alt="产品图片" />
   },
   {
     title: '价格（元）',
@@ -42,7 +49,7 @@ const columns = [
     align: 'center',
     render: (text, record) => {
       const product = record.priceList && record.priceList.length ? record.priceList[0] : {}
-      return product['price']
+      return product['price'] || nullString
     }
   },
   {
@@ -52,7 +59,7 @@ const columns = [
     align: 'center',
     render: (text, record) => {
       const product = record.priceList && record.priceList.length ? record.priceList[0] : {}
-      return product['unit']
+      return product['unit'] || nullString
     }
   },
   {

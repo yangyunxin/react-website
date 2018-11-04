@@ -35,7 +35,9 @@ export default class SkylightEdit extends React.PureComponent {
     e.preventDefault();
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const result = await updateSkylight(values);
+        const { match } = this.props;
+        const { params: { id } } = match;
+        const result = await updateSkylight({ id, ...values });
         if (result && result.code === 0) {
           message.success('更新天窗成功！1s后跳转天窗列表页面');
           this.timer = setTimeout(() => {

@@ -1,0 +1,42 @@
+.userinfo-box {
+  display: flex;
+  border: 1px solid #e8e8e8;
+}
+.userinfo-box .userinfo-left {
+  width: 200px;
+  text-align: center;
+
+}
+.userinfo-box img {
+  margin: 10px auto;
+  width: 100px;
+  height: 100px;
+  display: inline-block;
+  border-radius: 100%;
+}
+.userinfo-right {
+  flex: 1;
+}
+.userinfo-right1, .userinfo-right2 {
+  height: 100%;
+  border-left: 1px solid #e8e8e8;
+  width: 50%;
+  float: left;
+}
+.userinfo-right p {
+  line-height: 52px;
+  margin-bottom: 0;
+  border-bottom: 1px solid #e8e8e8;
+  overflow: hidden;
+}
+.userinfo-right1 p:last-child, .userinfo-right2 p:last-child {
+  border: 0;
+}
+.userinfo-right p span {
+  padding-left: 10px;
+  float: left;
+  width: 50%;
+}
+.userinfo-right p span:first-child {
+  border-right: 1px solid #e8e8e8;
+}

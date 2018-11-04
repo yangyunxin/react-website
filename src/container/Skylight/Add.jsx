@@ -101,10 +101,10 @@ export default class SkylightAdd extends React.PureComponent {
               )}
             </FormItem> */}
           </Card>
-          <Card bordered={false}>
+          {/* <Card bordered={false}>
             <EnhanceTitle title="关联banner" />
             <Table bordered columns={bannerOperateColumns} dataSource={[] } />
-          </Card>
+          </Card> */}
           <div>
             <Button style={{ width: '100px', marginRight: '20px' }} type="primary" htmlType="submit">提交</Button>
             <Button onClick={this.handleReset} style={{ width: '100px', marginRight: '20px' }}>清空</Button>

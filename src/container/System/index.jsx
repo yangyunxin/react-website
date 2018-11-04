@@ -37,10 +37,10 @@ export default class OperateLog extends React.PureComponent {
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        const { createdTime, ...params } = values;
-        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
-        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
-        await this.props.getSystemLogList({ ...params, beginTime, endTime});
+        const { createTime, ...newParams } = values;
+        const beginTime = values.createTime ? values.createTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createTime ? values.createTime[1].format('YYYY-MM-DD') : undefined;
+        await this.props.getSystemLogList({ ...newParams, ...params, beginTime, endTime});
         this.setState({ loading: false });
       } else {
         this.setState({ loading: false });
@@ -54,13 +54,13 @@ export default class OperateLog extends React.PureComponent {
   }
 
   onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   }
 
   handleTableChange = (pagination) => {
     const pager = { ...this.state.pagination };
     pager.current = pagination.current;
+    pager.pageSize = pagination.pageSize;
     this.setState({ pagination: pager });
     this.getSystemLogList({
       limit: pagination.pageSize,

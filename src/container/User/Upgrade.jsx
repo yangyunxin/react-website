@@ -13,6 +13,10 @@ const Option = Select.Option;
 
 @Form.create()
 export default class UserUpgrade extends React.PureComponent {
+  componentWillUnmount() {
+    this.timer = null;
+  }
+  timer = null;
   handleSubmit= (e) => {
     e.preventDefault();
     this.props.form.validateFields(async (err, values) => {
@@ -21,9 +25,12 @@ export default class UserUpgrade extends React.PureComponent {
         const { detail, mainPicture, ...params } = values;
         const newDetail = values.detail.toRAW();
         const url = mainPicture && mainPicture[0];
-        const result = upgradeUser({ ...params, accountId: id, url });
+        const result = await upgradeUser({ ...params, accountId: id, url });
         if (result && result.code === 0) {
           message.success('升级代理商成功！将会返回用户列表页面');
+          this.timer = setTimeout(() => {
+            this.props.history.push('/user/list');
+          });
         } else {
           message.error('升级代理商失败！请稍后重试');
         }

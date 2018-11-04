@@ -55,6 +55,13 @@ export async function deleteAgentById(id) {
   }
 }
 
+export async function updateAgent(params) {
+  const result = await put(API.updateAgent, params);
+  if (result && result.status === 200) {
+    return result.data;
+  }
+}
+
 export async function agentProduct(params) {
   const result = await post(API.agentProduct, params);
   if (result && result.status === 200) {

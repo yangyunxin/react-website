@@ -33,7 +33,13 @@ export default class UserList extends React.PureComponent {
             <div>
               <Link to={`/user/detail/${record.id}`}>查看</Link>
               <Divider type="vertical" />
-              <Popconfirm placement="topLeft" title="请确定是否禁用该用户？" onConfirm={() => this.updateStatus(record)} okText="确定" cancelText="取消">
+              <Popconfirm
+                placement="topLeft"
+                title={`请确定是否${record.status === "0" ? '禁用' : '解禁'}该用户？`}
+                onConfirm={() => this.updateStatus(record)}
+                okText="确定"
+                cancelText="取消"
+              >
                 <a href="javascript:;">{record.status === "0" ? '禁用' : '解禁'}</a>
               </Popconfirm>
               <Divider type="vertical" />

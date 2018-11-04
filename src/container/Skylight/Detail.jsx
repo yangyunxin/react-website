@@ -6,7 +6,7 @@ import DescriptionList from '../../component/DescriptionList';
 import { getSkylightById } from '../../action/skylight';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import bannerColumns from './columns/banner';
-import { SKY_TYPE } from '../../utils/constant';
+import { SKY_TYPE, nullString } from '../../utils/constant';
 import { formatDateSecond } from '../../utils/utils';
 import './index.css';
 
@@ -31,19 +31,19 @@ export default class OrderDetail extends React.PureComponent {
           <EnhanceTitle title="基本信息" />
           <DescriptionList col={1}>
             <Description term="天窗ID">{skylightDetail.skyId}</Description>
-            <Description term="天窗类型">{SKY_TYPE[skylightDetail.type]}</Description>
+            <Description term="天窗类型">{SKY_TYPE[skylightDetail.skyType]}</Description>
             <Description term="天窗标题">{skylightDetail.skyTitle}</Description>
             <Description term="天窗描述">{skylightDetail.description}</Description>
-            <Description term="创建时间">{formatDateSecond(skylightDetail.createTime)}</Description>
+            <Description term="创建时间">{skylightDetail.createTime ? formatDateSecond(skylightDetail.createTime) : nullString}</Description>
             <Description term="创建人">{skylightDetail.creator}</Description>
-            <Description term="更新时间">{formatDateSecond(skylightDetail.updateTime)}</Description>
+            <Description term="更新时间">{skylightDetail.updateTime ? formatDateSecond(skylightDetail.updateTime) : nullString}</Description>
             <Description term="更新人">{skylightDetail.editer}</Description>
           </DescriptionList>
         </Card>
-        <Card bordered={false}>
+        {/* <Card bordered={false}>
           <EnhanceTitle title="关联banner" />
           <Table bordered columns={bannerColumns} dataSource={[] } />
-        </Card>
+        </Card> */}
         <Button type="primary">
           <Link to="/skylight/list">返回</Link>
         </Button>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Card, Form, Input, Select, Button } from 'antd';
-import { getAgentById } from '../../action/agent';
+import { Card, Form, Input, Select, Button, message } from 'antd';
+import { getAgentById, updateAgent } from '../../action/agent';
 import { formItemLayout2 } from '../../utils/constant';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
@@ -22,6 +22,30 @@ export default class AgentEdit extends React.PureComponent {
     const { match } = this.props;
     const { params: { id } } = match;
     this.props.getAgentById(id)
+  }
+
+  componentWillUnmount() {
+    this.timer = null;
+  }
+
+  timer = null
+
+  handleSubmit= (e) => {
+    e.preventDefault();
+    this.props.form.validateFields(async (err, values) => {
+      if (!err) {
+        const { match } = this.props;
+        const { params: { id } } = match;
+        const { url, ...params } = values;
+        const result = await updateAgent({ id, url: url[0], ...params });
+        if (result && result.code === 0) {
+          message.success('更新代理商成功！1s后跳转代理商列表页面');
+          this.timer = setTimeout(() => {
+            this.props.history.push('/agent/list');
+          }, 1000)
+        }
+      }
+    });
   }
 
   render() {
