@@ -1,5 +1,5 @@
 
-import { formatDateMinute } from '../../../utils/utils';
+import { formatDateSecond } from '../../../utils/utils';
 import { nullString, PAYMENT_METHOD, ORDER_STATUS, REGIST_CHANNEL } from '../../../utils/constant';
 
 const columns = [
@@ -16,7 +16,7 @@ const columns = [
     dataIndex: 'createdTime',
     key: 'createdTime',
     align: 'center',
-    render: (text) => text ? formatDateMinute(text) : nullString,
+    render: (text) => text ? formatDateSecond(text) : nullString,
   },
   {
     title: '用户账号',

@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message, Popconfirm } from 'antd';
-import { formItemLayout, showTotal } from '../../utils/constant';
+import { formItemLayout, showTotal, REGIST_CHANNEL, USER_ACCOUNT_STATUS } from '../../utils/constant';
 import listColumns from './columns/list';
 import { getUsertList, updateUser } from '../../action/user';
 import './index.css'
@@ -80,9 +80,9 @@ export default class UserList extends React.PureComponent {
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        const { createdTime, ...newParams } = values;
-        const beginTime = values.createdTime ? values.createdTime[0].format('YYYY-MM-DD') : undefined;
-        const endTime = values.createdTime ? values.createdTime[1].format('YYYY-MM-DD') : undefined;
+        const { createTime, ...newParams } = values;
+        const beginTime = values.createTime ? values.createTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createTime ? values.createTime[1].format('YYYY-MM-DD') : undefined;
         await this.props.getUsertList({ ...newParams, ...params, beginTime, endTime});
         this.setState({ loading: false });
       } else {
@@ -145,10 +145,9 @@ export default class UserList extends React.PureComponent {
                 <FormItem {...formItemLayout} label="用户来源">
                   {getFieldDecorator('registChannel')(
                     <Select allowClear placeholder="请选择用户来源">
-                      <Option value="0">公众号</Option>
-                      <Option value="1">小程序</Option>
-                      <Option value="2">APP</Option>
-                      <Option value="3">网站</Option>
+                      {Object.keys(REGIST_CHANNEL).map(item => (
+                        <Option key={item} value={item}>{REGIST_CHANNEL[item]}</Option>
+                      ))}
                     </Select>
                   )}
                 </FormItem>
@@ -157,8 +156,9 @@ export default class UserList extends React.PureComponent {
                 <FormItem {...formItemLayout} label="用户状态">
                   {getFieldDecorator('status')(
                     <Select allowClear placeholder="请选择用户状态">
-                      <Option value="0">正常</Option>
-                      <Option value="1">封号</Option>
+                      {Object.keys(USER_ACCOUNT_STATUS).map(item => (
+                        <Option key={item} value={item}>{USER_ACCOUNT_STATUS[item]}</Option>
+                      ))}
                     </Select>
                   )}
                 </FormItem>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, Form, Input, Select, Button } from 'antd';
 import { getProductById } from '../../action/product';
-import { formItemLayout2 } from '../../utils/constant';
+import { formItemLayout2, PRODUCT_TYPE, PRODUCT_SUB } from '../../utils/constant';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
 
@@ -31,14 +31,17 @@ export default class ProductDetail extends React.PureComponent {
           <Card bordered={false}>
             <EnhanceTitle title="基本信息" />
             <FormItem {...formItemLayout2} label="产品大类">
-              <Select value={productDetail.productCategory} allowClear placeholder="请选择产品大类">
-                <Option value="1">类别1</Option>
+              <Select value={productDetail.productCategory} placeholder="请选择产品大类">
+                {Object.keys(PRODUCT_TYPE).map(item => (
+                  <Option key={item} value={item}>{PRODUCT_TYPE[item]}</Option>
+                ))}
               </Select>
             </FormItem>
             <FormItem {...formItemLayout2} label="产品子类">
-              <Select value={productDetail.productSubcategory} allowClear placeholder="请选择产品子类">
-                <Option value="1">类别1</Option>
-                <Option value="2">类别2</Option>
+              <Select value={productDetail.productSubcategory} placeholder="请选择产品子类">
+                {Object.keys(PRODUCT_SUB).map(item => (
+                  <Option key={item} value={item}>{PRODUCT_SUB[item]}</Option>
+                ))}
               </Select>
             </FormItem>
             <FormItem {...formItemLayout2} label="产品名称">
@@ -83,7 +86,9 @@ export default class ProductDetail extends React.PureComponent {
             <EnhanceTitle title="详情信息" />
             <FormItem {...formItemLayout2} label="颜色">
               <Select value={productDetail.colour} allowClear placeholder="请选择产品颜色">
-                <Option value="1">类别1</Option>
+                <Option value="1">红色</Option>
+                <Option value="2">黑色</Option>
+                <Option value="3">蓝色</Option>
               </Select>
             </FormItem>
             <FormItem {...formItemLayout2} label="产品主图">

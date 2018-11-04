@@ -5,7 +5,7 @@ import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider
 import PriceForm from './PriceForm';
 import { getProductList, addBatch, batchUpProduct, batchDownProduct, updateProduct } from '../../action/product';
 import listColumns from './columns/list';
-import { formItemLayout, showTotal } from '../../utils/constant';
+import { formItemLayout, showTotal, PRODUCT_TYPE, PRODUCT_SUB, PRODUCT_STATUS } from '../../utils/constant';
 import './index.css'
 
 const FormItem = Form.Item;
@@ -256,9 +256,9 @@ export default class ProductList extends React.PureComponent {
                 <FormItem {...formItemLayout} label="产品大类">
                   {getFieldDecorator('productCategory')(
                     <Select allowClear placeholder="请选择产品大类">
-                      <Option value="1">大类一</Option>
-                      <Option value="2">大类二</Option>
-                      <Option value="3">大类三</Option>
+                      {Object.keys(PRODUCT_TYPE).map(item => (
+                        <Option key={item} value={item}>{PRODUCT_TYPE[item]}</Option>
+                      ))}
                     </Select>
                   )}
                 </FormItem>
@@ -267,9 +267,9 @@ export default class ProductList extends React.PureComponent {
                 <FormItem {...formItemLayout} label="产品子类">
                   {getFieldDecorator('productSubcategory')(
                     <Select allowClear placeholder="请选择产品子类">
-                      <Option value="1">子类一</Option>
-                      <Option value="2">子类二</Option>
-                      <Option value="3">子类三</Option>
+                      {Object.keys(PRODUCT_SUB).map(item => (
+                        <Option key={item} value={item}>{PRODUCT_SUB[item]}</Option>
+                      ))}
                     </Select>
                   )}
                 </FormItem>
@@ -278,9 +278,9 @@ export default class ProductList extends React.PureComponent {
                 <FormItem {...formItemLayout} label="产品状态">
                   {getFieldDecorator('status')(
                     <Select allowClear placeholder="请选择产品状态">
-                      <Option value={0}>待上架</Option>
-                      <Option value={1}>上架</Option>
-                      <Option value={2}>下架</Option>
+                      {Object.keys(PRODUCT_STATUS).map(item => (
+                        <Option key={item} value={item}>{PRODUCT_STATUS[item]}</Option>
+                      ))}
                     </Select>
                   )}
                 </FormItem>

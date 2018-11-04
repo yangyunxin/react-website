@@ -42,6 +42,16 @@ export const formItemLayout4 = {
 export function showTotal(total, range) {
   return `共${total}条数据`;
 }
+export const PRODUCT_TYPE = {
+  1: '大类一',
+  2: '大类二',
+  3: '大类三',
+}
+export const PRODUCT_SUB = {
+  1: '子类一',
+  2: '子类二',
+  3: '子类三',
+}
 export const PRODUCT_STATUS = {
   0: '待上架',
   1: '上架',

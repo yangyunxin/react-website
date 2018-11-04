@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, Form, Input, Select, Button, message } from 'antd';
-import { formItemLayout2 } from '../../utils/constant';
+import { formItemLayout2, PRODUCT_TYPE, PRODUCT_SUB } from '../../utils/constant';
 import { getProductById, updateProduct } from '../../action/product';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
@@ -27,6 +27,12 @@ export default class ProductDetail extends React.PureComponent {
     this.props.getProductById(id)
   }
 
+  componentWillUnmount() {
+    this.timer = null;
+  }
+
+  timer = null;
+
   handleSubmit= (e) => {
     e.preventDefault();
     const { match } = this.props;
@@ -43,7 +49,10 @@ export default class ProductDetail extends React.PureComponent {
           id,
         });
         if (result && result.code === 0) {
-          message.success('编辑产品成功！')
+          message.success('编辑产品成功！1s后跳转到列表页面');
+          this.timer = setTimeout(() => {
+            this.props.history.push('/product/list');
+          }, 1000)
         }
       }
     })
@@ -65,7 +74,9 @@ export default class ProductDetail extends React.PureComponent {
                 }],
               })(
                 <Select allowClear placeholder="请选择产品大类">
-                  <Option value="1">类别1</Option>
+                  {Object.keys(PRODUCT_TYPE).map(item => (
+                    <Option key={item} value={item}>{PRODUCT_TYPE[item]}</Option>
+                  ))}
                 </Select>
               )}
             </FormItem>
@@ -77,7 +88,9 @@ export default class ProductDetail extends React.PureComponent {
                 }],
               })(
                 <Select allowClear placeholder="请选择产品子类">
-                  <Option value="1">类别1</Option>
+                  {Object.keys(PRODUCT_SUB).map(item => (
+                    <Option key={item} value={item}>{PRODUCT_SUB[item]}</Option>
+                  ))}
                 </Select>
               )}
             </FormItem>
@@ -100,7 +113,9 @@ export default class ProductDetail extends React.PureComponent {
                 }],
               })(
                 <Select allowClear placeholder="请选择产品颜色">
-                  <Option value="1">类别1</Option>
+                  <Option value="1">红色</Option>
+                  <Option value="2">黑色</Option>
+                  <Option value="3">蓝色</Option>
                 </Select>
               )}
             </FormItem>
@@ -138,7 +153,7 @@ export default class ProductDetail extends React.PureComponent {
           <div>
             <Button style={{ width: '100px', marginRight: '20px' }} type="primary" htmlType="submit">提交</Button>
             <Button style={{ width: '100px' }} type="primary">
-              <Link to="/agent/list">返回</Link>
+              <Link to="/product/list">返回</Link>
             </Button>
           </div>
         </Form>

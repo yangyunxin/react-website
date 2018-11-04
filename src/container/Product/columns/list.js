@@ -1,7 +1,12 @@
 import React from 'react';
-import { formatDateMinute } from '../../../utils/utils';
-import { nullString, PRODUCT_STATUS } from '../../../utils/constant';
+import { formatDateSecond } from '../../../utils/utils';
+import { nullString, PRODUCT_TYPE, PRODUCT_SUB, PRODUCT_STATUS } from '../../../utils/constant';
 
+const color = {
+  1: '红色',
+  2: '黑色',
+  3: '蓝色',
+}
 const columns = [
   {
     title: '产品名称',
@@ -14,12 +19,14 @@ const columns = [
     dataIndex: 'productCategory',
     key: 'productCategory',
     align: 'center',
+    render: (text) => text ? PRODUCT_TYPE[text] : nullString
   },
   {
     title: '产品子类',
     dataIndex: 'productSubcategory',
     key: 'productSubcategory',
     align: 'center',
+    render: (text) => text ? PRODUCT_SUB[text] : nullString
   },
   {
     title: '产品图片',
@@ -53,13 +60,14 @@ const columns = [
     dataIndex: 'colour',
     key: 'colour',
     align: 'center',
+    render: (text) => color[text] || nullString
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
     key: 'createTime',
     align: 'center',
-    render: (text) => text ? formatDateMinute(text) : nullString
+    render: (text) => text ? formatDateSecond(text) : nullString
   },
   {
     title: '状态',

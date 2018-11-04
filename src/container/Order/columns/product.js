@@ -1,9 +1,12 @@
+import React from 'react';
+
 const columns = [
   {
     title: '产品图片',
     dataIndex: 'mainPicture',
     key: 'mainPicture',
     align: 'center',
+    render: (text) => <img src={text} alt="产品图片" />
   },
   {
     title: '产品名称',
