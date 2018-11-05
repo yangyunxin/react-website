@@ -74,6 +74,7 @@ const columns = [
     dataIndex: 'createTime',
     key: 'createTime',
     align: 'center',
+    width: '14%',
     render: (text) => text ? formatDateSecond(text) : nullString
   },
   {
