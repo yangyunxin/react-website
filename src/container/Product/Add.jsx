@@ -21,6 +21,8 @@ export default class ProductAdd extends React.PureComponent {
         const result = await addProduct({ ...params, mainPicture: pic, detailPicture: detailPic });
         if (result && result.code === 0) {
           message.success('添加产品成功！，你可以继续添加产品，或者点击返回到列表页面');
+        } else {
+          message.error('添加产品失败，请稍后重试！');
         }
       }
     });
@@ -37,6 +39,24 @@ export default class ProductAdd extends React.PureComponent {
       <Form onSubmit={this.handleSubmit}>
           <Card bordered={false}>
             <EnhanceTitle title="基本信息" />
+            <FormItem {...formItemLayout2} label="产品名称">
+              {getFieldDecorator('name', {
+                rules: [{
+                  required: true, message: '请输入产品名称',
+                }],
+              })(
+                <Input placeholder="请输入产品名称" />
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout2} label="产品货号">
+              {getFieldDecorator('sameStyleNum', {
+                rules: [{
+                  required: true, message: '请输入产品货号',
+                }],
+              })(
+                <Input placeholder="请输入产品货号" />
+              )}
+            </FormItem>
             <FormItem {...formItemLayout2} label="产品大类">
               {getFieldDecorator('productCategory', {
                 rules: [{
@@ -61,15 +81,6 @@ export default class ProductAdd extends React.PureComponent {
                   <Option value="2">子类二</Option>
                   <Option value="3">子类三</Option>
                 </Select>
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout2} label="产品名称">
-              {getFieldDecorator('name', {
-                rules: [{
-                  required: true, message: '请输入产品名称',
-                }],
-              })(
-                <Input placeholder="请输入产品名称" />
               )}
             </FormItem>
             <EnhanceTitle title="详情信息" />
@@ -104,13 +115,67 @@ export default class ProductAdd extends React.PureComponent {
                 <Uploader placeholder="请输入产品名称" max={5} />
               )}
             </FormItem>
-            <FormItem {...formItemLayout2} label="产品货号">
-              {getFieldDecorator('sameStyleNum', {
+            <FormItem {...formItemLayout2} label="成分">
+              {getFieldDecorator('ingredient', {
                 rules: [{
-                  required: true, message: '请输入产品货号',
+                  required: true, message: '请输入产品成分',
                 }],
               })(
-                <Input placeholder="请输入产品货号" />
+                <Input placeholder="请输入产品成分" />
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout2} label="克重">
+              {getFieldDecorator('weight', {
+                rules: [{
+                  required: true, message: '请输入产品克重',
+                }],
+              })(
+                <Input placeholder="请输入产品克重" />
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout2} label="门幅">
+              {getFieldDecorator('sn', {
+                rules: [{
+                  required: true, message: '请输入产品门幅',
+                }],
+              })(
+                <Input placeholder="请输入产品门幅" />
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout2} label="产品用途">
+              {getFieldDecorator('use', {
+                rules: [{
+                  required: true, message: '请输入产品用途',
+                }],
+              })(
+                <Input placeholder="请输入产品用途" />
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout2} label="加工工艺">
+              {getFieldDecorator('craft', {
+                rules: [{
+                  required: true, message: '请输入产品加工工艺',
+                }],
+              })(
+                <Input placeholder="请输入产品加工工艺" />
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout2} label="供应状态">
+              {getFieldDecorator('supplyStatus', {
+                rules: [{
+                  required: true, message: '请输入产品供应状态',
+                }],
+              })(
+                <Input placeholder="请输入产品供应状态" />
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout2} label="发货地点">
+              {getFieldDecorator('pointOfDeparture', {
+                rules: [{
+                  required: true, message: '请输入产品发货地点',
+                }],
+              })(
+                <Input placeholder="请输入产品发货地点" />
               )}
             </FormItem>
           </Card>

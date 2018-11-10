@@ -30,6 +30,12 @@ export default class ProductDetail extends React.PureComponent {
         <Form onSubmit={this.handleSubmit}>
           <Card bordered={false}>
             <EnhanceTitle title="基本信息" />
+            <FormItem {...formItemLayout2} label="产品名称">
+              <Input value={productDetail.name} placeholder="请输入产品名称" />
+            </FormItem>
+            <FormItem {...formItemLayout2} label="产品货号">
+              <Input value={productDetail.sameStyleNum} placeholder="请输入产品货号" />
+            </FormItem>
             <FormItem {...formItemLayout2} label="产品大类">
               <Select value={productDetail.productCategory} placeholder="请选择产品大类">
                 {Object.keys(PRODUCT_TYPE).map(item => (
@@ -43,9 +49,6 @@ export default class ProductDetail extends React.PureComponent {
                   <Option key={item} value={item}>{PRODUCT_SUB[item]}</Option>
                 ))}
               </Select>
-            </FormItem>
-            <FormItem {...formItemLayout2} label="产品名称">
-              <Input value={productDetail.name} placeholder="请输入产品名称" />
             </FormItem>
             <FormItem {...formItemLayout2} label="计价单位">
               <Input value={product['unit']} placeholder="请输入计价单位" />
@@ -97,11 +100,29 @@ export default class ProductDetail extends React.PureComponent {
             <FormItem {...formItemLayout2} label="产品详情图">
               <Uploader value={productDetail.detailPicture ? productDetail.detailPicture.split(',') : undefined} max={5} noRemove noAdd />
             </FormItem>
-            <FormItem {...formItemLayout2} label="产品货号">
-              <Input value={productDetail.sameStyleNum} placeholder="请输入产品货号" />
+            <FormItem {...formItemLayout2} label="成分">
+              <Input value={productDetail.ingredient} placeholder="请输入产品成分" />
+            </FormItem>
+            <FormItem {...formItemLayout2} label="克重">
+              <Input value={productDetail.weight} placeholder="请输入产品克重" />
+            </FormItem>
+            <FormItem {...formItemLayout2} label="门幅">
+              <Input value={productDetail.sn} placeholder="请输入产品门幅" />
+            </FormItem>
+            <FormItem {...formItemLayout2} label="产品用途">
+              <Input value={productDetail.use} placeholder="请输入产品用途" />
+            </FormItem>
+            <FormItem {...formItemLayout2} label="加工工艺">
+              <Input value={productDetail.craft} placeholder="请输入产品加工工艺" />
+            </FormItem>
+            <FormItem {...formItemLayout2} label="供应状态">
+              <Input value={productDetail.supplyStatus} placeholder="请输入产品供应状态" />
+            </FormItem>
+            <FormItem {...formItemLayout2} label="发货地点">
+              <Input value={productDetail.pointOfDeparture} placeholder="请输入产品发货地点" />
             </FormItem>
             <Button type="primary">
-              <Link to="/agent/list">返回</Link>
+              <Link to="/product/list">返回</Link>
             </Button>
           </Card>
         </Form>

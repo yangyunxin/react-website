@@ -37,15 +37,27 @@ export default class ProductList extends React.PureComponent {
               <Divider type="vertical" />
               <Link to={`/product/edit/${record.id}`}>编辑</Link>
               <Divider type="vertical" />
-              <Popconfirm
-                placement="topLeft"
-                title={`请确定是否${record.status === '1' ? '下架' : '上架'}该产品？`}
-                onConfirm={() => this.updateProductStatus(record)}
-                okText="确定"
-                cancelText="取消"
-              >
-                <a href="javascript:;">{record.status === '1' ? '下架' : '上架'}</a>
-              </Popconfirm>
+              {record.priceList.length ? (
+                <Popconfirm
+                  placement="topLeft"
+                  title={`请确定是否${record.status === '1' ? '下架' : '上架'}该产品？`}
+                  onConfirm={() => this.updateProductStatus(record)}
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <a href="javascript:;">{record.status === '1' ? '下架' : '上架'}</a>
+                </Popconfirm>
+              ) : (
+                <Popconfirm
+                  placement="topLeft"
+                  title={`请确定是否定价该产品？`}
+                  onConfirm={() => this.singlePrice(record)}
+                  okText="确定"
+                  cancelText="取消"
+                >
+                  <a href="javascript:;">定价</a>
+                </Popconfirm>
+              )}
             </div>
           )
         }
@@ -59,9 +71,11 @@ export default class ProductList extends React.PureComponent {
       showQuickJumper: true,
     },
     selectedRowKeys: [],
+    selectedRows: [],
     loading: false,
     visible: false,
     confirmLoading: false,
+    batchList: [],
   };
 
   componentDidMount() {
@@ -69,7 +83,7 @@ export default class ProductList extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    this.setState = (state,callback) => { };
+    this.setState = (state, callback) => { };
   }
 
   getProductList = async (params) => {
@@ -110,13 +124,37 @@ export default class ProductList extends React.PureComponent {
     }
   }
 
+  singlePrice = (record) => {
+    this.setState({
+      batchList: [record],
+    });
+    this.showModal();
+  }
+
+  batchPrice = () => {
+    const { selectedRows } = this.state;
+    this.setState({
+      batchList: selectedRows,
+    });
+    this.showModal();
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.getProductList();
   }
 
-  onSelectChange = (selectedRowKeys) => {
-    this.setState({ selectedRowKeys });
+  onSelectChange = (selectedRowKeys, selectedRows) => {
+    const { selectedRows: productList } = this.state;
+    let newRows = [];
+    if (selectedRowKeys.length === selectedRows.length) {
+      newRows = [...selectedRows];
+    } else if (selectedRowKeys.length > selectedRows.length) {
+      const otherRowsKeys = selectedRowKeys.filter(item => selectedRows.every(row => row.id !== item));
+      const otherRows = productList.filter(item => otherRowsKeys.indexOf(item.id) !== -1);
+      newRows = otherRows.concat(selectedRows);
+    }
+    this.setState({ selectedRows: newRows, selectedRowKeys });
   }
 
   handleReset = () => {
@@ -135,21 +173,15 @@ export default class ProductList extends React.PureComponent {
   }
 
   showModal = () => {
-    this.setState({
-      visible: true,
-    });
+    this.setState({ visible: true });
   }
 
   handleOk = () => {
-    this.setState({
-      confirmLoading: true,
-    });
+    this.setState({ confirmLoading: true });
   }
 
   handleCancel = () => {
-    this.setState({
-      visible: false,
-    });
+    this.setState({ visible: false });
   }
 
   title = () => {
@@ -157,7 +189,7 @@ export default class ProductList extends React.PureComponent {
     return (
       <div>
         <span>操作处理：</span>
-        <Button disabled={!selectedRowKeys.length} onClick={this.showModal} type="primary">批量定价</Button>
+        <Button disabled={!selectedRowKeys.length} onClick={this.batchPrice} type="primary">批量定价</Button>
         <Divider type="vertical" />
         <Button disabled={!selectedRowKeys.length} onClick={this.batchUpProduct} type="primary">批量上架</Button>
         <Divider type="vertical" />
@@ -167,23 +199,23 @@ export default class ProductList extends React.PureComponent {
   }
 
   addBatch = async(params) => {
-    const { selectedRowKeys } = this.state;
+    const { batchList } = this.state;
     let values = [];
-    selectedRowKeys.forEach(item => {
+    batchList.forEach(item => {
       values.push({
-        productId: item,
+        productId: item.id,
         interval: `${params.num1}-${params.num2}`,
         price: params.price1,
         unit: params.unit,
       });
       values.push({
-        productId: item,
+        productId: item.id,
         interval: `${params.num3}-${params.num4}`,
         price: params.price2,
         unit: params.unit,
       });
       values.push({
-        productId: item,
+        productId: item.id,
         interval: `${params.num5}-${params.num6}`,
         price: params.price3,
         unit: params.unit,
@@ -193,7 +225,11 @@ export default class ProductList extends React.PureComponent {
     const result = await addBatch(values);
     if (result && result.code === 0) {
       this.handleCancel();
-      message.success(`产品ID为${selectedRowKeys}批量定价成功`);
+      const nameStr = batchList.map(item => item.name).join('、');
+      const messageInfo = (
+        <p style={{ display: 'inline' }}>产品名称为<span style={{ color: 'red' }}>{nameStr}</span>定价成功</p>
+      );
+      message.success(messageInfo);
       const pager = { ...this.props.pagination };
       this.getProductList({
         limit: pager.pageSize,
@@ -206,10 +242,24 @@ export default class ProductList extends React.PureComponent {
   }
 
   batchUpProduct = async() => {
-    const { selectedRowKeys } = this.state;
+    const { selectedRows, selectedRowKeys } = this.state;
+    const noPriceNameList = [];
+    selectedRows.forEach(item => {
+      if (!item.priceList.length) {
+        noPriceNameList.push(item.name);
+      }
+    });
+    if (noPriceNameList.length) {
+      message.error(<p style={{ display: 'inline' }}>产品名称为<span style={{ color: 'red' }}>{noPriceNameList.join('、')}</span>还未定价，不能上架</p>)
+      return false;
+    }
     const result = await batchUpProduct(selectedRowKeys);
     if (result && result.code === 0) {
-      message.success(`产品ID为${selectedRowKeys}批量上架成功`);
+      const nameStr = selectedRows.map(item => item.name).join('、');
+      const messageInfo = (
+        <p style={{ display: 'inline' }}>产品名称为<span style={{ color: 'red' }}>{nameStr}</span>上架成功</p>
+      );
+      message.success(messageInfo);
       const pager = { ...this.props.pagination };
       this.getProductList({
         limit: pager.pageSize,
@@ -222,10 +272,24 @@ export default class ProductList extends React.PureComponent {
   }
 
   batchDownProduct = async() => {
-    const { selectedRowKeys } = this.state;
+    const { selectedRows, selectedRowKeys } = this.state;
+    const noPriceNameList = [];
+    selectedRows.forEach(item => {
+      if (!item.priceList.length) {
+        noPriceNameList.push(item.name);
+      }
+    });
+    if (noPriceNameList.length) {
+      message.error(<p style={{ display: 'inline' }}>产品名称为<span style={{ color: 'red' }}>{noPriceNameList.join('、')}</span>还未定价，不能下架</p>)
+      return false;
+    }
     const result = await batchDownProduct(selectedRowKeys);
     if (result && result.code === 0) {
-      message.success(`产品ID为${selectedRowKeys}批量下架成功`);
+      const nameStr = selectedRows.map(item => item.name).join('、');
+      const messageInfo = (
+        <p style={{ display: 'inline' }}>产品名称为<span style={{ color: 'red' }}>{nameStr}</span>下架成功</p>
+      );
+      message.success(messageInfo);
       const pager = { ...this.props.pagination };
       this.getProductList({
         limit: pager.pageSize,

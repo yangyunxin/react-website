@@ -28,6 +28,24 @@ export default class PriceForm extends React.PureComponent {
     });
   }
 
+  handleNum2Change = (e) => {
+    const value = e.target.value;
+    this.props.form.setFieldsValue({
+      num3: parseInt(value, 10) + 1,
+    });
+  }
+
+  handleNum4Change = (e) => {
+    const value = e.target.value;
+    this.props.form.setFieldsValue({
+      num5: parseInt(value, 10) + 1,
+    });
+  }
+
+  handleReset = () => {
+    this.props.form.resetFields();
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
@@ -40,8 +58,8 @@ export default class PriceForm extends React.PureComponent {
             }],
           })(
             <Select>
-              <Option value="m">米</Option>
-              <Option value="m²">平方</Option>
+              <Option value="米">米</Option>
+              <Option value="千克">千克</Option>
             </Select>
           )}
         </FormItem>
@@ -66,7 +84,7 @@ export default class PriceForm extends React.PureComponent {
                   <span style={{ padding: '0 15px' }}>至</span>
                   <FormItem style={{ display: 'inline-block' }}>
                     {getFieldDecorator('num2')(
-                      <Input style={{ width: 60 }} />
+                      <Input style={{ width: 60 }} onChange={this.handleNum2Change} />
                     )}
                   </FormItem>
                 </td>
@@ -88,7 +106,7 @@ export default class PriceForm extends React.PureComponent {
                   <span style={{ padding: '0 15px' }}>至</span>
                   <FormItem style={{ display: 'inline-block' }}>
                     {getFieldDecorator('num4')(
-                      <Input style={{ width: 60 }} />
+                      <Input style={{ width: 60 }} onChange={this.handleNum4Change} />
                     )}
                   </FormItem>
                 </td>
@@ -129,7 +147,7 @@ export default class PriceForm extends React.PureComponent {
         </FormItem>
         <FormItem {...formItemLayout}>
           <Button style={{ width: '120px', marginRight: '20px' }} type="primary" htmlType="submit">提交</Button>
-          <Button onClick={this.props.handleCancel} style={{ width: '120px' }}>清空</Button>
+          <Button onClick={this.handleReset} style={{ width: '120px' }}>清空</Button>
         </FormItem>
       </Form>
     )

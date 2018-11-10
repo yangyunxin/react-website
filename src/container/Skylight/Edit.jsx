@@ -65,6 +65,9 @@ export default class SkylightEdit extends React.PureComponent {
         <Form onSubmit={this.handleSubmit}>
           <Card bordered={false}>
             <EnhanceTitle title="基本信息" />
+            {
+              console.log(skylightDetail.skyId)
+            }
             <FormItem {...formItemLayout2} label="天窗ID">
               {getFieldDecorator('skyId', {
                 initialValue: skylightDetail.skyId,
