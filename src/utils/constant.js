@@ -61,6 +61,15 @@ export const PRODUCT_PRICE_STATUS = {
   0: '未定价',
   1: '已定价',
 }
+export const SUPPLY_STATUS = {
+  0: '无货',
+  1: '现货',
+  2: '定做',
+}
+export const UNIT_VALUES = {
+  0: '米',
+  1: '千克',
+}
 export const USER_ACCOUNT_STATUS = {
   0: '正常',
   1: '封号',
