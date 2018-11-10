@@ -359,7 +359,7 @@ export default class ProductList extends React.PureComponent {
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="是否定价">
-                  {getFieldDecorator('priceStatus')(
+                  {getFieldDecorator('isHasPrice')(
                     <Select allowClear placeholder="请选择定价状态">
                       <Option value={0}>未定价</Option>
                       <Option value={1}>已定价</Option>

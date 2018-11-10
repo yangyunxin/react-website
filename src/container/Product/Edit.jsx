@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, Form, Input, Select, Button, message } from 'antd';
-import { formItemLayout2, PRODUCT_TYPE, PRODUCT_SUB } from '../../utils/constant';
+import { formItemLayout2, PRODUCT_TYPE, PRODUCT_SUB, SUPPLY_STATUS } from '../../utils/constant';
 import { getProductById, updateProduct } from '../../action/product';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
@@ -162,7 +162,7 @@ export default class ProductDetail extends React.PureComponent {
               )}
             </FormItem>
             <FormItem {...formItemLayout2} label="门幅">
-              {getFieldDecorator('sn', {
+              {getFieldDecorator('size', {
                 initialValue: productDetail.sn,
                 rules: [{
                   required: true, message: '请输入产品门幅',
@@ -198,7 +198,11 @@ export default class ProductDetail extends React.PureComponent {
                   required: true, message: '请输入产品供应状态',
                 }],
               })(
-                <Input placeholder="请输入产品供应状态" />
+                <Select allowClear placeholder="请选择产品供应状态">
+                  {Object.keys(SUPPLY_STATUS).map(item => (
+                    <Option key={item} value={item}>{SUPPLY_STATUS[item]}</Option>
+                  ))}
+                </Select>
               )}
             </FormItem>
             <FormItem {...formItemLayout2} label="发货地点">

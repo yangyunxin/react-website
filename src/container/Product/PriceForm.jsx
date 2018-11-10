@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Input, Select, Button } from 'antd';
+import { UNIT_VALUES } from '../../utils/constant';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -58,8 +59,9 @@ export default class PriceForm extends React.PureComponent {
             }],
           })(
             <Select>
-              <Option value="米">米</Option>
-              <Option value="千克">千克</Option>
+              {Object.keys(UNIT_VALUES).map(item => (
+                <Option key={item} value={item}>{UNIT_VALUES[item]}</Option>
+              ))}
             </Select>
           )}
         </FormItem>

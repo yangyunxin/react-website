@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, Form, Input, Select, Button } from 'antd';
 import { getProductById } from '../../action/product';
-import { formItemLayout2, PRODUCT_TYPE, PRODUCT_SUB } from '../../utils/constant';
+import { formItemLayout2, PRODUCT_TYPE, PRODUCT_SUB, SUPPLY_STATUS, UNIT_VALUES } from '../../utils/constant';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
 
@@ -51,7 +51,7 @@ export default class ProductDetail extends React.PureComponent {
               </Select>
             </FormItem>
             <FormItem {...formItemLayout2} label="计价单位">
-              <Input value={product['unit']} placeholder="请输入计价单位" />
+              <Input value={UNIT_VALUES[product['unit']]} placeholder="请输入计价单位" />
             </FormItem>
             <FormItem {...formItemLayout2} label="产品价格">
               <table className="priceform-table">
@@ -107,7 +107,7 @@ export default class ProductDetail extends React.PureComponent {
               <Input value={productDetail.weight} placeholder="请输入产品克重" />
             </FormItem>
             <FormItem {...formItemLayout2} label="门幅">
-              <Input value={productDetail.sn} placeholder="请输入产品门幅" />
+              <Input value={productDetail.size} placeholder="请输入产品门幅" />
             </FormItem>
             <FormItem {...formItemLayout2} label="产品用途">
               <Input value={productDetail.use} placeholder="请输入产品用途" />
@@ -116,7 +116,11 @@ export default class ProductDetail extends React.PureComponent {
               <Input value={productDetail.craft} placeholder="请输入产品加工工艺" />
             </FormItem>
             <FormItem {...formItemLayout2} label="供应状态">
-              <Input value={productDetail.supplyStatus} placeholder="请输入产品供应状态" />
+              <Select value={productDetail.supplyStatus} allowClear placeholder="请选择产品供应状态">
+                {Object.keys(SUPPLY_STATUS).map(item => (
+                  <Option key={item} value={item}>{SUPPLY_STATUS[item]}</Option>
+                ))}
+              </Select>
             </FormItem>
             <FormItem {...formItemLayout2} label="发货地点">
               <Input value={productDetail.pointOfDeparture} placeholder="请输入产品发货地点" />

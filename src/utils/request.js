@@ -80,7 +80,7 @@ export async function requestLogin(url, data = {}) {
         message.error('登录有效期失效，请重新登录');
         store.dispatch(authUserExpire());
       } else {
-        message.error(error.response.statusText);
+        message.error(error.response.data.error_description);
       }
     } else {
       message.error('Error', error);

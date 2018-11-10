@@ -4,7 +4,7 @@ import { Card, Form, Input, Select, Button, message } from 'antd';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
 import { addProduct } from '../../action/product';
-import { formItemLayout2 } from '../../utils/constant';
+import { formItemLayout2, PRODUCT_TYPE, PRODUCT_SUB, SUPPLY_STATUS } from '../../utils/constant';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -63,10 +63,10 @@ export default class ProductAdd extends React.PureComponent {
                   required: true, message: '请选择产品大类',
                 }],
               })(
-                <Select allowClear placeholder="请选择产品大类">
-                  <Option value="1">大类一</Option>
-                  <Option value="2">大类二</Option>
-                  <Option value="3">大类三</Option>
+                <Select placeholder="请选择产品大类">
+                  {Object.keys(PRODUCT_TYPE).map(item => (
+                    <Option key={item} value={item}>{PRODUCT_TYPE[item]}</Option>
+                  ))}
                 </Select>
               )}
             </FormItem>
@@ -76,10 +76,10 @@ export default class ProductAdd extends React.PureComponent {
                   required: true, message: '请选择产品子类',
                 }],
               })(
-                <Select allowClear placeholder="请选择产品子类">
-                  <Option value="1">子类一</Option>
-                  <Option value="2">子类二</Option>
-                  <Option value="3">子类三</Option>
+                <Select placeholder="请选择产品子类">
+                  {Object.keys(PRODUCT_SUB).map(item => (
+                    <Option key={item} value={item}>{PRODUCT_SUB[item]}</Option>
+                  ))}
                 </Select>
               )}
             </FormItem>
@@ -134,7 +134,7 @@ export default class ProductAdd extends React.PureComponent {
               )}
             </FormItem>
             <FormItem {...formItemLayout2} label="门幅">
-              {getFieldDecorator('sn', {
+              {getFieldDecorator('size', {
                 rules: [{
                   required: true, message: '请输入产品门幅',
                 }],
@@ -163,10 +163,14 @@ export default class ProductAdd extends React.PureComponent {
             <FormItem {...formItemLayout2} label="供应状态">
               {getFieldDecorator('supplyStatus', {
                 rules: [{
-                  required: true, message: '请输入产品供应状态',
+                  required: true, message: '请选择产品供应状态',
                 }],
               })(
-                <Input placeholder="请输入产品供应状态" />
+                <Select allowClear placeholder="请选择产品供应状态">
+                  {Object.keys(SUPPLY_STATUS).map(item => (
+                    <Option key={item} value={item}>{SUPPLY_STATUS[item]}</Option>
+                  ))}
+                </Select>
               )}
             </FormItem>
             <FormItem {...formItemLayout2} label="发货地点">

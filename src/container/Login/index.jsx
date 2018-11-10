@@ -22,8 +22,6 @@ export default class NormalLoginForm extends React.Component {
         if (result) {
           message.success('登录成功，欢迎来到快布易管理系统！');
           this.props.history.push('/')
-        } else {
-          message.error('登录失败，你输入正确用户或密码！');
         }
       }
     });
