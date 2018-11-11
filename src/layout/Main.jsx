@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Layout, Menu, Icon, Breadcrumb, message, Dropdown, Avatar } from 'antd';
 import { Route, Link, Redirect } from 'react-router-dom';
-import { authUserLogin, authUserLogout } from '../action/auth';
+import { authUserLogin, authUserLogout, getUserInfo } from '../action/auth';
 import MenuData from '../common/menu';
 import routerData from '../common/router';
 import './index.css';
@@ -39,6 +39,7 @@ MenuData.forEach(parent => {
 }), {
   authUserLogin,
   authUserLogout,
+  getUserInfo,
 })
 export default class Main extends React.PureComponent {
   state = {
@@ -47,6 +48,10 @@ export default class Main extends React.PureComponent {
     openKeys: [],
     openChangeKes: []
   };
+
+  componentDidMount() {
+    this.props.getUserInfo();
+  }
 
   toggle = () => {
     this.setState({

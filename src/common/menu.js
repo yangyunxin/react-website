@@ -76,13 +76,13 @@ const menuData = [
     path: 'system',
     children: [
       {
+        name: '数据字典',
+        path: 'dictionary',
+      },
+      {
         name: '操作日志',
         path: 'operateLog',
-      },
-      // {
-      //   name: '数据字典',
-      //   path: 'dictionary',
-      // }
+      }
     ],
   },
 ]

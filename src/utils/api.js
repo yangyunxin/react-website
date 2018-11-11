@@ -32,6 +32,11 @@ const API = {
   deleteSkylight: '/api/goods/tSkyLight',
   getSystemLogList: '/api/admin/log/logPage',
   getSystemDictList: '/api/admin/dict/dictPage',
+  getSystemDictByType: '/api/admin/dict/dictPage',
+  postSystemDict: '/api/admin/dict',
+  putSystemDict: '/api/admin/dict',
+  getSystemDictById: '/api/admin/dict/{id}',
+  getSystemDictByLabel: '/api/admin/dict/{label}',
   getUserInfo: '/api/admin/user/info',
 }
 export default API;

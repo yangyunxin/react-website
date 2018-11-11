@@ -39,6 +39,16 @@ export const formItemLayout4 = {
     sm: { span: 14 },
   },
 };
+export const formItemLayout5 = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
+};
 export function showTotal(total, range) {
   return `共${total}条数据`;
 }

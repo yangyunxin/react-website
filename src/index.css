@@ -22,8 +22,8 @@ body {
 .ant-table table {
   font-size: 12px;
 }
-.ant-table-title {
-  padding: 0;
+.ant-table .ant-table-title {
+  padding: 0 0 10px;
 }
 .my-editor {
   border: 1px solid #d1d1d1;

@@ -20,6 +20,8 @@ import AgentEdit from '../container/Agent/Edit';
 import AgentAdd from '../container/Agent/Add';
 import AgentProduct from '../container/Agent/Product';
 import OperateLog from '../container/System/index';
+import SystemDict from '../container/System/SystemDict';
+import SystemDictItem from '../container/System/SystemDictItem';
 
 const routerData = {
   '/': {
@@ -147,9 +149,17 @@ const routerData = {
     name: '系统管理',
     redirect: true,
   },
+  '/system/dictionary': {
+    name: '数据字典',
+    component: SystemDict,
+    exact: true,
+  },
+  '/system/dictionary/:id': {
+    component: SystemDictItem,
+  },
   '/system/operateLog': {
     name: '操作日志',
     component: OperateLog
-  }
+  },
 }
 export default routerData;

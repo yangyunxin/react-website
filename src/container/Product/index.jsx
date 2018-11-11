@@ -230,7 +230,7 @@ export default class ProductList extends React.PureComponent {
         <p style={{ display: 'inline' }}>产品名称为<span style={{ color: 'red' }}>{nameStr}</span>定价成功</p>
       );
       message.success(messageInfo);
-      const pager = { ...this.props.pagination };
+      const pager = { ...this.state.pagination };
       this.getProductList({
         limit: pager.pageSize,
         page: pager.current,
@@ -260,7 +260,7 @@ export default class ProductList extends React.PureComponent {
         <p style={{ display: 'inline' }}>产品名称为<span style={{ color: 'red' }}>{nameStr}</span>上架成功</p>
       );
       message.success(messageInfo);
-      const pager = { ...this.props.pagination };
+      const pager = { ...this.state.pagination };
       this.getProductList({
         limit: pager.pageSize,
         page: pager.current,
@@ -290,7 +290,7 @@ export default class ProductList extends React.PureComponent {
         <p style={{ display: 'inline' }}>产品名称为<span style={{ color: 'red' }}>{nameStr}</span>下架成功</p>
       );
       message.success(messageInfo);
-      const pager = { ...this.props.pagination };
+      const pager = { ...this.state.pagination };
       this.getProductList({
         limit: pager.pageSize,
         page: pager.current,

@@ -68,7 +68,7 @@ export default class AgentList extends React.PureComponent {
     const result = await deleteAgentById(record.id);
     if (result && result.code === 0) {
       message.success(`代理商商ID为${record.name}删除成功`);
-      const pager = { ...this.props.pagination };
+      const pager = { ...this.state.pagination };
       this.getAgentList({
         limit: pager.pageSize,
         page: pager.current,

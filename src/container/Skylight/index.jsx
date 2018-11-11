@@ -85,7 +85,7 @@ export default class SkylightList extends React.PureComponent {
     const result = await deleteSkylight(id);
     if (result && result.code === 0) {
       message.success(`删除ID为${id}的天窗成功`);
-      const pager = { ...this.props.pagination };
+      const pager = { ...this.state.pagination };
       this.getSkylightList({
         limit: pager.pageSize,
         page: pager.current,

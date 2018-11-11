@@ -151,7 +151,7 @@ export default class AgentProduct extends React.PureComponent {
     const result = await agentProduct(values);
     if (result && result.code === 0) {
       message.success(`产品名称为${selectedRows.map(item => item.name).join('、')}关联代理商成功`);
-      const pager = { ...this.props.pagination };
+      const pager = { ...this.state.pagination };
       this.getProductList({
         limit: pager.pageSize,
         page: pager.current,
@@ -171,7 +171,7 @@ export default class AgentProduct extends React.PureComponent {
     });
     if (result && result.code === 0) {
       message.success(`产品名称为${record.name}关联代理商成功`);
-      const pager = { ...this.props.pagination };
+      const pager = { ...this.state.pagination };
       this.getProductList({
         limit: pager.pageSize,
         page: pager.current,

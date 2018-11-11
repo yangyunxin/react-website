@@ -1,8 +1,8 @@
-import { GET_SYSTEM_LOG_LIST } from '../action/system';
+import { GET_SYSTEM_LOG_LIST, GET_SYSTEM_DICT_LIST } from '../action/system';
 
 const defaultState = {
   systemLogList: {},
-  systemLogDetail: {},
+  systemDictList: {},
 }
 
 export default (state = defaultState, action) => {
@@ -11,6 +11,11 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         systemLogList: action.data
+      }
+    case GET_SYSTEM_DICT_LIST:
+      return {
+        ...state,
+        systemDictList: action.data
       }
     default:
       return state
