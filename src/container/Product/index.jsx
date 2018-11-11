@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message, Modal, Popconfirm } from 'antd';
 import PriceForm from './PriceForm';
 import { getProductList, addBatch, batchUpProduct, batchDownProduct, updateProduct } from '../../action/product';
+import { getSystemDictList } from '../../action/system';
 import listColumns from './columns/list';
 import { formItemLayout, showTotal, PRODUCT_TYPE, PRODUCT_SUB, PRODUCT_STATUS } from '../../utils/constant';
 import './index.css'

@@ -33,6 +33,8 @@ export default class SystemDictItem extends React.PureComponent {
             <a onClick={() => this.showDict(record.id)} href="javascript:;">查看</a>
             <Divider type="vertical" />
             <a onClick={() => this.editDict(record.id)} href="javascript:;">编辑</a>
+            <Divider type="vertical" />
+            <Link to={`/system/dictionary/${record.label}`}>下级</Link>
           </div>
         )
       },
@@ -116,9 +118,9 @@ export default class SystemDictItem extends React.PureComponent {
 
   handleConfirm = (params) => {
     if (this.state.actionType === 'add') {
-      return postSystemDict({ ...params, level: 2 });
+      return postSystemDict({ ...params, level: 3 });
     } else if (this.state.actionType === 'edit') {
-      return putSystemDict({ ...params, level: 2, id: this.state.dictDetail.id });
+      return putSystemDict({ ...params, level: 3, id: this.state.dictDetail.id });
     }
   }
 

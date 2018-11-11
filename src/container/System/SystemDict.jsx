@@ -94,6 +94,11 @@ export default class SystemDict extends React.PureComponent {
     this.setState({
       visible: false,
     });
+    const pager = { ...this.state.pagination };
+    this.getSystemDictList({
+      limit: pager.pageSize,
+      page: pager.current,
+    });
   };
 
   addDict = () => {
