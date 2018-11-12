@@ -49,8 +49,8 @@ export default class Main extends React.PureComponent {
     openChangeKes: []
   };
 
-  componentDidMount() {
-    this.props.getUserInfo();
+  async componentDidMount() {
+    await this.props.getUserInfo();
   }
 
   toggle = () => {

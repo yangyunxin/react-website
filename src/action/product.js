@@ -11,7 +11,8 @@ export function getProductList(params) {
       dispatch({
         type: GET_PRODUCT_LIST,
         data: result.data
-      })
+      });
+      return result.data;
     }
   }
 }
@@ -23,7 +24,8 @@ export function getProductById(id) {
       dispatch({
         type: GET_PRODUCT_BYID,
         data: result.data.data
-      })
+      });
+      return result.data.data;
     }
   }
 }

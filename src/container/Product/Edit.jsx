@@ -2,8 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, Form, Input, Select, Button, message } from 'antd';
-import { formItemLayout2, PRODUCT_TYPE, PRODUCT_SUB, SUPPLY_STATUS } from '../../utils/constant';
+import { formItemLayout2, SUPPLY_STATUS } from '../../utils/constant';
 import { getProductById, updateProduct } from '../../action/product';
+import { getSystemDicts } from '../../action/system';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
 
@@ -19,12 +20,20 @@ const { Option } = Select;
 export default class ProductDetail extends React.PureComponent {
   state = {
     visible: false,
+    productCategory: [],
+    productSubcategory: [],
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { match } = this.props;
     const { params: { id } } = match;
-    this.props.getProductById(id)
+    const result = await this.props.getProductById(id);
+    if (result) {
+      const resp1 = await getSystemDicts({ parentLabel: 'productCategory' });
+      this.setState({ productCategory: resp1 });
+      const resp2 = await getSystemDicts({ parentLabel: result.productCategory });
+      this.setState({ productSubcategory: resp2 });
+    }
   }
 
   componentWillUnmount() {
@@ -60,9 +69,18 @@ export default class ProductDetail extends React.PureComponent {
     })
   }
 
+  handleCateChange = async (value) => {
+    this.props.form.setFieldsValue({ productSubcategory: undefined });
+    if (value) {
+      const result = await getSystemDicts({ parentLabel: value });
+      this.setState({ productSubcategory: result });
+    }
+  }
+
   render() {
     const { productDetail, form } = this.props;
     const { getFieldDecorator } = form;
+    const { productCategory, productSubcategory } = this.state;
     return (
       <div className="page-detail">
         <Form onSubmit={this.handleSubmit}>
@@ -95,9 +113,9 @@ export default class ProductDetail extends React.PureComponent {
                   required: true, message: '请选择产品大类',
                 }],
               })(
-                <Select allowClear placeholder="请选择产品大类">
-                  {Object.keys(PRODUCT_TYPE).map(item => (
-                    <Option key={item} value={item}>{PRODUCT_TYPE[item]}</Option>
+                <Select onChange={this.handleCateChange} allowClear placeholder="请选择产品大类">
+                  {productCategory.map(item => (
+                    <Option key={item.label} value={item.label}>{item.description}</Option>
                   ))}
                 </Select>
               )}
@@ -110,8 +128,8 @@ export default class ProductDetail extends React.PureComponent {
                 }],
               })(
                 <Select allowClear placeholder="请选择产品子类">
-                  {Object.keys(PRODUCT_SUB).map(item => (
-                    <Option key={item} value={item}>{PRODUCT_SUB[item]}</Option>
+                  {productSubcategory.map(item => (
+                    <Option key={item.label} value={item.label}>{item.description}</Option>
                   ))}
                 </Select>
               )}

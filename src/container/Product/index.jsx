@@ -4,15 +4,20 @@ import { Link } from 'react-router-dom';
 import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message, Modal, Popconfirm } from 'antd';
 import PriceForm from './PriceForm';
 import { getProductList, addBatch, batchUpProduct, batchDownProduct, updateProduct } from '../../action/product';
-import { getSystemDictList } from '../../action/system';
-import listColumns from './columns/list';
-import { formItemLayout, showTotal, PRODUCT_TYPE, PRODUCT_SUB, PRODUCT_STATUS } from '../../utils/constant';
+import { getSystemDicts } from '../../action/system';
+import { formatDateSecond } from '../../utils/utils';
+import { formItemLayout, showTotal, nullString, PRODUCT_STATUS } from '../../utils/constant';
 import './index.css'
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
+const color = {
+  1: '红色',
+  2: '黑色',
+  3: '蓝色',
+}
 
 @connect(({ product }) => ({
   productList: product.productList
@@ -24,7 +29,88 @@ export default class ProductList extends React.PureComponent {
   constructor(props) {
     super(props);
     this.columns = [
-      ...listColumns,
+      {
+        title: '产品名称',
+        dataIndex: 'name',
+        key: 'name',
+        align: 'center',
+        fixed: 'left',
+      },
+      {
+        title: '产品货号',
+        dataIndex: 'sameStyleNum',
+        key: 'sameStyleNum',
+        align: 'center',
+      },
+      {
+        title: '产品大类',
+        dataIndex: 'productCategory',
+        key: 'productCategory',
+        align: 'center',
+        render: (text) => {
+          const info = this.state.productCategory.find(item => item.label === text) || {};
+          return info.description || nullString;
+        }
+      },
+      {
+        title: '产品子类',
+        dataIndex: 'productSubcategory',
+        key: 'productSubcategory',
+        align: 'center',
+        render: (text) => {
+          const info = this.state.dictLevel4.find(item => item.label === text) || {};
+          return info.description || nullString;
+        }
+      },
+      {
+        title: '产品图片',
+        dataIndex: 'mainPicture',
+        key: 'mainPicture',
+        align: 'center',
+        render: (text) => <img style={{ display: 'block' }} width="50" height="50" src={text} alt="产品图片" />
+      },
+      {
+        title: '价格（元）',
+        dataIndex: 'productPrice',
+        key: 'productPrice',
+        align: 'center',
+        render: (text, record) => {
+          const product = record.priceList && record.priceList.length ? record.priceList[0] : {}
+          return product['price'] || nullString
+        }
+      },
+      {
+        title: '计价单位',
+        dataIndex: 'unit',
+        key: 'unit',
+        align: 'center',
+        render: (text, record) => {
+          const product = record.priceList && record.priceList.length ? record.priceList[0] : {}
+          return product['unit'] || nullString
+        }
+      },
+      {
+        title: '颜色',
+        dataIndex: 'colour',
+        key: 'colour',
+        align: 'center',
+        render: (text) => color[text] || nullString
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        align: 'center',
+        width: '14%',
+        render: (text) => text ? formatDateSecond(text) : nullString
+      },
+      {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        align: 'center',
+        render: (text) => text ? PRODUCT_STATUS[text] : '待上架'
+      },
       {
         title: '操作',
         dataIndex: 'operate',
@@ -77,10 +163,17 @@ export default class ProductList extends React.PureComponent {
     visible: false,
     confirmLoading: false,
     batchList: [],
+    productCategory: [],
+    productSubcategory: [],
+    dictLevel4: [],
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     this.getProductList();
+    const result = await getSystemDicts({ parentLabel: 'productCategory' });
+    this.setState({ productCategory: result });
+    const resp = await getSystemDicts({ level: 4 });
+    this.setState({ dictLevel4: resp });
   }
 
   componentWillUnmount() {
@@ -302,9 +395,17 @@ export default class ProductList extends React.PureComponent {
     }
   }
 
+  handleCateChange = async (value) => {
+    this.props.form.setFieldsValue({ productSubcategory: undefined });
+    if (value) {
+      const result = await getSystemDicts({ parentLabel: value });
+      this.setState({ productSubcategory: result });
+    }
+  }
+
   render() {
     const { form: { getFieldDecorator }, productList = {} } = this.props;
-    const { selectedRowKeys, loading, visible, confirmLoading } = this.state;
+    const { selectedRowKeys, loading, visible, confirmLoading, productCategory, productSubcategory } = this.state;
     const rowSelection = { selectedRowKeys, onChange: this.onSelectChange };
     return (
       <div className="page-list product-list">
@@ -328,9 +429,9 @@ export default class ProductList extends React.PureComponent {
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="产品大类">
                   {getFieldDecorator('productCategory')(
-                    <Select allowClear placeholder="请选择产品大类">
-                      {Object.keys(PRODUCT_TYPE).map(item => (
-                        <Option key={item} value={item}>{PRODUCT_TYPE[item]}</Option>
+                    <Select onChange={this.handleCateChange} allowClear placeholder="请选择产品大类">
+                      {productCategory.map(item => (
+                        <Option key={item.label} value={item.label}>{item.description}</Option>
                       ))}
                     </Select>
                   )}
@@ -340,8 +441,8 @@ export default class ProductList extends React.PureComponent {
                 <FormItem {...formItemLayout} label="产品子类">
                   {getFieldDecorator('productSubcategory')(
                     <Select allowClear placeholder="请选择产品子类">
-                      {Object.keys(PRODUCT_SUB).map(item => (
-                        <Option key={item} value={item}>{PRODUCT_SUB[item]}</Option>
+                      {productSubcategory.map(item => (
+                        <Option key={item.label} value={item.label}>{item.description}</Option>
                       ))}
                     </Select>
                   )}

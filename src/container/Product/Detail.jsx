@@ -5,6 +5,7 @@ import { Card, Form, Input, Select, Button } from 'antd';
 import { getProductById } from '../../action/product';
 import { formItemLayout2, PRODUCT_TYPE, PRODUCT_SUB, SUPPLY_STATUS, UNIT_VALUES } from '../../utils/constant';
 import EnhanceTitle from '../../component/EnhanceTitle';
+import { getSystemDicts } from '../../action/system';
 import Uploader from '../../component/Uploader';
 
 const FormItem = Form.Item;
@@ -16,15 +17,27 @@ const { Option } = Select;
   getProductById
 })
 export default class ProductDetail extends React.PureComponent {
-  componentDidMount() {
+  state = {
+    productCategory: [],
+    productSubcategory: [],
+  }
+  async componentDidMount() {
     const { match } = this.props;
     const { params: { id } } = match;
-    this.props.getProductById(id);
+    const result = await this.props.getProductById(id);
+    if (result) {
+      const resp1 = await getSystemDicts({ parentLabel: 'productCategory' });
+      this.setState({ productCategory: resp1 });
+      const resp2 = await getSystemDicts({ parentLabel: result.productCategory });
+      this.setState({ productSubcategory: resp2 });
+    }
   }
   render() {
     const { productDetail = {} } = this.props;
     const product = productDetail.priceList && productDetail.priceList.length ? productDetail.priceList[0] : {}
     const priceList = productDetail.priceList || [];
+    const { productCategory, productSubcategory } = this.state;
+    console.log(product);
     return (
       <div className="page-detail">
         <Form onSubmit={this.handleSubmit}>
@@ -38,15 +51,15 @@ export default class ProductDetail extends React.PureComponent {
             </FormItem>
             <FormItem {...formItemLayout2} label="产品大类">
               <Select value={productDetail.productCategory} placeholder="请选择产品大类">
-                {Object.keys(PRODUCT_TYPE).map(item => (
-                  <Option key={item} value={item}>{PRODUCT_TYPE[item]}</Option>
+                {productCategory.map(item => (
+                  <Option key={item.label} value={item.label}>{item.description}</Option>
                 ))}
               </Select>
             </FormItem>
             <FormItem {...formItemLayout2} label="产品子类">
               <Select value={productDetail.productSubcategory} placeholder="请选择产品子类">
-                {Object.keys(PRODUCT_SUB).map(item => (
-                  <Option key={item} value={item}>{PRODUCT_SUB[item]}</Option>
+                {productSubcategory.map(item => (
+                  <Option key={item.label} value={item.label}>{item.description}</Option>
                 ))}
               </Select>
             </FormItem>

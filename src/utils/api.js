@@ -37,6 +37,7 @@ const API = {
   putSystemDict: '/api/admin/dict',
   getSystemDictById: '/api/admin/dict/{id}',
   getSystemDictByLabel: '/api/admin/dict/{label}',
+  getSystemDicts: '/api/admin/dict/dictList',
   getUserInfo: '/api/admin/user/info',
 }
 export default API;

@@ -60,3 +60,10 @@ export async function getSystemDictByLabel(label) {
     return result.data
   }
 }
+
+export async function getSystemDicts(params) {
+  const result = await get(API.getSystemDicts, params);
+  if (result && result.status === 200) {
+    return result.data
+  }
+}
