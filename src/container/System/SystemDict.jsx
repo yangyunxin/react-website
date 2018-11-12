@@ -34,7 +34,7 @@ export default class SystemDict extends React.PureComponent {
             <Divider type="vertical" />
             <a onClick={() => this.editDict(record.id)} href="javascript:;">编辑</a>
             <Divider type="vertical" />
-            <Link to={`/system/dictionary/${record.label}`}>下级</Link>
+            <Link to={`/system/dictionary/${record.label}?level=${record.level+1}`}>下级</Link>
           </div>
         )
       },

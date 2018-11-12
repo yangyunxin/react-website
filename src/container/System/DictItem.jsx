@@ -19,7 +19,7 @@ export default class DictItem extends React.Component {
         const result = await this.props.handleSubmit({ ...values, level });
         this.setState({ loading: false });
         if (result.code === 0) {
-          this.props.onClose();
+          this.onClose();
           message.success(`${title}成功`);
         }
       }

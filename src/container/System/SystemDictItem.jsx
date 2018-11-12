@@ -34,12 +34,13 @@ export default class SystemDictItem extends React.PureComponent {
             <Divider type="vertical" />
             <a onClick={() => this.editDict(record.id)} href="javascript:;">编辑</a>
             <Divider type="vertical" />
-            <Link to={`/system/dictionary/${record.label}`}>下级</Link>
+            <Link to={`/system/dictionary/${record.label}?level=${record.level+1}`}>下级</Link>
           </div>
         )
       },
     ];
   }
+
   state = {
     loading: false,
     visible: false,
@@ -47,6 +48,12 @@ export default class SystemDictItem extends React.PureComponent {
     dictDetail: {},
     title: '',
   };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.match.params.id !== this.props.match.params.id) {
+      this.getSystemDictList();
+    }
+  }
 
   componentDidMount() {
     this.getSystemDictList();
@@ -117,10 +124,12 @@ export default class SystemDictItem extends React.PureComponent {
   }
 
   handleConfirm = (params) => {
+    const { search } = this.props.location;
+    const level = search.split('=')[1];
     if (this.state.actionType === 'add') {
-      return postSystemDict({ ...params, level: 3 });
+      return postSystemDict({ ...params, level: level });
     } else if (this.state.actionType === 'edit') {
-      return putSystemDict({ ...params, level: 3, id: this.state.dictDetail.id });
+      return putSystemDict({ ...params, level: level, id: this.state.dictDetail.id });
     }
   }
 
