@@ -13,11 +13,6 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
-const color = {
-  1: '红色',
-  2: '黑色',
-  3: '蓝色',
-}
 
 @connect(({ product }) => ({
   productList: product.productList
@@ -94,7 +89,10 @@ export default class ProductList extends React.PureComponent {
         dataIndex: 'colour',
         key: 'colour',
         align: 'center',
-        render: (text) => color[text] || nullString
+        render: (text) => {
+          const info = this.state.colour.find(item => item.label === text) || {};
+          return info.description || nullString;
+        }
       },
       {
         title: '创建时间',
@@ -166,14 +164,17 @@ export default class ProductList extends React.PureComponent {
     productCategory: [],
     productSubcategory: [],
     dictLevel4: [],
+    colour: [],
   };
 
   async componentDidMount() {
     this.getProductList();
-    const result = await getSystemDicts({ parentLabel: 'productCategory' });
-    this.setState({ productCategory: result });
-    const resp = await getSystemDicts({ level: 4 });
-    this.setState({ dictLevel4: resp });
+    const productCategory = getSystemDicts({ parentLabel: 'productCategory' });
+    this.setState({ productCategory: await productCategory });
+    const dictLevel4 = getSystemDicts({ level: 4 });
+    this.setState({ dictLevel4: await dictLevel4 });
+    const colour = getSystemDicts({ parentLabel: 'colour' });
+    this.setState({ colour: await colour });
   }
 
   componentWillUnmount() {

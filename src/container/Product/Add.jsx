@@ -4,6 +4,7 @@ import { Card, Form, Input, Select, Button, message } from 'antd';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
 import { addProduct } from '../../action/product';
+import { getSystemDicts } from '../../action/system';
 import { formItemLayout2, PRODUCT_TYPE, PRODUCT_SUB, SUPPLY_STATUS } from '../../utils/constant';
 
 const FormItem = Form.Item;
@@ -11,6 +12,19 @@ const Option = Select.Option;
 
 @Form.create()
 export default class ProductAdd extends React.PureComponent {
+  state = {
+    productCategory: [],
+    productSubcategory: [],
+    colour: [],
+  }
+
+  async componentDidMount() {
+    const productCategory = getSystemDicts({ parentLabel: 'productCategory' });
+    this.setState({ productCategory: await productCategory });
+    const colour = getSystemDicts({ parentLabel: 'colour' });
+    this.setState({ colour: await colour });
+  }
+
   handleSubmit= (e) => {
     e.preventDefault();
     this.props.form.validateFields(async (err, values) => {
@@ -32,8 +46,17 @@ export default class ProductAdd extends React.PureComponent {
     this.props.form.resetFields();
   }
 
+  handleCateChange = async (value) => {
+    this.props.form.setFieldsValue({ productSubcategory: undefined });
+    if (value) {
+      const result = await getSystemDicts({ parentLabel: value });
+      this.setState({ productSubcategory: result });
+    }
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
+    const { productCategory, productSubcategory, colour } = this.state;
     return (
       <div className="page-detail">
       <Form onSubmit={this.handleSubmit}>
@@ -63,9 +86,9 @@ export default class ProductAdd extends React.PureComponent {
                   required: true, message: '请选择产品大类',
                 }],
               })(
-                <Select placeholder="请选择产品大类">
-                  {Object.keys(PRODUCT_TYPE).map(item => (
-                    <Option key={item} value={item}>{PRODUCT_TYPE[item]}</Option>
+                <Select onChange={this.handleCateChange} allowClear placeholder="请选择产品大类">
+                  {productCategory.map(item => (
+                    <Option key={item.label} value={item.label}>{item.description}</Option>
                   ))}
                 </Select>
               )}
@@ -77,8 +100,8 @@ export default class ProductAdd extends React.PureComponent {
                 }],
               })(
                 <Select placeholder="请选择产品子类">
-                  {Object.keys(PRODUCT_SUB).map(item => (
-                    <Option key={item} value={item}>{PRODUCT_SUB[item]}</Option>
+                  {productSubcategory.map(item => (
+                    <Option key={item.label} value={item.label}>{item.description}</Option>
                   ))}
                 </Select>
               )}
@@ -91,9 +114,9 @@ export default class ProductAdd extends React.PureComponent {
                 }],
               })(
                 <Select allowClear placeholder="请选择产品颜色">
-                  <Option value="1">红色</Option>
-                  <Option value="2">黑色</Option>
-                  <Option value="3">蓝色</Option>
+                  {colour.map(item => (
+                    <Option key={item.label} value={item.label}>{item.description}</Option>
+                  ))}
                 </Select>
               )}
             </FormItem>
