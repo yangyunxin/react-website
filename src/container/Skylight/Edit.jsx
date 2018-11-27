@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Card, Form, Input, Table, Select, Button, Drawer, message, DatePicker, Radio } from 'antd';
+import { Card, Form, Input, Select, Button, message } from 'antd';
 import EnhanceTitle from '../../component/EnhanceTitle';
-// import bannerOperateColumns from './columns/bannerOperate';
 import { formItemLayout2, SKY_TYPE } from '../../utils/constant';
 import { getSkylightById, updateSkylight } from '../../action/skylight';
+import Uploader from '../../component/Uploader';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -17,19 +17,11 @@ const { TextArea } = Input;
 })
 @Form.create()
 export default class SkylightEdit extends React.PureComponent {
-  state = { visible: false };
-
   componentDidMount() {
     const { match } = this.props;
     const { params: { id } } = match;
     this.props.getSkylightById(id);
   }
-
-  componentWillUnmount() {
-    this.timer = null;
-  }
-
-  timer = null
 
   handleSubmit= (e) => {
     e.preventDefault();
@@ -48,26 +40,14 @@ export default class SkylightEdit extends React.PureComponent {
     });
   }
 
-  showDrawer = () => {
-    this.setState({ visible: true });
-  };
-
-  onClose = () => {
-    this.setState({ visible: false });
-  };
-
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { visible } = this.state;
     const { skylightDetail = {} } = this.props;
     return (
       <div className="page-detail">
         <Form onSubmit={this.handleSubmit}>
           <Card bordered={false}>
             <EnhanceTitle title="基本信息" />
-            {
-              console.log(skylightDetail.skyId)
-            }
             <FormItem {...formItemLayout2} label="天窗ID">
               {getFieldDecorator('skyId', {
                 initialValue: skylightDetail.skyId,
@@ -112,40 +92,22 @@ export default class SkylightEdit extends React.PureComponent {
                 <TextArea rows={4} placeholder="请输入天窗描述" />
               )}
             </FormItem>
-            {/* <FormItem {...formItemLayout2} label="添加banner">
-              {getFieldDecorator('detail', {
-                initialValue: skylightDetail.skyId,
+            <FormItem {...formItemLayout2} label="天窗图片">
+              {getFieldDecorator('skyContent', {
+                initialValue: [skylightDetail.skyContent],
                 rules: [{
-                  required: true, message: '请添加banner',
+                  required: true, message: '请添加天窗图片',
                 }],
               })(
-                <div onClick={this.showDrawer} className="ant-upload ant-upload-select ant-upload-select-picture-card">
-                  <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-                    <i className="anticon anticon-plus"></i>
-                    <div className="antd-upload-text">添加</div>
-                  </div>
-                </div>
+                <Uploader type="banner" max={1} />
               )}
-            </FormItem> */}
+            </FormItem>
           </Card>
-          {/* <Card bordered={false}>
-            <EnhanceTitle title="关联banner" />
-            <Table bordered columns={bannerOperateColumns} dataSource={[] } />
-          </Card> */}
           <div>
             <Button style={{ width: '120px', marginRight: '20px' }} type="primary" htmlType="submit">提交</Button>
             <Button style={{ width: '120px' }}>清空</Button>
           </div>
         </Form>
-        <Drawer
-          title="添加banner"
-          placement="right"
-          width="50%"
-          closable
-          onClose={this.onClose}
-          visible={visible}
-        >
-        </Drawer>
       </div>
     )
   }

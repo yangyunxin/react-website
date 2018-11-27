@@ -2,22 +2,22 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, Form, Row, Col, Input, DatePicker, Table, Button, Divider } from 'antd';
-import { getSystemDictList, postSystemDict, putSystemDict, getSystemDictById } from '../../action/system';
-import listColumns from './columns/dictList';
+import { getProductTypeList, postProductType, putProductType, getProductTypeById } from '../../action/productType';
+import listColumns from './columns/dictlist';
 import { formItemLayout, showTotal } from '../../utils/constant';
-import DictItem from './DictItem';
+import AddItem from './AddItem';
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
 
-@connect(({ system }) => ({
-  systemDictList: system.systemDictList
+@connect(({ productType }) => ({
+  productTypeList: productType.productTypeList
 }), {
-  getSystemDictList,
+  getProductTypeList,
 })
 @Form.create()
-export default class SystemDictItem extends React.PureComponent {
+export default class SystemDict extends React.PureComponent {
   constructor(props) {
     super(props);
     this.columns = [
@@ -33,7 +33,7 @@ export default class SystemDictItem extends React.PureComponent {
             <Divider type="vertical" />
             <a onClick={() => this.editDict(record.id)} href="javascript:;">编辑</a>
             <Divider type="vertical" />
-            <Link to={`/system/dictionary/${record.label}?level=${record.level+1}`}>下级</Link>
+            <Link to={`/category/dictionary/${record.label}?level=${record.level+1}`}>下级</Link>
           </div>
         )
       },
@@ -48,25 +48,18 @@ export default class SystemDictItem extends React.PureComponent {
     title: '',
   };
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.match.params.id !== this.props.match.params.id) {
-      this.getSystemDictList();
-    }
-  }
-
   componentDidMount() {
-    this.getSystemDictList();
+    this.getProductTypeList();
   }
 
-  getSystemDictList = (params) => {
-    const { id } = this.props.match.params;
+  getProductTypeList = (params) => {
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
         const { createTime, ...newParams } = values;
         const beginTime = values.createTime ? values.createTime[0].format('YYYY-MM-DD') : undefined;
         const endTime = values.createTime ? values.createTime[1].format('YYYY-MM-DD') : undefined;
-        await this.props.getSystemDictList({ ...newParams, ...params, beginTime, endTime, parentLabel: id });
+        await this.props.getProductTypeList({ ...newParams, ...params, beginTime, endTime, level: 2 });
         this.setState({ loading: false });
       } else {
         this.setState({ loading: false });
@@ -76,7 +69,7 @@ export default class SystemDictItem extends React.PureComponent {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.getSystemDictList();
+    this.getProductTypeList();
   }
 
   handleTableChange = (pagination) => {
@@ -84,20 +77,24 @@ export default class SystemDictItem extends React.PureComponent {
     pager.current = pagination.current;
     pager.pageSize = pagination.pageSize;
     this.setState({ pagination: pager });
-    this.getSystemDictList({
+    this.getProductTypeList({
       limit: pagination.pageSize,
       page: pagination.current,
     });
   }
 
   showDrawer = () => {
-    this.setState({ visible: true });
+    this.setState({
+      visible: true,
+    });
   };
 
   onClose = () => {
-    this.setState({ visible: false });
+    this.setState({
+      visible: false,
+    });
     const pager = { ...this.state.pagination };
-    this.getSystemDictList({
+    this.getProductTypeList({
       limit: pager.pageSize,
       page: pager.current,
     });
@@ -111,24 +108,23 @@ export default class SystemDictItem extends React.PureComponent {
   editDict = async (id) => {
     this.showDrawer();
     this.setState({ actionType: 'edit', title: '数据字典编辑' });
-    const result = await getSystemDictById(id);
+    const result = await getProductTypeById(id);
     this.setState({ dictDetail: result });
   }
 
   showDict = async (id) => {
     this.showDrawer();
     this.setState({ actionType: 'show', title: '数据字典详情' });
-    const result = await getSystemDictById(id);
+    const result = await getProductTypeById(id);
+    console.log(result);
     this.setState({ dictDetail: result });
   }
 
   handleConfirm = (params) => {
-    const { search } = this.props.location;
-    const level = search.split('=')[1];
     if (this.state.actionType === 'add') {
-      return postSystemDict({ ...params, level: level });
+      return postProductType({ ...params, level: 2 });
     } else if (this.state.actionType === 'edit') {
-      return putSystemDict({ ...params, level: level, id: this.state.dictDetail.id });
+      return putProductType({ ...params, level: 2, id: this.state.dictDetail.id });
     }
   }
 
@@ -137,8 +133,7 @@ export default class SystemDictItem extends React.PureComponent {
   }
 
   render() {
-    const { form: { getFieldDecorator }, systemDictList = {} } = this.props;
-    const { id } = this.props.match.params;
+    const { form: { getFieldDecorator }, productTypeList = {} } = this.props;
     const { loading } = this.state;
     const title = () => (
       <div>
@@ -147,7 +142,7 @@ export default class SystemDictItem extends React.PureComponent {
       </div>
     );
     return (
-      <div className="page-list operateLog-list">
+      <div className="page-list">
         <Card bordered={false} className="form-container">
           <Form onSubmit={this.handleSubmit}>
             <Row gutter={12}>
@@ -188,18 +183,18 @@ export default class SystemDictItem extends React.PureComponent {
             title={title}
             rowKey="id"
             columns={this.columns}
-            dataSource={systemDictList.records}
+            dataSource={productTypeList.records}
             onChange={this.handleTableChange}
-            pagination={{ showTotal: showTotal, total: systemDictList.total, ...this.state.pagination }}
+            pagination={{ showTotal: showTotal, total: productTypeList.total, ...this.state.pagination }}
             loading={loading}
           />
         </Card>
-        <DictItem
+        <AddItem
           title={this.state.title}
           onClose={this.onClose}
           visible={this.state.visible}
           handleSubmit={this.handleConfirm}
-          parentLabel={id}
+          parentLabel='dict'
           detail={this.state.dictDetail}
           actionType={this.state.actionType}
         />

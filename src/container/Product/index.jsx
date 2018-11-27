@@ -5,6 +5,7 @@ import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider
 import PriceForm from './PriceForm';
 import { getProductList, addBatch, batchUpProduct, batchDownProduct, updateProduct } from '../../action/product';
 import { getSystemDicts } from '../../action/system';
+import { getProductTypes } from '../../action/productType';
 import { formatDateSecond } from '../../utils/utils';
 import { formItemLayout, showTotal, nullString, PRODUCT_STATUS } from '../../utils/constant';
 import './index.css'
@@ -169,9 +170,9 @@ export default class ProductList extends React.PureComponent {
 
   async componentDidMount() {
     this.getProductList();
-    const productCategory = getSystemDicts({ parentLabel: 'productCategory' });
+    const productCategory = getProductTypes({ parentLabel: 'productCategory' });
     this.setState({ productCategory: await productCategory });
-    const dictLevel4 = getSystemDicts({ level: 4 });
+    const dictLevel4 = getProductTypes({ level: 4 });
     this.setState({ dictLevel4: await dictLevel4 });
     const colour = getSystemDicts({ parentLabel: 'colour' });
     this.setState({ colour: await colour });
@@ -399,7 +400,7 @@ export default class ProductList extends React.PureComponent {
   handleCateChange = async (value) => {
     this.props.form.setFieldsValue({ productSubcategory: undefined });
     if (value) {
-      const result = await getSystemDicts({ parentLabel: value });
+      const result = await getProductTypes({ parentLabel: value });
       this.setState({ productSubcategory: result });
     }
   }

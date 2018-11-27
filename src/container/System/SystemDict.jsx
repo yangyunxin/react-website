@@ -1,12 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Card, Form, Row, Col, Input, DatePicker, Table, Button, Divider, Drawer } from 'antd';
+import { Card, Form, Row, Col, Input, DatePicker, Table, Button, Divider } from 'antd';
 import { getSystemDictList, postSystemDict, putSystemDict, getSystemDictById } from '../../action/system';
 import listColumns from './columns/dictList';
 import { formItemLayout, showTotal } from '../../utils/constant';
 import DictItem from './DictItem';
-import './index.css'
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;

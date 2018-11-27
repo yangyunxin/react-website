@@ -6,6 +6,7 @@ import order from './order';
 import agent from './agent';
 import skylight from './skylight';
 import system from './system';
+import productType  from './productType';
 
 const rootReducer = combineReducers({
   auth,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   agent,
   skylight,
   system,
+  productType,
 });
 
 export default rootReducer;

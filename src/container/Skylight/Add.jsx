@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, Form, Input, Table, Select, Button, Drawer, message } from 'antd';
+import { Card, Form, Input, Select, Button, Drawer, message } from 'antd';
 import EnhanceTitle from '../../component/EnhanceTitle';
-import bannerOperateColumns from './columns/bannerOperate';
 import { SKY_TYPE, formItemLayout2 } from '../../utils/constant';
 import { addSkylight } from '../../action/skylight';
+import Uploader from '../../component/Uploader';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -26,7 +26,9 @@ export default class SkylightAdd extends React.PureComponent {
     e.preventDefault();
     this.props.form.validateFields(async (err, values) => {
       if (!err) {
-        const result = await addSkylight(values);
+        const { skyContent, ...params } = values;
+        const imgUrl = skyContent[0];
+        const result = await addSkylight({ ...params, skyContent: imgUrl });
         if (result && result.code === 0) {
           message.success('添加天窗成功！，你可以继续添加天窗，或者点击返回到列表页面');
         }
@@ -68,6 +70,15 @@ export default class SkylightAdd extends React.PureComponent {
                 </Select>
               )}
             </FormItem>
+            <FormItem {...formItemLayout2} label="天窗位置">
+              {getFieldDecorator('position', {
+                rules: [{
+                  required: true, message: '请输入天窗位置',
+                }],
+              })(
+                <Input placeholder="请输入天窗位置" />
+              )}
+            </FormItem>
             <FormItem {...formItemLayout2} label="天窗标题">
               {getFieldDecorator('skyTitle', {
                 rules: [{
@@ -86,25 +97,16 @@ export default class SkylightAdd extends React.PureComponent {
                 <TextArea rows={4} placeholder="请输入天窗描述" />
               )}
             </FormItem>
-            {/* <FormItem {...formItemLayout2} label="添加banner">
-              {getFieldDecorator('detail', {
+            <FormItem {...formItemLayout2} label="天窗图片">
+              {getFieldDecorator('skyContent', {
                 rules: [{
-                  required: true, message: '请添加banner',
+                  required: true, message: '请添加天窗图片',
                 }],
               })(
-                <div onClick={this.showDrawer} className="ant-upload ant-upload-select ant-upload-select-picture-card">
-                  <div style={{ display: 'table-cell', verticalAlign: 'middle' }}>
-                    <Icon type="plus" theme="outlined" />
-                    <div className="antd-upload-text">添加</div>
-                  </div>
-                </div>
+                <Uploader type="banner" max={1} />
               )}
-            </FormItem> */}
+            </FormItem>
           </Card>
-          {/* <Card bordered={false}>
-            <EnhanceTitle title="关联banner" />
-            <Table bordered columns={bannerOperateColumns} dataSource={[] } />
-          </Card> */}
           <div>
             <Button style={{ width: '100px', marginRight: '20px' }} type="primary" htmlType="submit">提交</Button>
             <Button onClick={this.handleReset} style={{ width: '100px', marginRight: '20px' }}>清空</Button>

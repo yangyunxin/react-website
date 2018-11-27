@@ -39,5 +39,12 @@ const API = {
   getSystemDictByLabel: '/api/admin/dict/{label}',
   getSystemDicts: '/api/admin/dict/dictList',
   getUserInfo: '/api/admin/user/info',
+  getProductTypeList: '/api/goods/tProductType/page',
+  postProductType: '/api/goods/tProductType/add',
+  putProductType: '/api/goods/tProductType/update',
+  getProductTypeById: '/api/goods/tProductType/{id}',
+  getProductTypes: '/api/goods/tProductType/dictList',
+
+
 }
 export default API;

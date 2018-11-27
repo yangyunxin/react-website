@@ -22,6 +22,8 @@ import AgentProduct from '../container/Agent/Product';
 import OperateLog from '../container/System/index';
 import SystemDict from '../container/System/SystemDict';
 import SystemDictItem from '../container/System/SystemDictItem';
+import ProductType from '../container/ProductType';
+import ProductTypeItem from '../container/ProductType/ProductTypeItem';
 
 const routerData = {
   '/': {
@@ -90,6 +92,18 @@ const routerData = {
   '/user/logs': {
     name: '用户登录日志',
     component: UserLogsList,
+  },
+  '/category': {
+    name: '分类管理',
+    redirect: true,
+  },
+  '/category/dictionary': {
+    name: '分类列表',
+    component: ProductType,
+    exact: true,
+  },
+  '/category/dictionary/:id': {
+    component: ProductTypeItem,
   },
   '/skylight': {
     name: '内容管理',

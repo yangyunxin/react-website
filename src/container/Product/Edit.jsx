@@ -5,6 +5,7 @@ import { Card, Form, Input, Select, Button, message } from 'antd';
 import { formItemLayout2, SUPPLY_STATUS } from '../../utils/constant';
 import { getProductById, updateProduct } from '../../action/product';
 import { getSystemDicts } from '../../action/system';
+import { getProductTypes } from '../../action/productType';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
 
@@ -22,6 +23,7 @@ export default class ProductDetail extends React.PureComponent {
     visible: false,
     productCategory: [],
     productSubcategory: [],
+    colour: [],
   }
 
   async componentDidMount() {
@@ -29,10 +31,12 @@ export default class ProductDetail extends React.PureComponent {
     const { params: { id } } = match;
     const result = await this.props.getProductById(id);
     if (result) {
-      const resp1 = await getSystemDicts({ parentLabel: 'productCategory' });
+      const resp1 = await getProductTypes({ parentLabel: 'productCategory' });
       this.setState({ productCategory: resp1 });
-      const resp2 = await getSystemDicts({ parentLabel: result.productCategory });
+      const resp2 = await getProductTypes({ parentLabel: result.productCategory });
       this.setState({ productSubcategory: resp2 });
+      const colour = getSystemDicts({ parentLabel: 'colour' });
+      this.setState({ colour: await colour });
     }
   }
 
@@ -72,7 +76,7 @@ export default class ProductDetail extends React.PureComponent {
   handleCateChange = async (value) => {
     this.props.form.setFieldsValue({ productSubcategory: undefined });
     if (value) {
-      const result = await getSystemDicts({ parentLabel: value });
+      const result = await getProductTypes({ parentLabel: value });
       this.setState({ productSubcategory: result });
     }
   }
@@ -80,7 +84,7 @@ export default class ProductDetail extends React.PureComponent {
   render() {
     const { productDetail, form } = this.props;
     const { getFieldDecorator } = form;
-    const { productCategory, productSubcategory } = this.state;
+    const { productCategory, productSubcategory, colour } = this.state;
     return (
       <div className="page-detail">
         <Form onSubmit={this.handleSubmit}>
@@ -143,9 +147,9 @@ export default class ProductDetail extends React.PureComponent {
                 }],
               })(
                 <Select allowClear placeholder="请选择产品颜色">
-                  <Option value="1">红色</Option>
-                  <Option value="2">黑色</Option>
-                  <Option value="3">蓝色</Option>
+                  {colour.map(item => (
+                    <Option key={item.label} value={item.label}>{item.description}</Option>
+                  ))}
                 </Select>
               )}
             </FormItem>
@@ -181,7 +185,7 @@ export default class ProductDetail extends React.PureComponent {
             </FormItem>
             <FormItem {...formItemLayout2} label="门幅">
               {getFieldDecorator('size', {
-                initialValue: productDetail.sn,
+                initialValue: productDetail.size,
                 rules: [{
                   required: true, message: '请输入产品门幅',
                 }],

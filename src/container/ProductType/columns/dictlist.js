@@ -1,37 +1,47 @@
 import React from 'react';
 import { formatDateSecond } from '../../../utils/utils';
-import { nullString, SKY_TYPE } from '../../../utils/constant';
 
 const columns = [
   {
-    title: '天窗ID',
-    dataIndex: 'skyId',
-    key: 'skyId',
+    title: '字典编码',
+    dataIndex: 'label',
+    key: 'label',
     align: 'center',
   },
   {
-    title: '天窗类型',
-    dataIndex: 'skyType',
-    key: 'skyType',
-    align: 'center',
-    render: (text) => SKY_TYPE[text] || nullString
-  },
-  {
-    title: '天窗标题',
-    dataIndex: 'skyTitle',
-    key: 'skyTitle',
+    title: '字典值',
+    dataIndex: 'value',
+    key: 'value',
     align: 'center',
   },
   {
-    title: '天窗位置',
-    dataIndex: 'position',
-    key: 'position',
+    title: '字典名称',
+    dataIndex: 'description',
+    key: 'description',
     align: 'center',
   },
   {
-    title: '天窗图片',
-    dataIndex: 'skyContent',
-    key: 'skyContent',
+    title: '层级',
+    dataIndex: 'level',
+    key: 'level',
+    align: 'center',
+  },
+  {
+    title: '上级编码',
+    dataIndex: 'parentLabel',
+    key: 'parentLabel',
+    align: 'center',
+  },
+  {
+    title: '顺序',
+    dataIndex: 'sort',
+    key: 'sort',
+    align: 'center',
+  },
+  {
+    title: '图片',
+    dataIndex: 'image',
+    key: 'image',
     align: 'center',
     render: (text) => <img style={{ display: 'block' }} width="50" height="50" src={text} alt="产品图片" />
   },
@@ -40,7 +50,7 @@ const columns = [
     dataIndex: 'createTime',
     key: 'createTime',
     align: 'center',
-    render: (text) => text ? formatDateSecond(text) : nullString
+    render: (text) => formatDateSecond(text)
   },
   {
     title: '创建人',

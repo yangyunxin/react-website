@@ -16,7 +16,7 @@ export default class UploadImage extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if ('value' in nextProps && nextProps.value !== this.props.value) {
+    if ('value' in nextProps && nextProps.value !== this.props.value && nextProps.value instanceof Array) {
       this.setState({ fileList: nextProps.value.map((v, index) => ({ uid: index, url: v })) });
     }
   }
@@ -59,7 +59,7 @@ export default class UploadImage extends React.PureComponent {
       fileList,
       uploadParams
     } = this.state;
-    const { noRemove, noAdd } = this.props;
+    const { noRemove, noAdd, type } = this.props;
     const uploadButton = (
       <div>
         <Icon type="plus" />
@@ -71,10 +71,10 @@ export default class UploadImage extends React.PureComponent {
         <Upload
           headers={{ 'Authorization': localStorage.getItem('Authorization') || 'Basic cGlnOnBpZw==' }}
           name="file"
-          action="/api/goods/tProduct/upload"
+          action="/api/goods/upload/up"
           listType="picture-card"
           fileList={fileList}
-          data={uploadParams}
+          data={{ ...uploadParams, type }}
           onPreview={this.handlePreivew}
           onChange={this.handleChange}
           beforeUpload={this.beforeUpload}

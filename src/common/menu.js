@@ -41,6 +41,17 @@ const menuData = [
     ],
   },
   {
+    name: '分类管理',
+    icon: 'bars',
+    path: 'category',
+    children: [
+      {
+        name: '分类列表',
+        path: 'dictionary',
+      }
+    ],
+  },
+  {
     name: '内容管理',
     icon: 'table',
     path: 'skylight',

@@ -5,7 +5,7 @@ import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
 import { addProduct } from '../../action/product';
 import { getSystemDicts } from '../../action/system';
-import { formItemLayout2, PRODUCT_TYPE, PRODUCT_SUB, SUPPLY_STATUS } from '../../utils/constant';
+import { formItemLayout2, SUPPLY_STATUS } from '../../utils/constant';
 
 const FormItem = Form.Item;
 const Option = Select.Option;

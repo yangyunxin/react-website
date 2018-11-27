@@ -4,7 +4,6 @@ import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button } from '
 import { getSystemLogList } from '../../action/system';
 import listColumns from './columns/list';
 import { formItemLayout, showTotal } from '../../utils/constant';
-import './index.css'
 
 const FormItem = Form.Item;
 const { Option } = Select;

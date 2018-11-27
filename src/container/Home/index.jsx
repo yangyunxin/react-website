@@ -8,9 +8,6 @@ import { getUserInfo } from '../../action/auth';
   getUserInfo,
 })
 export default class Home extends React.PureComponent {
-  componentDidMount() {
-    this.props.getUserInfo();
-  }
   render() {
     const { userInfo = {} } = this.props;
     const { sysUser = {} } = userInfo;

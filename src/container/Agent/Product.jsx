@@ -6,6 +6,7 @@ import { getProductList, getProductCode } from '../../action/product';
 import { agentProduct } from '../../action/agent';
 import listColumns from '../Product/columns/list';
 import { formItemLayout, showTotal } from '../../utils/constant';
+import { getSystemDicts } from '../../action/system';
 import './index.css'
 
 const FormItem = Form.Item;
