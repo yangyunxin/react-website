@@ -44,7 +44,11 @@ export default class UploadImage extends React.PureComponent {
 
   handleChange = ({ fileList }) => {
     const { onChange } = this.props;
-    const val = fileList.filter(item => item.response && item.response.code === 0).map(item => (item.response.data));
+    const val = fileList.filter(item => (item.response && item.response.code === 0) || item.url).map(item => {
+      if (item.url) return item.url;
+      return item.response.data;
+    })
+    // const val = fileList.filter(item => item.response && item.response.code === 0).map(item => (item.response.data));
     this.setState({ fileList, val }, () => {
       if (onChange && this.state.val.length === fileList.length) {
         onChange(val);
