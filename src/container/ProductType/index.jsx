@@ -116,7 +116,6 @@ export default class SystemDict extends React.PureComponent {
     this.showDrawer();
     this.setState({ actionType: 'show', title: '数据字典详情' });
     const result = await getProductTypeById(id);
-    console.log(result);
     this.setState({ dictDetail: result });
   }
 

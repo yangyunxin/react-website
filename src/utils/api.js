@@ -24,6 +24,7 @@ const API = {
   addAgent: '/api/goods/tAgent/add', // post
   updateAgent: '/api/goods/tAgent/update',
   agentProduct: '/api/goods/tAgentProduct/addBatch',
+  agentProductList: '/api/goods/tAgentProduct/page',
   deleteAgentById: '/api/goods/tAgent',
   getSkylightList: '/api/goods/tSkyLight/page',
   getSkylightById: '/api/goods/tSkyLight',

@@ -5,6 +5,7 @@ import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
 import { addProduct } from '../../action/product';
 import { getSystemDicts } from '../../action/system';
+import { getProductTypes } from '../../action/productType';
 import { formItemLayout2, SUPPLY_STATUS } from '../../utils/constant';
 
 const FormItem = Form.Item;
@@ -49,7 +50,7 @@ export default class ProductAdd extends React.PureComponent {
   handleCateChange = async (value) => {
     this.props.form.setFieldsValue({ productSubcategory: undefined });
     if (value) {
-      const result = await getSystemDicts({ parentLabel: value });
+      const result = await getProductTypes({ parentLabel: value });
       this.setState({ productSubcategory: result });
     }
   }
@@ -160,9 +161,11 @@ export default class ProductAdd extends React.PureComponent {
               {getFieldDecorator('size', {
                 rules: [{
                   required: true, message: '请输入产品门幅',
+                }, {
+                  pattern: /^[0-9.]+$/g, message: '请输入数字'
                 }],
               })(
-                <Input placeholder="请输入产品门幅" />
+                <Input addonAfter="米" placeholder="请输入产品门幅" />
               )}
             </FormItem>
             <FormItem {...formItemLayout2} label="产品用途">

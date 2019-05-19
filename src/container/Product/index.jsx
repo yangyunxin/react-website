@@ -6,8 +6,8 @@ import PriceForm from './PriceForm';
 import { getProductList, addBatch, batchUpProduct, batchDownProduct, updateProduct } from '../../action/product';
 import { getSystemDicts } from '../../action/system';
 import { getProductTypes } from '../../action/productType';
-import { formatDateSecond } from '../../utils/utils';
-import { formItemLayout, showTotal, nullString, PRODUCT_STATUS } from '../../utils/constant';
+import { formatDateSecond, formatYuan, fixedNumber } from '../../utils/utils';
+import { formItemLayout, showTotal, nullString, PRODUCT_STATUS, UNIT_VALUES } from '../../utils/constant';
 import './index.css'
 
 const FormItem = Form.Item;
@@ -72,7 +72,7 @@ export default class ProductList extends React.PureComponent {
         align: 'center',
         render: (text, record) => {
           const product = record.priceList && record.priceList.length ? record.priceList[0] : {}
-          return product['price'] || nullString
+          return product.price !== undefined ? formatYuan(product['price']) : nullString
         }
       },
       {
@@ -82,7 +82,7 @@ export default class ProductList extends React.PureComponent {
         align: 'center',
         render: (text, record) => {
           const product = record.priceList && record.priceList.length ? record.priceList[0] : {}
-          return product['unit'] || nullString
+          return UNIT_VALUES[product['unit']] || nullString
         }
       },
       {
@@ -301,19 +301,19 @@ export default class ProductList extends React.PureComponent {
       values.push({
         productId: item.id,
         interval: `${params.num1}-${params.num2}`,
-        price: params.price1,
+        price: fixedNumber(params.price1 * 100),
         unit: params.unit,
       });
       values.push({
         productId: item.id,
         interval: `${params.num3}-${params.num4}`,
-        price: params.price2,
+        price: fixedNumber(params.price2 * 100),
         unit: params.unit,
       });
       values.push({
         productId: item.id,
         interval: `${params.num5}-${params.num6}`,
-        price: params.price3,
+        price: fixedNumber(params.price3 * 100),
         unit: params.unit,
       });
     });
@@ -491,7 +491,7 @@ export default class ProductList extends React.PureComponent {
           <Table
             title={this.title}
             rowKey="id"
-            scroll={{ x: 1100 }}
+            scroll={{ x: 1200 }}
             onChange={this.handleTableChange}
             pagination={{ showTotal: showTotal, total: productList.total, ...this.state.pagination }}
             rowSelection={rowSelection}

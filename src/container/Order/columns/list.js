@@ -1,5 +1,5 @@
 
-import { formatDateSecond } from '../../../utils/utils';
+import { formatDateSecond, formatYuan } from '../../../utils/utils';
 import { nullString, PAYMENT_METHOD, ORDER_STATUS, REGIST_CHANNEL } from '../../../utils/constant';
 
 const columns = [
@@ -27,10 +27,10 @@ const columns = [
   },
   {
     title: '订单金额（元）',
-    dataIndex: 'orderAmountPayment',
-    key: 'orderAmountPayment',
+    dataIndex: 'orderAmountPayable',
+    key: 'orderAmountPayable',
     align: 'center',
-    render: (text) => text || nullString,
+    render: (text) => formatYuan(text) || nullString,
   },
   {
     title: '代理商',

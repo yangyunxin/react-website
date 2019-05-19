@@ -21,8 +21,9 @@ export default class PriceForm extends React.PureComponent {
     e.preventDefault();
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        this.props.addBatch(values);
+        this.props.addBatch(values)
         this.setState({ loading: false });
+        this.handleReset();
       } else {
         this.setState({ loading: false });
       }
@@ -32,14 +33,14 @@ export default class PriceForm extends React.PureComponent {
   handleNum2Change = (e) => {
     const value = e.target.value;
     this.props.form.setFieldsValue({
-      num3: parseInt(value, 10) + 1,
+      num3: parseInt(value, 10) + 1 || undefined,
     });
   }
 
   handleNum4Change = (e) => {
     const value = e.target.value;
     this.props.form.setFieldsValue({
-      num5: parseInt(value, 10) + 1,
+      num5: parseInt(value, 10) + 1 || undefined,
     });
   }
 

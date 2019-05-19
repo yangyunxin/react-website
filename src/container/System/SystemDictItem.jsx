@@ -144,6 +144,7 @@ export default class SystemDictItem extends React.PureComponent {
       <div>
         <span>操作处理：</span>
         <Button type="primary" onClick={this.addDict}>添加</Button>
+        <Button style={{ marginLeft: 15 }} onClick={() => { this.props.history.go(-1) }}>返回</Button>
       </div>
     );
     return (

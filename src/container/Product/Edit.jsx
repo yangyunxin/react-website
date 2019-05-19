@@ -165,7 +165,7 @@ export default class ProductDetail extends React.PureComponent {
             </FormItem>
             <FormItem {...formItemLayout2} label="产品详情图">
               {getFieldDecorator('detailPicture', {
-                initialValue: [productDetail.detailPicture],
+                initialValue: productDetail.detailPicture ? productDetail.detailPicture.split(',') : [],
                 rules: [{
                   required: true, message: '请添加产品详情图',
                 }],
@@ -188,9 +188,11 @@ export default class ProductDetail extends React.PureComponent {
                 initialValue: productDetail.size,
                 rules: [{
                   required: true, message: '请输入产品门幅',
+                }, {
+                  pattern: /^[0-9.]+$/g, message: '请输入数字'
                 }],
               })(
-                <Input placeholder="请输入产品门幅" />
+                <Input addonAfter="米" placeholder="请输入产品门幅" />
               )}
             </FormItem>
             <FormItem {...formItemLayout2} label="产品用途">

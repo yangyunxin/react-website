@@ -169,8 +169,8 @@ export default class OrderList extends React.PureComponent {
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 8 }}>
                 <FormItem {...formItemLayout} label="用户账户">
-                  {getFieldDecorator('accountId')(
-                    <Input placeholder="请输入用户账户ID" />
+                  {getFieldDecorator('phoneNumber')(
+                    <Input placeholder="请输入用户手机" />
                   )}
                 </FormItem>
               </Col>

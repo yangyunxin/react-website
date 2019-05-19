@@ -3,18 +3,21 @@ import { connect } from 'react-redux';
 import ReactToPrint from "react-to-print";
 import { Card, Form, Row, Col, Input, Select, Table, Button, Divider, message, Popconfirm, Modal } from 'antd';
 import { getProductList, getProductCode } from '../../action/product';
+import { getProductTypes } from '../../action/productType';
 import { agentProduct } from '../../action/agent';
 import listColumns from '../Product/columns/list';
 import { formItemLayout, showTotal } from '../../utils/constant';
-import { getSystemDicts } from '../../action/system';
+import { getAgentProductList } from '../../action/agent';
 import './index.css'
 
 const FormItem = Form.Item;
 const { Option } = Select;
 
-@connect(({ product }) => ({
-  productList: product.productList
+@connect(({ product, agent }) => ({
+  agentProductList: agent.agentProductList,
+  productList: product.productList,
 }), {
+  getAgentProductList,
   getProductList,
 })
 @Form.create()
@@ -61,14 +64,35 @@ export default class AgentProduct extends React.PureComponent {
     confirmLoading: false,
     printList: [],
     codeList: [],
+    productCategory: [],
+    productSubcategory: []
   };
 
-  componentDidMount() {
-    this.getProductList();
+  async componentDidMount() {
+    this.getAgentProductList();
+    const productCategory = getProductTypes({ parentLabel: 'productCategory' });
+    this.setState({ productCategory: await productCategory });
   }
 
   componentWillUnmount() {
     this.setState = (state,callback) => { };
+  }
+
+  getAgentProductList = async (params) => {
+    const { match } = this.props;
+    const { id } = match.params;
+    this.setState({ loading: true });
+    this.props.form.validateFields(async(err, values) => {
+      if (!err) {
+        const { createTime, ...newParams } = values;
+        const beginTime = values.createTime ? values.createTime[0].format('YYYY-MM-DD') : undefined;
+        const endTime = values.createTime ? values.createTime[1].format('YYYY-MM-DD') : undefined;
+        await this.props.getAgentProductList({ ...newParams, ...params, beginTime, endTime, agentId: id });
+        this.setState({ loading: false });
+      } else {
+        this.setState({ loading: false });
+      }
+    });
   }
 
   getProductList = async (params) => {
@@ -84,6 +108,14 @@ export default class AgentProduct extends React.PureComponent {
         this.setState({ loading: false });
       }
     });
+  }
+
+  handleCateChange = async (value) => {
+    this.props.form.setFieldsValue({ productSubcategory: [] });
+    if (value) {
+      const result = await getProductTypes({ parentLabel: value });
+      this.setState({ productSubcategory: result });
+    }
   }
 
   handleSubmit = (e) => {
@@ -221,7 +253,7 @@ export default class AgentProduct extends React.PureComponent {
 
   render() {
     const { form: { getFieldDecorator }, productList = {} } = this.props;
-    const { selectedRowKeys, loading, visible, confirmLoading, printList, codeList } = this.state;
+    const { selectedRowKeys, loading, visible, confirmLoading, printList, codeList, productCategory, productSubcategory } = this.state;
     const rowSelection = { selectedRowKeys, onChange: this.onSelectChange };
     return (
       <div className="page-list product-list">
@@ -245,10 +277,10 @@ export default class AgentProduct extends React.PureComponent {
               <Col xs={{ span: 24 }} sm={{ span: 12 }} lg={{ span: 6 }}>
                 <FormItem {...formItemLayout} label="产品大类">
                   {getFieldDecorator('productCategory')(
-                    <Select allowClear placeholder="请选择产品大类">
-                      <Option value="1">大类一</Option>
-                      <Option value="2">大类二</Option>
-                      <Option value="3">大类三</Option>
+                    <Select onChange={this.handleCateChange} allowClear placeholder="请选择产品大类">
+                      {productCategory.map(item => (
+                        <Option key={item.label} value={item.label}>{item.description}</Option>
+                      ))}
                     </Select>
                   )}
                 </FormItem>
@@ -257,9 +289,9 @@ export default class AgentProduct extends React.PureComponent {
                 <FormItem {...formItemLayout} label="产品子类">
                   {getFieldDecorator('productSubcategory')(
                     <Select allowClear placeholder="请选择产品子类">
-                      <Option value="1">子类一</Option>
-                      <Option value="2">子类二</Option>
-                      <Option value="3">子类三</Option>
+                      {productSubcategory.map(item => (
+                        <Option key={item.label} value={item.label}>{item.description}</Option>
+                      ))}
                     </Select>
                   )}
                 </FormItem>

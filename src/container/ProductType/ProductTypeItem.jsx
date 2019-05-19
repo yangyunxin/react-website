@@ -105,7 +105,7 @@ export default class ProductTypeItem extends React.PureComponent {
 
   addDict = () => {
     this.showDrawer();
-    this.setState({ actionType: 'add', title: '数据字典添加' });
+    this.setState({ actionType: 'add', title: '数据字典添加', dictDetail: {} });
   }
 
   editDict = async (id) => {
@@ -144,6 +144,7 @@ export default class ProductTypeItem extends React.PureComponent {
       <div>
         <span>操作处理：</span>
         <Button type="primary" onClick={this.addDict}>添加</Button>
+        <Button style={{ marginLeft: 15 }} onClick={() => { this.props.history.go(-1) }}>返回</Button>
       </div>
     );
     return (

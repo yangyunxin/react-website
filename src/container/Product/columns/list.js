@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatDateSecond } from '../../../utils/utils';
+import { formatDateSecond, formatYuan } from '../../../utils/utils';
 import { nullString, PRODUCT_TYPE, PRODUCT_SUB, PRODUCT_STATUS } from '../../../utils/constant';
 
 const color = {
@@ -49,7 +49,7 @@ const columns = [
     align: 'center',
     render: (text, record) => {
       const product = record.priceList && record.priceList.length ? record.priceList[0] : {}
-      return product['price'] || nullString
+      return formatYuan(product['price']) || nullString
     }
   },
   {

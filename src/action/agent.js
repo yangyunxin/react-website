@@ -4,6 +4,7 @@ import { authUserExpire } from './auth';
 
 export const GET_AGENT_LIST = 'GET_AGENT_LIST';
 export const GET_AGENT_BYID = 'GET_AGENT_BYID';
+export const GET_AGENT_PRODUCT_LIST = 'GET_AGENT_PRODUCT_LIST';
 
 export function getAgentList(params) {
   return async (dispatch) => {
@@ -66,5 +67,19 @@ export async function agentProduct(params) {
   const result = await post(API.agentProduct, params);
   if (result && result.status === 200) {
     return result.data;
+  }
+}
+
+export function getAgentProductList(params) {
+  return async (dispatch) => {
+    const result = await get(API.agentProductList, params);
+    if (result && result.status === 200) {
+      dispatch({
+        type: GET_AGENT_PRODUCT_LIST,
+        data: result.data
+      })
+    } else if (result && result.status === 401) {
+      dispatch(authUserExpire);
+    }
   }
 }

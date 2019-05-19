@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Card, Form, Input, Select, Button } from 'antd';
 import { getProductById } from '../../action/product';
 import { formItemLayout2, SUPPLY_STATUS, UNIT_VALUES } from '../../utils/constant';
+import { formatYuan } from '../../utils/utils';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import { getSystemDicts } from '../../action/system';
 import { getProductTypes } from '../../action/productType';
@@ -74,7 +75,7 @@ export default class ProductDetail extends React.PureComponent {
                 <thead>
                   <tr>
                     <th>数量</th>
-                    <th>价格</th>
+                    <th>价格(元)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -93,7 +94,7 @@ export default class ProductDetail extends React.PureComponent {
                         </td>
                         <td>
                           <FormItem style={{ display: 'inline-block' }}>
-                            <Input value={item.price} style={{ width: 60 }} />
+                            <Input value={formatYuan(item.price)} style={{ width: 60 }} />
                           </FormItem>
                         </td>
                       </tr>
@@ -123,7 +124,7 @@ export default class ProductDetail extends React.PureComponent {
               <Input value={productDetail.weight} placeholder="请输入产品克重" />
             </FormItem>
             <FormItem {...formItemLayout2} label="门幅">
-              <Input value={productDetail.size} placeholder="请输入产品门幅" />
+              <Input addonAfter="米" value={productDetail.size} placeholder="请输入产品门幅" />
             </FormItem>
             <FormItem {...formItemLayout2} label="产品用途">
               <Input value={productDetail.use} placeholder="请输入产品用途" />
