@@ -83,3 +83,10 @@ export function getAgentProductList(params) {
     }
   }
 }
+
+export async function deleteAgentProduct(agentId, params) {
+  const result = await post(`${API.delectAgentProduct.replace(/{agentId}/, agentId)}`, params);
+  if (result && result.status === 200) {
+    return result.data;
+  }
+}

@@ -7,7 +7,7 @@ const API = {
   batchUpProduct: '/api/goods/tProduct/batchUpProduct', // post
   batchDownProduct: '/api/goods/tProduct/batchDownProduct', //post
   addBatch: '/api/goods/tProductPrice/addBatch',
-  getProductCode: '/api/goods/tProduct/{id}/getQRCode',
+  getProductCode: '/api/goods/tProduct/{id}/{sn}/getQRCode',
   orderList: '/api/goods/order/page',
   updateOrder: '/api/goods/order/update', //put
   getOrderById: '/api/goods/order',
@@ -45,7 +45,7 @@ const API = {
   putProductType: '/api/goods/tProductType/update',
   getProductTypeById: '/api/goods/tProductType/{id}',
   getProductTypes: '/api/goods/tProductType/dictList',
-
+  delectAgentProduct: '/api/goods/tAgentProduct/deleteBatch/{agentId}',
 
 }
 export default API;

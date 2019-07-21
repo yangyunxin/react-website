@@ -90,10 +90,6 @@ export default class ProductList extends React.PureComponent {
         dataIndex: 'colour',
         key: 'colour',
         align: 'center',
-        render: (text) => {
-          const info = this.state.colour.find(item => item.label === text) || {};
-          return info.description || nullString;
-        }
       },
       {
         title: '创建时间',

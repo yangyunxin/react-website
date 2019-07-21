@@ -118,3 +118,15 @@ export const AGENT_TYPE = {
 export const SKY_TYPE = {
   1: 'Banner',
 }
+export const ORDER_TYPE = {
+  'Normal': '正常',
+}
+export const PAYMENT_CHANNEL = {
+  0: '微信Wechat',
+  1: '支付宝Alipay',
+  2: '银联'
+}
+export const AGENT_STATUS = {
+  0: '正常',
+  1: '暂停',
+}

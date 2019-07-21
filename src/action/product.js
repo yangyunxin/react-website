@@ -64,8 +64,8 @@ export async function addBatch(params) {
   }
 }
 
-export async function getProductCode(id) {
-  const result = await get(`${API.getProductCode.replace(/{id}/, id)}`);
+export async function getProductCode(id, sn) {
+  const result = await get(`${API.getProductCode.replace(/{id}\/{sn}/, `${id}/${sn}`)}`);
   if (result && result.status === 200) {
     return result.data
   }

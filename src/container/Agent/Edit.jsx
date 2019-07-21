@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, Form, Input, Select, Button, message } from 'antd';
 import { getAgentById, updateAgent } from '../../action/agent';
-import { formItemLayout2 } from '../../utils/constant';
+import { formItemLayout2, AGENT_STATUS } from '../../utils/constant';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import Uploader from '../../component/Uploader';
 
@@ -36,8 +36,8 @@ export default class AgentEdit extends React.PureComponent {
       if (!err) {
         const { match } = this.props;
         const { params: { id } } = match;
-        const { url, ...params } = values;
-        const result = await updateAgent({ id, url: url[0], ...params });
+        const { url, detailUrl, mapUrl, ...params } = values;
+        const result = await updateAgent({ id, url: url[0], detailUrl: detailUrl.join(','), mapUrl: mapUrl[0], ...params });
         if (result && result.code === 0) {
           message.success('更新代理商成功！1s后跳转代理商列表页面');
           this.timer = setTimeout(() => {
@@ -57,13 +57,13 @@ export default class AgentEdit extends React.PureComponent {
           <Card bordered={false}>
             <EnhanceTitle title="基本信息" />
             <FormItem {...formItemLayout2} label="代理商编号">
-              {getFieldDecorator('id', {
-                initialValue: agentDetail.id,
+              {getFieldDecorator('sn', {
+                initialValue: agentDetail.sn,
                 rules: [{
                   required: true, message: '请输入代理商编号',
                 }],
               })(
-                <Input disabled placeholder="请输入代理商编号" />
+                <Input placeholder="请输入代理商编号" />
               )}
             </FormItem>
             <FormItem {...formItemLayout2} label="代理商类型">
@@ -89,16 +89,6 @@ export default class AgentEdit extends React.PureComponent {
                 <Input placeholder="请输入代理商名称" />
               )}
             </FormItem>
-            <FormItem {...formItemLayout2} label="代理商账号">
-              {getFieldDecorator('accountId', {
-                initialValue: agentDetail.accountId,
-                rules: [{
-                  required: true, message: '请输入代理商账号',
-                }],
-              })(
-                <Input rows={4} placeholder="请输入代理商账号" />
-              )}
-            </FormItem>
             <FormItem {...formItemLayout2} label="返点率">
               {getFieldDecorator('diPer', {
                 initialValue: agentDetail.diPer,
@@ -113,10 +103,34 @@ export default class AgentEdit extends React.PureComponent {
               {getFieldDecorator('status', {
                 initialValue: agentDetail.status,
                 rules: [{
-                  required: true, message: '请输入代理商状态',
+                  required: true, message: '请选择代理商状态',
                 }],
               })(
-                <Input placeholder="请输入代理商状态" />
+                <Select placeholder="请选择代理商状态">
+                  {Object.keys(AGENT_STATUS).map(item => (
+                    <Option key={item} value={item}>{AGENT_STATUS[item]}</Option>
+                  ))}
+                </Select>
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout2} label="联系人">
+              {getFieldDecorator('linkName', {
+                initialValue: agentDetail.linkName,
+                rules: [{
+                  required: true, message: '请输入联系人',
+                }],
+              })(
+                <Input rows={4} placeholder="请输入联系人" />
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout2} label="联系电话">
+              {getFieldDecorator('phone', {
+                initialValue: agentDetail.phone,
+                rules: [{
+                  required: true, message: '请输入联系电话',
+                }],
+              })(
+                <Input rows={4} placeholder="请输入联系电话" />
               )}
             </FormItem>
             <FormItem {...formItemLayout2} label="门店图片">
@@ -137,6 +151,36 @@ export default class AgentEdit extends React.PureComponent {
                 }],
               })(
                 <TextArea rows={4} placeholder="请输入门店详情" />
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout2} label="门店详情图片">
+              {getFieldDecorator('detailUrl', {
+                initialValue: agentDetail.detailUrl ? agentDetail.detailUrl.split(',') : [],
+                rules: [{
+                  required: true, message: '请输入门店详情图片',
+                }],
+              })(
+                <Uploader max={5} placeholder="请输入门店详情图片" />
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout2} label="门店地址">
+              {getFieldDecorator('address', {
+                initialValue: agentDetail.address,
+                rules: [{
+                  required: true, message: '请输入门店地址',
+                }],
+              })(
+                <TextArea rows={4} placeholder="请输入门店地址" />
+              )}
+            </FormItem>
+            <FormItem {...formItemLayout2} label="地址图片">
+              {getFieldDecorator('mapUrl', {
+                initialValue: [agentDetail.mapUrl],
+                rules: [{
+                  required: true, message: '请输入地址图片',
+                }],
+              })(
+                <Uploader placeholder="请输入地址图片" />
               )}
             </FormItem>
           </Card>

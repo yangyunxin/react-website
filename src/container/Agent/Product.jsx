@@ -1,23 +1,23 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import qs from 'qs';
 import ReactToPrint from "react-to-print";
 import { Card, Form, Row, Col, Input, Select, Table, Button, Divider, message, Popconfirm, Modal } from 'antd';
-import { getProductList, getProductCode } from '../../action/product';
+import { getProductCode, getProductList } from '../../action/product';
 import { getProductTypes } from '../../action/productType';
-import { agentProduct } from '../../action/agent';
-import listColumns from '../Product/columns/list';
-import { formItemLayout, showTotal } from '../../utils/constant';
-import { getAgentProductList } from '../../action/agent';
+import { agentProduct, deleteAgentProduct } from '../../action/agent';
+import { getSystemDicts } from '../../action/system';
+import { formatDateSecond, formatYuan } from '../../utils/utils';
+import { formItemLayout, showTotal, nullString, PRODUCT_STATUS, UNIT_VALUES } from '../../utils/constant';
+import ProductModal from './ProductModal';
 import './index.css'
 
 const FormItem = Form.Item;
 const { Option } = Select;
 
-@connect(({ product, agent }) => ({
-  agentProductList: agent.agentProductList,
+@connect(({ product }) => ({
   productList: product.productList,
 }), {
-  getAgentProductList,
   getProductList,
 })
 @Form.create()
@@ -25,7 +25,88 @@ export default class AgentProduct extends React.PureComponent {
   constructor(props) {
     super(props);
     this.columns = [
-      ...listColumns,
+      {
+        title: '产品名称',
+        dataIndex: 'name',
+        key: 'name',
+        align: 'center',
+        fixed: 'left',
+      },
+      {
+        title: '产品货号',
+        dataIndex: 'sameStyleNum',
+        key: 'sameStyleNum',
+        align: 'center',
+      },
+      {
+        title: '产品大类',
+        dataIndex: 'productCategory',
+        key: 'productCategory',
+        align: 'center',
+        render: (text) => {
+          const { productCategory = [] } = this.state;
+          const info = productCategory.find(item => item.label === text) || {};
+          return info.description || nullString;
+        }
+      },
+      {
+        title: '产品子类',
+        dataIndex: 'productSubcategory',
+        key: 'productSubcategory',
+        align: 'center',
+        render: (text) => {
+          const info = this.state.dictLevel4.find(item => item.label === text) || {};
+          return info.description || nullString;
+        }
+      },
+      {
+        title: '产品图片',
+        dataIndex: 'mainPicture',
+        key: 'mainPicture',
+        align: 'center',
+        render: (text) => <img style={{ display: 'block' }} width="50" height="50" src={text} alt="产品图片" />
+      },
+      {
+        title: '价格（元）',
+        dataIndex: 'productPrice',
+        key: 'productPrice',
+        align: 'center',
+        render: (text, record) => {
+          const product = record.priceList && record.priceList.length ? record.priceList[0] : {}
+          return product.price !== undefined ? formatYuan(product['price']) : nullString
+        }
+      },
+      {
+        title: '计价单位',
+        dataIndex: 'unit',
+        key: 'unit',
+        align: 'center',
+        render: (text, record) => {
+          const product = record.priceList && record.priceList.length ? record.priceList[0] : {}
+          return UNIT_VALUES[product['unit']] || nullString
+        }
+      },
+      {
+        title: '颜色',
+        dataIndex: 'colour',
+        key: 'colour',
+        align: 'center',
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        align: 'center',
+        width: '10%',
+        render: (text) => text ? formatDateSecond(text) : nullString
+      },
+      {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        align: 'center',
+        render: (text) => text ? PRODUCT_STATUS[text] : '待上架'
+      },
       {
         title: '操作',
         dataIndex: 'operate',
@@ -65,44 +146,33 @@ export default class AgentProduct extends React.PureComponent {
     printList: [],
     codeList: [],
     productCategory: [],
-    productSubcategory: []
+    productSubcategory: [],
+    showProductModal: false,
+    dictLevel4: [],
+    colour: [],
   };
 
   async componentDidMount() {
-    this.getAgentProductList();
+    this.getProductList();
     const productCategory = getProductTypes({ parentLabel: 'productCategory' });
     this.setState({ productCategory: await productCategory });
+    const dictLevel4 = getProductTypes({ level: 4 });
+    this.setState({ dictLevel4: await dictLevel4 });
+    const colour = getSystemDicts({ parentLabel: 'colour' });
+    this.setState({ colour: await colour });
   }
 
   componentWillUnmount() {
     this.setState = (state,callback) => { };
   }
 
-  getAgentProductList = async (params) => {
+  getProductList = async (params) => {
     const { match } = this.props;
     const { id } = match.params;
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        const { createTime, ...newParams } = values;
-        const beginTime = values.createTime ? values.createTime[0].format('YYYY-MM-DD') : undefined;
-        const endTime = values.createTime ? values.createTime[1].format('YYYY-MM-DD') : undefined;
-        await this.props.getAgentProductList({ ...newParams, ...params, beginTime, endTime, agentId: id });
-        this.setState({ loading: false });
-      } else {
-        this.setState({ loading: false });
-      }
-    });
-  }
-
-  getProductList = async (params) => {
-    this.setState({ loading: true });
-    this.props.form.validateFields(async(err, values) => {
-      if (!err) {
-        const { createTime, ...newParams } = values;
-        const beginTime = values.createTime ? values.createTime[0].format('YYYY-MM-DD') : undefined;
-        const endTime = values.createTime ? values.createTime[1].format('YYYY-MM-DD') : undefined;
-        await this.props.getProductList({ ...newParams, ...params, beginTime, endTime});
+        await this.props.getProductList({ ...values, ...params, agentId: id, exist: 1 });
         this.setState({ loading: false });
       } else {
         this.setState({ loading: false });
@@ -151,6 +221,15 @@ export default class AgentProduct extends React.PureComponent {
     });
   }
 
+  handleShowModal = () => {
+    this.setState({ showProductModal: true });
+  }
+
+  handleCloseModal = () => {
+    this.setState({ showProductModal: false });
+    this.getProductList();
+  }
+
   title = () => {
     const { selectedRowKeys, selectedRows } = this.state;
     return (
@@ -160,15 +239,15 @@ export default class AgentProduct extends React.PureComponent {
         <Divider type="vertical" />
         <Button disabled={!selectedRowKeys.length} onClick={() => this.agentProduct(0)} type="primary">取消关联</Button>
         <Divider type="vertical" />
-        <Popconfirm
+        {/* <Popconfirm
           placement="bottom"
           title={<p style={{ width: 300 }}>请确定是否关联产品{selectedRows.map(item => item.name).join('、')}？</p>}
           onConfirm={() => this.agentProduct(1)}
           okText="确定"
           cancelText="取消"
         >
-          <Button disabled={!selectedRowKeys.length} type="primary">关联产品</Button>
-        </Popconfirm>
+        </Popconfirm> */}
+        <Button onClick={this.handleShowModal} type="primary">关联产品</Button>
       </div>
     )
   }
@@ -176,12 +255,9 @@ export default class AgentProduct extends React.PureComponent {
   agentProduct = async(sign) => {
     const agentId = this.props.match.params.id;
     const { selectedRowKeys, selectedRows } = this.state;
-    const values = selectedRowKeys.map(item => ({
-      projectId: item,
-      agentId,
-      sign,
-    }));
-    const result = await agentProduct(values);
+    const values = selectedRowKeys.map(item => item);
+    const result = await deleteAgentProduct(agentId, values);
+
     if (result && result.code === 0) {
       message.success(`产品名称为${selectedRows.map(item => item.name).join('、')}关联代理商成功`);
       const pager = { ...this.state.pagination };
@@ -197,11 +273,7 @@ export default class AgentProduct extends React.PureComponent {
 
   agentProductSingle = async (record) => {
     const agentId = this.props.match.params.id;
-    const result = await agentProduct({
-      projectId: record.id,
-      agentId,
-      sign: 0,
-    });
+    const result = await deleteAgentProduct(agentId, [record.id]);
     if (result && result.code === 0) {
       message.success(`产品名称为${record.name}关联代理商成功`);
       const pager = { ...this.state.pagination };
@@ -234,15 +306,16 @@ export default class AgentProduct extends React.PureComponent {
   }
 
   printProduct = async (record) => {
+    const { sn } = qs.parse(this.props.location.search.substr(1));
     if (record.id) {
-      const result = await getProductCode(record.id);
+      const result = await getProductCode(record.id, sn);
       const code = result.data || '';
       this.setState({ printList: [record], codeList: [code] }, () => {
         this.showModal();
       });
     } else {
       const { selectedRows, selectedRowKeys } = this.state;
-      const promises = selectedRowKeys.map((id) => getProductCode(id));
+      const promises = selectedRowKeys.map((id) => getProductCode(id, sn));
       const results = await Promise.all(promises);
       const codeList = results.map(item => item ? item.data: '');
       this.setState({ printList: selectedRows, codeList }, () => {
@@ -253,10 +326,12 @@ export default class AgentProduct extends React.PureComponent {
 
   render() {
     const { form: { getFieldDecorator }, productList = {} } = this.props;
-    const { selectedRowKeys, loading, visible, confirmLoading, printList, codeList, productCategory, productSubcategory } = this.state;
+    const { selectedRowKeys, loading, visible, confirmLoading, printList, codeList, productCategory = [], productSubcategory, showProductModal } = this.state;
     const rowSelection = { selectedRowKeys, onChange: this.onSelectChange };
+    const agentId = this.props.match.params.id;
     return (
       <div className="page-list product-list">
+        <ProductModal agentId={agentId} showProductModal={showProductModal} handleCloseModal={this.handleCloseModal}/>
         <Card bordered={false} className="form-container">
           <Form onSubmit={this.handleSubmit}>
             <Row gutter={12}>

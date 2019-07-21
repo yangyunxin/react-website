@@ -39,7 +39,7 @@ export default class AgentList extends React.PureComponent {
                 <a href="javascript:;">删除</a>
               </Popconfirm>
               <Divider type="vertical" />
-              <Link to={`/agent/product/${record.id}`}>产品列表</Link>
+              <Link to={`/agent/product/${record.id}?sn=${record.sn}`}>产品列表</Link>
             </div>
           )
         }

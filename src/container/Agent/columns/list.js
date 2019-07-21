@@ -1,7 +1,13 @@
 import { formatDateSecond } from '../../../utils/utils';
-import { nullString, AGENT_TYPE } from '../../../utils/constant';
+import { nullString, AGENT_TYPE, AGENT_STATUS } from '../../../utils/constant';
 
 const columns = [
+  {
+    title: '代理商编号',
+    dataIndex: 'sn',
+    key: 'sn',
+    align: 'center',
+  },
   {
     title: '代理商名称',
     dataIndex: 'name',
@@ -16,12 +22,6 @@ const columns = [
     render: (text) => AGENT_TYPE[text] || nullString
   },
   {
-    title: '代理商账号',
-    dataIndex: 'accountId',
-    key: 'accountId',
-    align: 'center',
-  },
-  {
     title: '返点率',
     dataIndex: 'diPer',
     key: 'diPer',
@@ -32,6 +32,7 @@ const columns = [
     dataIndex: 'status',
     key: 'status',
     align: 'center',
+    render: (text) => AGENT_STATUS[text] || nullString
   },
   {
     title: '创建时间',

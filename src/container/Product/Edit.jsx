@@ -141,7 +141,7 @@ export default class ProductDetail extends React.PureComponent {
             <EnhanceTitle title="详情信息" />
             <FormItem {...formItemLayout2} label="颜色">
               {getFieldDecorator('colour', {
-                initialValue: productDetail.colour,
+                initialValue: colour.length && colour.find(item => item.description === productDetail.colour).label,
                 rules: [{
                   required: true, message: '请选择产品颜色',
                 }],

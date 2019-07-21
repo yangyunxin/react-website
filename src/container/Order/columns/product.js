@@ -43,11 +43,11 @@ const columns = [
     align: 'center',
   },
   {
-    title: '小计',
+    title: '小计（元）',
     dataIndex: 'total',
     key: 'total',
     align: 'center',
-    render: (text, record) => record.price * record.quantity,
+    render: (text, record) => record.price * record.quantity  / 100,
   }
 ];
 export default columns;
