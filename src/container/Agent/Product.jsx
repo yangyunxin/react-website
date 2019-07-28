@@ -401,9 +401,9 @@ export default class AgentProduct extends React.PureComponent {
           footer={null}
         >
           <div className="print-wrap" ref={el => (this.componentRef = el)}>
-            <Row gutter={12}>
+            <Row gutter={18}>
               {printList.map((item, key) => (
-                <Col key={item.id} style={{ marginBottom: 10 }} span={selectedRowKeys.length > 1 ? 12 : 24}>
+                <Col key={item.id} style={{ marginBottom: 15 }} span={selectedRowKeys.length > 1 ? 12 : 24}>
                   <img alt="二维码" src={codeList[key]} />
                   <img alt="产品图片" src={item.mainPicture} />
                 </Col>
