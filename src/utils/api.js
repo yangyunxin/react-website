@@ -46,6 +46,6 @@ const API = {
   getProductTypeById: '/api/goods/tProductType/{id}',
   getProductTypes: '/api/goods/tProductType/dictList',
   delectAgentProduct: '/api/goods/tAgentProduct/deleteBatch/{agentId}',
-
+  resetAdminInfo: '/api/admin/user/editInfo',
 }
 export default API;

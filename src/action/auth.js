@@ -1,5 +1,5 @@
 import { requestLogin } from '../utils/request';
-import { get } from '../utils/request';
+import { get, put } from '../utils/request';
 import API from '../utils/api';
 
 export const AUTH_USER_LOGIN = 'AUTH_USER_LOGIN';
@@ -54,6 +54,16 @@ export function getUserInfo(params) {
         type: GET_USER_INFO,
         data: result.data.data
       })
+    }
+  }
+}
+
+export function postResetAdminInfo(params) {
+  return async (dispatch) => {
+    const result = await put(API.resetAdminInfo, params);
+    if (result && result.status === 200) {
+      dispatch(authUserExpire());
+      return true;
     }
   }
 }

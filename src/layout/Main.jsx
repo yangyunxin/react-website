@@ -63,7 +63,7 @@ export default class Main extends React.PureComponent {
     const { history } = this.props;
     if (key === 'logout') {
       try {
-        const resp = this.props.authUserLogout();
+        const resp = await this.props.authUserLogout();
         if (resp) {
           history.push('/login');
         }

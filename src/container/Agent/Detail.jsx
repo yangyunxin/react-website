@@ -54,7 +54,7 @@ export default class AgentDetail extends React.PureComponent {
               </Select>
             </FormItem>
             <FormItem {...formItemLayout2} label="联系人">
-              <Input value={agentDetail.linkName} placeholder="请输入联系人" />
+              <Input value={agentDetail.linkman} placeholder="请输入联系人" />
             </FormItem>
             <FormItem {...formItemLayout2} label="联系电话">
               <Input value={agentDetail.phone} placeholder="请输入联系电话" />

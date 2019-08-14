@@ -5,7 +5,7 @@ import ReactToPrint from "react-to-print";
 import { Card, Form, Row, Col, Input, Select, Table, Button, Divider, message, Popconfirm, Modal } from 'antd';
 import { getProductCode, getProductList } from '../../action/product';
 import { getProductTypes } from '../../action/productType';
-import { agentProduct, deleteAgentProduct } from '../../action/agent';
+import { deleteAgentProduct } from '../../action/agent';
 import { getSystemDicts } from '../../action/system';
 import { formatDateSecond, formatYuan } from '../../utils/utils';
 import { formItemLayout, showTotal, nullString, PRODUCT_STATUS, UNIT_VALUES } from '../../utils/constant';
@@ -172,7 +172,7 @@ export default class AgentProduct extends React.PureComponent {
     this.setState({ loading: true });
     this.props.form.validateFields(async(err, values) => {
       if (!err) {
-        await this.props.getProductList({ ...values, ...params, agentId: id, exist: 1 });
+        await this.props.getProductList({ ...values, ...params, agentId: id, exist: 1, limit: 10 });
         this.setState({ loading: false });
       } else {
         this.setState({ loading: false });
@@ -239,14 +239,6 @@ export default class AgentProduct extends React.PureComponent {
         <Divider type="vertical" />
         <Button disabled={!selectedRowKeys.length} onClick={() => this.agentProduct(0)} type="primary">取消关联</Button>
         <Divider type="vertical" />
-        {/* <Popconfirm
-          placement="bottom"
-          title={<p style={{ width: 300 }}>请确定是否关联产品{selectedRows.map(item => item.name).join('、')}？</p>}
-          onConfirm={() => this.agentProduct(1)}
-          okText="确定"
-          cancelText="取消"
-        >
-        </Popconfirm> */}
         <Button onClick={this.handleShowModal} type="primary">关联产品</Button>
       </div>
     )
@@ -393,14 +385,14 @@ export default class AgentProduct extends React.PureComponent {
           />
         </Card>
         <Modal title="产品二维码"
-          width={selectedRowKeys.length > 1 ? '700px': '400px'}
+          width="220mm"
           visible={visible}
           onOk={this.handleOk}
           confirmLoading={confirmLoading}
           onCancel={this.handleCancel}
           footer={null}
         >
-          <div className="print-wrap" ref={el => (this.componentRef = el)}>
+          <div className="print-wrap" style={{ width: '210mm' }} ref={el => (this.componentRef = el)}>
             <Row gutter={18}>
               {printList.map((item, key) => (
                 <Col key={item.id} style={{ marginBottom: 15 }} span={selectedRowKeys.length > 1 ? 12 : 24}>

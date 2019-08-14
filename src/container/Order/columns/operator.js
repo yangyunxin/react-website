@@ -1,6 +1,6 @@
 const columns = [
   {
-    title: '操作人',
+    title: '快递公司',
     dataIndex: 'mainPicture',
     key: 'mainPicture',
     align: 'center',

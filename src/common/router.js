@@ -24,6 +24,7 @@ import SystemDict from '../container/System/SystemDict';
 import SystemDictItem from '../container/System/SystemDictItem';
 import ProductType from '../container/ProductType';
 import ProductTypeItem from '../container/ProductType/ProductTypeItem';
+import AdminReset from '../container/Reset';
 
 const routerData = {
   '/': {
@@ -174,6 +175,13 @@ const routerData = {
   '/system/operateLog': {
     name: '操作日志',
     component: OperateLog
+  },
+  '/admin': {
+    name: '重置密码',
+    redirect: true,
+  },
+  '/admin/reset': {
+    component: AdminReset
   },
 }
 export default routerData;

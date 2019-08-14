@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message } from 'antd';
-import { ORDER_OPERATE, formItemLayout, showTotal, ORDER_STATUS, REGIST_CHANNEL } from '../../utils/constant';
+import { Card, Form, Row, Col, Input, Select, DatePicker, Table, Button, Divider, message, Modal } from 'antd';
+import { ORDER_OPERATE, formItemLayout, showTotal, ORDER_STATUS, REGIST_CHANNEL, formItemLayout3 } from '../../utils/constant';
 import { getOrderList, updateOrder } from '../../action/order';
+import OrderForm from './orderForm';
 import listColumns from './columns/list';
 import './index.css'
 
@@ -53,6 +54,8 @@ export default class OrderList extends React.PureComponent {
       showSizeChanger: true,
       showQuickJumper: true,
     },
+    visible: false,
+    orderId: undefined,
   };
 
   componentDidMount() {
@@ -98,6 +101,31 @@ export default class OrderList extends React.PureComponent {
     });
   }
 
+  handleOk = async (e) => {
+    const { orderDetail = {} } = this.props;
+    const { orderId } = this.state;
+    const account = orderDetail.account ? orderDetail.account: {};
+    this.orderForm.props.form.validateFields(async(err, values) => {
+      if (!err) {
+        const result = await updateOrder({
+          id: orderId,
+          accountId: account.id,
+          ...values,
+          status: '2',
+        });
+        if (result && result.code === 0) {
+          this.getOrderList();
+          this.setState({
+            visible: false,
+          });
+          message.success('快递信息录入成功');
+        } else {
+          message.error('快递信息录入失败，请稍后重试');
+        }
+      }
+    });
+  }
+
   updateStatus = async ({ id, accountId, status }) => {
     let nextStatus = '0';
     switch (status) {
@@ -108,6 +136,11 @@ export default class OrderList extends React.PureComponent {
       case '2': nextStatus = '3'
         break;
       default: nextStatus = '0';
+    }
+    if (status === '1') {
+      this.setState({ orderId: id });
+      this.showModal();
+      return;
     }
     const result = await updateOrder({
       id,
@@ -126,6 +159,18 @@ export default class OrderList extends React.PureComponent {
     }
   }
 
+  showModal = () => {
+    this.setState({
+      visible: true,
+    });
+  }
+
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
+  }
+
   render() {
     const { form: { getFieldDecorator }, orderList } = this.props;
     const { selectedRowKeys, loading } = this.state;
@@ -135,6 +180,14 @@ export default class OrderList extends React.PureComponent {
     }
     return (
       <div className="page-list order-list">
+        <Modal
+          title="备注订单"
+          visible={this.state.visible}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+        >
+          <OrderForm getCurrent={(node) => { this.orderForm = node }} />
+        </Modal>
         <Card bordered={false} className="form-container">
           <Form onSubmit={this.handleSubmit}>
             <Row gutter={12}>

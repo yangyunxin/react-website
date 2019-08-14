@@ -1,16 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Card, Steps, Icon, Table, Modal, Form, Input, Button, DatePicker, message, Popconfirm } from 'antd';
+import { Card, Steps, Icon, Table, Button, message, Popconfirm } from 'antd';
 import { getOrderById, updateOrder } from '../../action/order';
 import EnhanceTitle from '../../component/EnhanceTitle';
 import DescriptionList from '../../component/DescriptionList';
 import productColumns from './columns/product';
+import operatorColumns from './columns/operator';
 import { formatDateSecond } from '../../utils/utils';
 import { ORDER_STATUS, PAYMENT_METHOD } from '../../utils/constant';
-import { formItemLayout3, ORDER_TYPE, PAYMENT_CHANNEL } from '../../utils/constant';
+import { ORDER_TYPE, PAYMENT_CHANNEL } from '../../utils/constant';
 import './index.css';
 
-const FormItem = Form.Item;
 const { Step } = Steps;
 const { Description } = DescriptionList;
 
@@ -19,52 +19,11 @@ const { Description } = DescriptionList;
 }), {
   getOrderById
 })
-@Form.create()
 export default class OrderDetail extends React.PureComponent {
-  state = {
-    visible: false,
-  }
-
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  }
-
   componentDidMount() {
     const { match: { params } } = this.props;
     const id = params.id;
     this.props.getOrderById(id);
-  }
-
-  handleOk = async (e) => {
-    const { match: { params } } = this.props;
-    const id = params.id;
-    const { orderDetail = {} } = this.props;
-    const account = orderDetail.account ? orderDetail.account: {};
-    this.props.form.validateFields(async(err, values) => {
-      if (!err) {
-        const result = await updateOrder({
-          id,
-          accountId: account.id,
-          ...values,
-        });
-        if (result && result.code === 0) {
-          this.setState({
-            visible: false,
-          });
-          message.success('快递信息录入成功');
-        } else {
-          message.error('快递信息录入失败，请稍后重试');
-        }
-      }
-    });
-  }
-
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-    });
   }
 
   cancelOrder = async () => {
@@ -92,45 +51,9 @@ export default class OrderDetail extends React.PureComponent {
     const { productList = []  } = orderDetail;
     const account = orderDetail.account ? orderDetail.account: {};
     const address = orderDetail.address ? orderDetail.address : {};
-    const { getFieldDecorator } = this.props.form;
     return (
       <div className="page-detail">
-        <Modal
-          title="备注订单"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-        >
-          <Form>
-            <FormItem {...formItemLayout3} label="快递公司">
-              {getFieldDecorator('expressCompanyName', {
-                rules: [{
-                  required: true, message: '请输入快递公司',
-                }],
-              })(
-                <Input placeholder="请输入快递公司" />
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout3} label="快递单号">
-              {getFieldDecorator('expressTrackingNo', {
-                rules: [{
-                  required: true, message: '请输入快递单号',
-                }],
-              })(
-                <Input placeholder="请输入快递单号" />
-              )}
-            </FormItem>
-            <FormItem {...formItemLayout3} label="发货时间">
-              {getFieldDecorator('shippingTime', {
-                rules: [{
-                  required: true, message: '请选择发货时间',
-                }],
-              })(
-                <DatePicker format="YYYY-MM-DD HH:mm:ss" showTime placeholder="请选择发货时间" />
-              )}
-            </FormItem>
-          </Form>
-        </Modal>
+
         <Card bordered={false}>
           <EnhanceTitle title="订单状态流" />
           <Steps current={Number(orderDetail.status) + 1}>
@@ -147,7 +70,6 @@ export default class OrderDetail extends React.PureComponent {
             当前订单状态：{ORDER_STATUS[orderDetail.status] || '未支付'}
           </div>
           <div>
-            <Button onClick={this.showModal} style={{ marginRight: '20px' }} type="primary">录入快递信息</Button>
             <Popconfirm
               placement="topRight"
               title="你确定关闭此订单吗"
@@ -183,10 +105,10 @@ export default class OrderDetail extends React.PureComponent {
           <EnhanceTitle title="产品信息" />
           <Table rowKey="id" bordered columns={productColumns} dataSource={productList} pagination={false} />
         </Card>
-        {/* <Card bordered={false}>
+         <Card bordered={false}>
           <EnhanceTitle title="操作人信息" />
-          <Table bordered columns={operatorColumns} dataSource={[] } />
-        </Card> */}
+          <Table bordered columns={operatorColumns} dataSource={[orderDetail]} />
+        </Card>
       </div>
     )
   }

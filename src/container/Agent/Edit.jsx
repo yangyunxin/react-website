@@ -114,8 +114,8 @@ export default class AgentEdit extends React.PureComponent {
               )}
             </FormItem>
             <FormItem {...formItemLayout2} label="联系人">
-              {getFieldDecorator('linkName', {
-                initialValue: agentDetail.linkName,
+              {getFieldDecorator('linkman', {
+                initialValue: agentDetail.linkman,
                 rules: [{
                   required: true, message: '请输入联系人',
                 }],
