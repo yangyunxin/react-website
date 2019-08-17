@@ -124,7 +124,7 @@ export default class ProductDetail extends React.PureComponent {
               <Input value={productDetail.weight} placeholder="请输入产品克重" />
             </FormItem>
             <FormItem {...formItemLayout2} label="门幅">
-              <Input addonAfter="米" value={productDetail.size} placeholder="请输入产品门幅" />
+              <Input addonAfter="厘米" value={productDetail.size} placeholder="请输入产品门幅" />
             </FormItem>
             <FormItem {...formItemLayout2} label="产品用途">
               <Input value={productDetail.use} placeholder="请输入产品用途" />

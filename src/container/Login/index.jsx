@@ -20,7 +20,7 @@ export default class NormalLoginForm extends React.Component {
         }
         const result = await this.props.authUserLogin(data);
         if (result) {
-          message.success('登录成功，欢迎来到快布易管理系统！');
+          message.success('登录成功，欢迎来到快易布管理系统！');
           this.props.history.push('/')
         }
       }

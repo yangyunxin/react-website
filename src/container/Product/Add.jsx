@@ -165,7 +165,7 @@ export default class ProductAdd extends React.PureComponent {
                   pattern: /^[0-9.]+$/g, message: '请输入数字'
                 }],
               })(
-                <Input addonAfter="米" placeholder="请输入产品门幅" />
+                <Input addonAfter="厘米" placeholder="请输入产品门幅" />
               )}
             </FormItem>
             <FormItem {...formItemLayout2} label="产品用途">

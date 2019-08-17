@@ -70,6 +70,8 @@ export default class Main extends React.PureComponent {
       } catch (error) {
         message.error(error.msg);
       }
+    } else if (key === 'reset') {
+      history.push('/admin/reset');
     }
   };
 
@@ -115,6 +117,7 @@ export default class Main extends React.PureComponent {
         <Menu.Item><Icon type="setting" />设置</Menu.Item> */}
         <Menu.Divider />
         <Menu.Item key="logout"><Icon type="logout" />退出登录</Menu.Item>
+        <Menu.Item key="reset"><Icon type="setting" />修改密码</Menu.Item>
       </Menu>
     );
     const { userInfo = {} } = this.props;

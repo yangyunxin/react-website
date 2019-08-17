@@ -48,7 +48,7 @@ export default class NormalLoginForm extends React.Component {
     const { sysUser = {} } = userInfo;
     return (
       <div className="reset-page">
-        <h4>重置密码功能</h4>
+        <h4>重置密码</h4>
         <Form onSubmit={this.handleSubmit} className="reset-form">
           <FormItem {...formReset} label="用户名">
             {getFieldDecorator('username', {
@@ -80,7 +80,7 @@ export default class NormalLoginForm extends React.Component {
               <Input type="password" placeholder="请输入新密码" />
             )}
           </FormItem>
-          <FormItem>
+          <FormItem {...formReset} style={{ textAlign: 'center' }}>
             <Button type="primary" htmlType="submit" className="page-form-button">重置密码</Button>
           </FormItem>
         </Form>
