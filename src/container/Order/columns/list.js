@@ -5,8 +5,8 @@ import { nullString, PAYMENT_METHOD, ORDER_STATUS, REGIST_CHANNEL } from '../../
 const columns = [
   {
     title: '订单编号',
-    dataIndex: 'expressTrackingNo',
-    key: 'expressTrackingNo',
+    dataIndex: 'id',
+    key: 'id',
     align: 'center',
     fixed: 'left',
     render: (text) => text || nullString,
@@ -44,7 +44,7 @@ const columns = [
     dataIndex: 'rebateTotal',
     key: 'rebateTotal',
     align: 'center',
-    render: (text) => text || nullString,
+    render: (text) => formatYuan(text) || nullString,
   },
   {
     title: '支付方式',

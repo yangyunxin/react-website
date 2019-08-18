@@ -69,7 +69,8 @@ export default class OrderDetail extends React.PureComponent {
             <Icon style={{ marginRight: 5 }} type="exclamation-circle" theme="outlined" />
             当前订单状态：{ORDER_STATUS[orderDetail.status] || '未支付'}
           </div>
-          <div>
+          {orderDetail.status !== '4' && (
+            <div>
             <Popconfirm
               placement="topRight"
               title="你确定关闭此订单吗"
@@ -80,11 +81,12 @@ export default class OrderDetail extends React.PureComponent {
             <Button style={{ marginRight: '20px' }} type="danger">关闭订单</Button>
             </Popconfirm>
           </div>
+          )}
         </div>
         <Card bordered={false}>
           <EnhanceTitle title="基本信息" />
           <DescriptionList>
-            <Description term="订单编号">{orderDetail.paymentNo}</Description>
+            <Description term="订单编号">{orderDetail.id}</Description>
             <Description term="订单金额">{orderDetail.orderAmountPayable / 100}（元）</Description>
             <Description term="用户账号">{account.phoneNumber}</Description>
             <Description term="支付方式">{PAYMENT_METHOD[orderDetail.paymentMethod]}</Description>
