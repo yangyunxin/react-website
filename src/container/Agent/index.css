@@ -7,3 +7,6 @@
   height: 25mm;
   margin: 0 5px;
 }
+.print-modal .ant-modal-body {
+  padding: 0 0 20px;
+}

@@ -385,17 +385,19 @@ export default class AgentProduct extends React.PureComponent {
           />
         </Card>
         <Modal title="产品二维码"
-          width="220mm"
+          className="print-modal"
+          width="230mm"
           visible={visible}
           onOk={this.handleOk}
           confirmLoading={confirmLoading}
           onCancel={this.handleCancel}
+          style={{ padding: 0 }}
           footer={null}
         >
-          <div className="print-wrap" style={{ width: '210mm' }} ref={el => (this.componentRef = el)}>
-            <Row gutter={18}>
+          <div className="print-wrap" style={{ width: '230mm', padding: '6mm 0' }} ref={el => (this.componentRef = el)}>
+            <Row>
               {printList.map((item, key) => (
-                <Col key={item.id} style={{ marginBottom: 15 }} span={selectedRowKeys.length > 1 ? 12 : 24}>
+                <Col key={item.id} style={{ marginBottom: '10mm' }} span={selectedRowKeys.length > 1 ? 6 : 24}>
                   <img alt="二维码" src={codeList[key]} />
                   <img alt="产品图片" src={item.mainPicture} />
                 </Col>
